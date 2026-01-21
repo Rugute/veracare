@@ -6,9 +6,9 @@ import { SignInSchema, SignInSchemaType } from "../Validations/AuthSchema";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,57 +28,45 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
+import { Building2, User } from "lucide-react";
 
 const SignInForm = () => {
-  const [coprateNumber, setCoprateNumber] = useState("");
+  const [corporateNumber, setCorporateNumber] = useState("");
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
-  const handleSubmit = (data: SignInSchemaType) => {
-    console.log(data);
-  };
-
-  const handleCoprateSignIn = () => {
-    console.log(coprateNumber);
-  };
+  const handleSubmit = (data: SignInSchemaType) => console.log(data);
+  const handleCorporateSignIn = () => console.log(corporateNumber);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <Card className="w-full max-w-4xl shadow-sm">
-        <CardHeader className="space-y-1 pb-6 text-center">
-          <CardTitle className="text-2xl font-semibold tracking-tight">
-            Sign in
-          </CardTitle>
-          <CardDescription className="text-sm leading-relaxed">
-            Enter your credentials to access your account.
-          </CardDescription>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+      <Card className="w-full max-w-lg shadow-lg border-2">
+        <CardHeader className="text-center pb-2 pt-6">
+          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
+          <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-8">
+        <CardContent className="space-y-4">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-6"
+              className="space-y-4"
             >
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-medium uppercase tracking-wider">
-                      Email address
-                    </FormLabel>
+                  <FormItem className="space-y-1">
+                    <FormLabel className="text-xs">Email Address</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         type="email"
-                        placeholder="johndoe@example.com"
-                        autoComplete="email"
+                        placeholder="name@example.com"
+                        className="h-9"
                       />
                     </FormControl>
                     <FormMessage />
@@ -90,57 +78,89 @@ const SignInForm = () => {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-medium uppercase tracking-wider">
-                      Password
-                    </FormLabel>
+                  <FormItem className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-xs">Password</FormLabel>
+                      <Link
+                        href="/forgot-password"
+                        className="text-xs text-primary hover:underline font-medium"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
                     <FormControl>
-                      <PasswordInput {...field} placeholder="••••••••" />
+                      <PasswordInput
+                        {...field}
+                        placeholder="Enter password"
+                        className="h-9"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
-              <Button
-                type="submit"
-                className="w-full py-6 text-sm font-semibold uppercase tracking-widest"
-              >
-                Sign in
+              <Button type="submit" className="w-full h-9 text-sm">
+                Sign In
               </Button>
             </form>
           </Form>
-          <div className="space-y-4 text-sm">
-            <div className="flex items-center justify-center">
-              <span className="mr-1">Don’t have an account?</span>
-              <Button asChild variant="link" className="px-1">
-                <Link href="/sign-up">Sign up as an individual</Link>
-              </Button>
-            </div>
 
-            <div className="flex items-center justify-center">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline">Sign up as a corporate</Button>
-                </PopoverTrigger>
-
-                <PopoverContent className="space-y-3 w-72">
-                  <Input
-                    placeholder="Enter your corporate number"
-                    type="text"
-                    value={coprateNumber}
-                    onChange={(e) => setCoprateNumber(e.target.value)}
-                  />
-                  <Button
-                    className="w-full"
-                    type="button"
-                    onClick={handleCoprateSignIn}
-                  >
-                    Submit
-                  </Button>
-                </PopoverContent>
-              </Popover>
+          <div className="relative py-1">
+            <div className="absolute inset-0 flex items-center">
+              <Separator />
             </div>
+            <div className="relative flex justify-center text-[10px] uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                New here?
+              </span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Button asChild variant="outline" size="sm" className="w-full h-9">
+              <Link href="/sign-up" className="gap-2">
+                <User className="h-3.5 w-3.5" /> Individual
+              </Link>
+            </Button>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full h-9 gap-2"
+                >
+                  <Building2 className="h-3.5 w-3.5" /> Corporate
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-72 p-3" align="end">
+                <div className="space-y-3">
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-xs">Corporate Account</h4>
+                    <p className="text-[10px] text-muted-foreground leading-tight">
+                      Enter corporate number to create organization account
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Corp #"
+                      value={corporateNumber}
+                      onChange={(e) => setCorporateNumber(e.target.value)}
+                      className="h-8 text-xs"
+                    />
+                    <Button
+                      size="sm"
+                      className="h-8"
+                      onClick={handleCorporateSignIn}
+                      disabled={!corporateNumber.trim()}
+                    >
+                      Go
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </CardContent>
       </Card>
