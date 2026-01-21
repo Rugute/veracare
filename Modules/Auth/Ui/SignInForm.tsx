@@ -49,7 +49,7 @@ const SignInForm = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
-      <Card className="w-full max-w-4xl shadow-sm">
+      <Card className="w-full max-w-2xl shadow-sm">
         <CardHeader className="space-y-1 pb-6 text-center">
           <CardTitle className="text-2xl font-semibold tracking-tight">
             Sign in
