@@ -1,7 +1,14 @@
-export default function Home() {
-  return (
-    <div>
-      <h1>Home page</h1>
-    </div>
-  );
+"use client"; // MUST be at the very top
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation"; 
+
+export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push("/sign-in"); 
+  }, [router]);
+
+  return <p>Redirecting...</p>;
 }
