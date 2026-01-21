@@ -99,13 +99,11 @@ const SignInForm = () => {
                   </FormItem>
                 )}
               />
-
               <Button type="submit" className="w-full h-9 text-sm">
                 Sign In
               </Button>
             </form>
           </Form>
-
           <div className="relative py-1">
             <div className="absolute inset-0 flex items-center">
               <Separator />
