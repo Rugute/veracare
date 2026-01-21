@@ -42,11 +42,15 @@ const SignInForm = () => {
   const handleCorporateSignIn = () => console.log(corporateNumber);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
-      <Card className="w-full max-w-lg shadow-lg border-2">
-        <CardHeader className="text-center pb-2 pt-6">
-          <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <Card className="w-full max-w-2xl shadow-sm">
+        <CardHeader className="space-y-1 pb-6 text-center">
+          <CardTitle className="text-2xl font-semibold tracking-tight">
+            Sign in
+          </CardTitle>
+          <CardDescription className="text-sm leading-relaxed">
+            Enter your credentials to access your account.
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-4">
