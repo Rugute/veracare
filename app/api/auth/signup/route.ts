@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, phone, gender, email, password } = await request.json();
+    const { firstName, lastName, phone, gender, email, password,companyid } = await request.json();
 
     // Lookup user in DB
     const user = await prisma.user.findUnique({
@@ -21,6 +21,11 @@ export async function POST(request: Request) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     // Create a new user
+    if(companyid){
+      const company = await prisma.company.findUnique({
+        where: { id: companyid },
+      });
+
     const newUser = await prisma.user.create({
       data: {
         firstName,
@@ -28,9 +33,24 @@ export async function POST(request: Request) {
         phone,
         gender,
         email,
+        dob,
         password: hashedPassword,
+        company: { connect: { id: companyid } },
       },
     });
+    }else{
+      const newUser = await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          phone,
+          gender,   
+           email,
+           dob,
+        password: hashedPassword,    
+      },
+    });
+  }
 
     return NextResponse.json({ message: "User created successfully" });
   } catch (error) {

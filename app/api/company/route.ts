@@ -7,9 +7,9 @@ import { promises as fs } from "fs";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
+  const code = formData.get("code") as string;
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
-  const license = formData.get("license") as string;
   const phone = formData.get("phone") as string;
   const location = formData.get("location") as string;
   const address = formData.get("address") as string;
@@ -36,12 +36,13 @@ export async function POST(req: Request) {
 
   const company = await prisma.company.create({
     data: {
+      code,
       name,
       email,
       phone,
       location,
       address,
-      status: "TRIAL",
+      status: "Active",
       logo: fileUrl,
       createdBy: user.id,
       uuid: uuidv4(),
