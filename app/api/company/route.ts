@@ -45,6 +45,7 @@ export async function POST(req: Request) {
       logo: fileUrl,
       createdBy: user.id,
       uuid: uuidv4(),
+      voided:0
     },
   });
 
