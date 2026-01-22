@@ -8,17 +8,18 @@ datasource db {
 }
 
 model User {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
   password        String
   firstName       String?
   lastName        String?
   gender          String?
   phone           String?
-  dob DateTime?
-  cooprateAccount Int      @default(0)
+  dob             DateTime?
+  cooprateAccount Int       @default(0)
   companyId       Int?
-  company         Company? @relation(fields: [companyId], references: [id])
+  company         Company?  @relation(fields: [companyId], references: [id])
+  courses  Course[]
 }
 
 model Company {
@@ -38,3 +39,39 @@ model Company {
   users     User[]
   voided    Int
 }
+
+model Category {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  courses Course[] 
+  createdBy Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Requirement {
+  id        Int     @id @default(autoincrement())
+  content   String  // The requirement text
+  courseId  Int
+  course    Course  @relation(fields: [courseId], references: [id])
+}
+
+model Course {
+  id           Int       @id @default(autoincrement())
+  title        String
+  slug         String?   @unique
+  description  String?
+  published    Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  deleted_at   DateTime?
+  photo        String?
+  categoryId   Int?      // foreign key to Category
+  category     Category? @relation(fields: [categoryId], references: [id])
+  uuid         String    @default(uuid()) @unique
+  voided       Int       @default(0)
+  createdBy    User      @relation(fields: [createdById], references: [id])
+  createdById  Int
+  requirements Requirement[]
+}
+

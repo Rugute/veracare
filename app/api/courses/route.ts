@@ -5,92 +5,105 @@ import { getCurrentUser } from "@/lib/auth";
 import path from "path";
 import { promises as fs } from "fs";
 
-export async function POST(req: Request) {
-  const formData = await req.formData();
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const license = formData.get("license") as string;
-  const phone = formData.get("phone") as string;
-  const location = formData.get("location") as string;
-  const address = formData.get("address") as string;
-  const status = formData.get("status") as string;
-  const file = formData.get("file") as File;
-
-  let fileUrl = null;
-
-  if (file) {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-    const filePath = path.join(process.cwd(), "public", "uploads", fileName);
-
-    await fs.mkdir(path.dirname(filePath), { recursive: true });
-    await fs.writeFile(filePath, buffer);
-
-    fileUrl = `/uploads/${fileName}`;
-  }
-
-  const user = await getCurrentUser();
-  if (!user) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
-  const company = await prisma.company.create({
-    data: {
-      name,
-      email,
-      phone,
-      location,
-      address,
-      status: "TRIAL",
-      logo: fileUrl,
-      createdBy: user.id,
-      uuid: uuidv4(),
-      voided:0
-    },
-  });
-
-  return Response.json(company, { status: 201 });
+// Helper to generate slug from title
+function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-");
 }
 
-// List companies with pagination and optional search
-export async function GET(req: Request) {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    return NextResponse.json(
-      { message: "Unauthorized or user not found" },
-      { status: 401 }
-    );
-  }
-
-  const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get("page") || "1");
-  const size = parseInt(searchParams.get("size") || "10");
-  const search = searchParams.get("search") || "";
-
-  const where = {
-    ...(search && {
-      name: {
-        contains: search,
-        mode: "insensitive",
-      },
-    }),
-  };
-
+// POST: Create a new course
+export async function POST(req: Request) {
   try {
+    const formData = await req.formData();
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string | null;
+    const published = formData.get("published") === "1" ? 1 : 0;
+    const category = formData.get("category") ? parseInt(formData.get("category") as string) : null;
+    const file = formData.get("file") as File | null;
+
+    if (!title) {
+      return NextResponse.json({ message: "Title is required" }, { status: 400 });
+    }
+
+    // Handle file upload for photo
+    let photoUrl: string | null = null;
+    if (file) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+      const filePath = path.join(process.cwd(), "public", "uploads", fileName);
+
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      await fs.writeFile(filePath, buffer);
+
+      photoUrl = `/uploads/${fileName}`;
+    }
+
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    // Create course
+    const course = await prisma.course.create({
+      data: {
+        title,
+        slug: generateSlug(title),
+        description,
+        published: published === 1,
+        photo: photoUrl,
+        categoryId: category,
+        uuid: uuidv4(),
+        voided: 0,
+        createdById: user.id, // Ensure your Prisma schema has createdById
+      },
+    });
+
+    return NextResponse.json(course, { status: 201 });
+  } catch (err) {
+    console.error("Error creating course:", err);
+    return NextResponse.json({ message: "Failed to create course" }, { status: 500 });
+  }
+}
+
+// GET: List courses with pagination and optional search
+export async function GET(req: Request) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const size = parseInt(searchParams.get("size") || "10");
+    const search = searchParams.get("search") || "";
+
+    const where = {
+      ...(search && {
+        title: {
+          contains: search,
+          mode: "insensitive",
+        },
+      }),
+      voided: 0, // Exclude deleted/voided courses
+    };
+
     const [items, total] = await Promise.all([
-      prisma.company.findMany({
+      prisma.course.findMany({
         where,
         skip: (page - 1) * size,
         take: size,
-        orderBy: { name: "asc" },
+        orderBy: { created_at: "desc" },
       }),
-      prisma.company.count({ where }),
+      prisma.course.count({ where }),
     ]);
 
     return NextResponse.json({ items, total }, { status: 200 });
   } catch (err) {
-    console.error("Error fetching companies:", err);
-    return NextResponse.json({ message: "Failed to load companies" }, { status: 500 });
+    console.error("Error fetching courses:", err);
+    return NextResponse.json({ message: "Failed to load courses" }, { status: 500 });
   }
 }
