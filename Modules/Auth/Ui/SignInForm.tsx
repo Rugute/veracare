@@ -27,18 +27,29 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Separator } from "@/components/ui/separator";
-import { Building2, User } from "lucide-react";
+import { Building2, Loader2Icon, User } from "lucide-react";
+import { UseAuthSignIn } from "../Api/ApiClient";
+import { useRouter } from "next/navigation";
 
 const SignInForm = () => {
   const [corporateNumber, setCorporateNumber] = useState("");
+  const [isLoading, startTransistion] = useTransition();
+  const router = useRouter();
+  const { mutateAsync } = UseAuthSignIn();
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const handleSubmit = (data: SignInSchemaType) => console.log(data);
+  const handleSubmit = (data: SignInSchemaType) => {
+    startTransistion(async () => {
+      await mutateAsync(data, {
+        onSuccess: () => router.push("/"),
+      });
+    });
+  };
   const handleCorporateSignIn = () => console.log(corporateNumber);
 
   return (
@@ -103,8 +114,16 @@ const SignInForm = () => {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full h-9 text-sm">
-                Sign In
+              <Button
+                type="submit"
+                className="w-full h-9 text-sm"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <Loader2Icon className="mr-2 h-4 w-5 animate-spin" />
+                ) : (
+                  "Sign In"
+                )}
               </Button>
             </form>
           </Form>
