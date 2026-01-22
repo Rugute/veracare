@@ -40,6 +40,7 @@ npx prisma migrate dev --name init
 npx shadcn@latest init
 
 ## update database
+npx prisma push
 npx prisma generate 
 npx prisma migrate dev --name Init 
 npx prisma migrate dev --name UserDetails 
