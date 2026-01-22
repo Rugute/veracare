@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    const { firstName, lastName, phone, gender, email, password } = await request.json();
 
     // Lookup user in DB
     const user = await prisma.user.findUnique({
@@ -23,6 +23,10 @@ export async function POST(request: Request) {
     // Create a new user
     const newUser = await prisma.user.create({
       data: {
+        firstName,
+        lastName,
+        phone,
+        gender,
         email,
         password: hashedPassword,
       },

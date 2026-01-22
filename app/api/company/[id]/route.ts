@@ -69,17 +69,6 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
       data: { voided: 1 },
     });
     
-    await fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: 'someone@example.com',
-        subject: 'Hello from your SMTP server!',
-        text: 'This is a test message',
-        html: '<p>This is a test message</p>',
-      }),
-    });
-
     return new Response(null, { status: 204 });
   } catch (err) {
     console.error("PATCH error:", err);

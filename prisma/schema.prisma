@@ -30,9 +30,9 @@ model Company {
   address   String?
   email     String   @unique
   phone     String?
-  users     User[]
   createdBy Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  voided    Int      @default(0)
+  users     User[]
+  voided    Int
 }
