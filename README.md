@@ -39,6 +39,21 @@ npx prisma migrate dev --name init
 
 npx shadcn@latest init
 
-#update database
+## update database
+npx prisma push
 npx prisma generate 
+npx prisma migrate dev --name Init 
 npx prisma migrate dev --name UserDetails 
+npx prisma migrate dev --name AddeCompany 
+npx prisma format
+
+## Drop Database
+npx prisma migrate reset
+npx prisma migrate deploy -- for Production
+
+## seed BD
+npx prisma studio
+
+## .env
+DATABASE_URL=""
+JWT_SECRET=""

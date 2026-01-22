@@ -8,7 +8,28 @@ datasource db {
 }
 
 model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String?
+  firstName String?
+  lastName  String?
+  gender    String?
+  phone     String?
+  companyId Int?
+  company   Company? @relation(fields: [companyId], references: [id])
+}
+
+model Company {
   id       Int     @id @default(autoincrement())
+  uuid     String  @unique @default(uuid())
+  code     String?
+  name     String?
+  status   String?
+  license  String? @unique
+  logo     String?
+  location String?
+  address  String?
   email    String  @unique
-  password String
+  phone    String?
+  users    User[]
 }
