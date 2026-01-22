@@ -53,3 +53,7 @@ npx prisma migrate deploy -- for Production
 
 ## seed BD
 npx prisma studio
+
+## .env
+DATABASE_URL=""
+JWT_SECRET=""
