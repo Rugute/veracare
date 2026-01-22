@@ -37,15 +37,15 @@ const SignInForm = () => {
   const [corporateNumber, setCorporateNumber] = useState("");
   const [isLoading, startTransistion] = useTransition();
   const router = useRouter();
-  const { mutateAsync } = UseAuthSignIn();
+  const { mutate } = UseAuthSignIn();
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
     defaultValues: { email: "", password: "" },
   });
 
   const handleSubmit = (data: SignInSchemaType) => {
-    startTransistion(async () => {
-      await mutateAsync(data, {
+    startTransistion(() => {
+      mutate(data, {
         onSuccess: () => router.push("/"),
       });
     });

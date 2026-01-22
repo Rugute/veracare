@@ -22,9 +22,15 @@ import { PasswordInput } from "@/Modules/Utils/PasswordInput";
 import { Button } from "@/components/ui/button";
 import { SignUpSchema, SignUpSchemaType } from "../Validations/AuthSchema";
 import Link from "next/link";
-import { UserPlus } from "lucide-react";
+import { Loader2Icon, UserPlus } from "lucide-react";
+import { useTransition } from "react";
+import { useAuthSignUp } from "../Api/ApiClient";
+import { useRouter } from "next/navigation";
 
 const SignUpFormCompact = () => {
+  const [isPending, startTransistion] = useTransition();
+  const { mutate } = useAuthSignUp();
+  const router = useRouter();
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -38,7 +44,13 @@ const SignUpFormCompact = () => {
     },
   });
 
-  const handleSubmit = (data: SignUpSchemaType) => console.log(data);
+  const handleSubmit = (data: SignUpSchemaType) => {
+    startTransistion(() => {
+      mutate(data, {
+        onSuccess: () => router.push("/sign-in"),
+      });
+    });
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
@@ -180,8 +192,16 @@ const SignUpFormCompact = () => {
               </div>
 
               <div className="pt-2">
-                <Button type="submit" className="w-full h-10">
-                  Create Account
+                <Button
+                  type="submit"
+                  className="w-full h-10"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <Loader2Icon className="mr-2 h-4 w-5 animate-spin" />
+                  ) : (
+                    "Create Account"
+                  )}
                 </Button>
                 <div className="mt-4 text-center text-sm text-muted-foreground">
                   Already have an account?{" "}
