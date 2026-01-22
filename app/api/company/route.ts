@@ -14,7 +14,6 @@ export async function POST(req: Request) {
   const location = formData.get("location") as string;
   const address = formData.get("address") as string;
   const status = formData.get("status") as string;
-
   const file = formData.get("file") as File;
 
   let fileUrl = null;
@@ -39,7 +38,6 @@ export async function POST(req: Request) {
     data: {
       name,
       email,
-      license,
       phone,
       location,
       address,

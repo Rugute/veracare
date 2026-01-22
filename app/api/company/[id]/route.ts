@@ -27,8 +27,6 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
     const address = formData.get('address') as string;
     const location = formData.get('location') as string;
     const phone = formData.get('phone') as string;
-
-
     let logoPath = null;
 
     if (file && file.name) {
@@ -36,7 +34,6 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
       console.log("File name ndo hii " + file.name);
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-
       const fileName = `${Date.now()}_${file.name}`;
       const uploadDir = path.join(process.cwd(), 'public', 'uploads');
       const filePath = path.join(uploadDir, fileName);
@@ -71,6 +68,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
       where: { id: cid },
       data: { voided: 1 },
     });
+    
     await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
