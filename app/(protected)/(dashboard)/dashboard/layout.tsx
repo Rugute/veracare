@@ -7,6 +7,8 @@ import {
 import { DashBoardSideBar } from "@/Modules/SideBar/Ui/DashBoardSideBar";
 import { ModeToggle } from "@/Modules/Themes/ModeToggle";
 import { ReactNode } from "react";
+import { redirect } from "next/navigation";
+
 
 interface Props {
   children: ReactNode;
