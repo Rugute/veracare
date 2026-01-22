@@ -57,7 +57,7 @@ export const useAuthSignUp = () => {
 
       console.log(values);
 
-      const response = await fetch("/api/signup", {
+      const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
