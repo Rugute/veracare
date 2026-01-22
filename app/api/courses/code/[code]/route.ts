@@ -7,13 +7,13 @@ export async function GET(
   { params }: { params: { code: string } }
 ) {
   try {
-   /* const user = await getCurrentUser();
+    const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json(
         { message: "Unauthorized" },
         { status: 401 }
       );
-    }*/
+    }
 
     const company = await prisma.company.findFirst({
       where: { code: params.code }, // or code field
