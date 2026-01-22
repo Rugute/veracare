@@ -10,7 +10,7 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  password  String?
+  password  String
   firstName String?
   lastName  String?
   gender    String?
@@ -20,16 +20,19 @@ model User {
 }
 
 model Company {
-  id       Int     @id @default(autoincrement())
-  uuid     String  @unique @default(uuid())
-  code     String?
-  name     String?
-  status   String?
-  license  String? @unique
-  logo     String?
-  location String?
-  address  String?
-  email    String  @unique
-  phone    String?
-  users    User[]
+  id        Int      @id @default(autoincrement())
+  uuid      String   @unique @default(uuid())
+  code      String?
+  name      String?
+  status    String?
+  logo      String?
+  location  String?
+  address   String?
+  email     String   @unique
+  phone     String?
+  createdBy Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+  voided    Int
 }
