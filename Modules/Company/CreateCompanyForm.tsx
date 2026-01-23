@@ -26,11 +26,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Building2, Mail, Phone, MapPin, FileText } from "lucide-react";
-import { useState } from "react";
+import {
+  Building2,
+  Mail,
+  Phone,
+  MapPin,
+  FileText,
+  UploadCloud,
+  X,
+} from "lucide-react";
+import { useTransition } from "react";
+import { UseCreateCompany } from "./Api/ApiClient";
 
 const CreateCompanyForm = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPending, startTransistion] = useTransition();
+  const { mutate } = UseCreateCompany();
 
   const form = useForm<CorporateProfileInputType>({
     resolver: zodResolver(CorporateProfileSchema),
@@ -42,18 +52,28 @@ const CreateCompanyForm = () => {
       location: "",
       address: "",
       status: "pending",
+      file: undefined,
     },
   });
 
   const handleSubmit = async (data: CorporateProfileInputType) => {
-    setIsSubmitting(true);
-    try {
-      console.log(data);
-    } catch (error) {
-      console.error("Submission error:", error);
-    } finally {
-      setIsSubmitting(false);
+    const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("license", data.license);
+    formData.append("phone", data.phone);
+    formData.append("location", data.location);
+    formData.append("address", data.address);
+    formData.append("status", data.status || "pending");
+
+    if (data.file) {
+      formData.append("file", data.file);
     }
+
+    startTransistion(() => {
+      mutate(formData);
+    });
   };
 
   return (
@@ -230,10 +250,7 @@ const CreateCompanyForm = () => {
                   )}
                 />
               </div>
-
               <Separator />
-
-              {/* Document Upload */}
               <div className="space-y-4">
                 <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                   Registration Document
@@ -246,14 +263,62 @@ const CreateCompanyForm = () => {
                     <FormItem>
                       <FormLabel>Upload Document</FormLabel>
                       <FormControl>
-                        <Input
-                          type="file"
-                          accept="image*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            field.onChange(file);
-                          }}
-                        />
+                        <div className="group relative mt-2 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/50 p-6 transition-colors hover:bg-muted/80">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="absolute inset-0 z-50 h-full w-full cursor-pointer opacity-0"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null;
+                              field.onChange(file);
+                            }}
+                          />
+                          <div className="flex flex-col items-center justify-center space-y-2 text-center">
+                            {field.value ? (
+                              <div className="flex flex-col items-center gap-2">
+                                {field.value.type.startsWith("image/") ? (
+                                  // eslint-disable-next-line @next/next/no-img-element
+                                  <img
+                                    src={URL.createObjectURL(field.value)}
+                                    alt="Preview"
+                                    className="h-20 w-20 rounded-md object-cover shadow-sm"
+                                  />
+                                ) : (
+                                  <FileText className="h-10 w-10 text-primary" />
+                                )}
+                                <p className="text-sm font-medium text-foreground">
+                                  {field.value.name}
+                                </p>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  className="text-xs text-destructive hover:text-destructive"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    field.onChange(null);
+                                  }}
+                                >
+                                  <X className="mr-1 h-3 w-3" /> Remove
+                                </Button>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="rounded-full bg-background p-3 shadow-sm ring-1 ring-muted-foreground/10">
+                                  <UploadCloud className="h-6 w-6 text-muted-foreground" />
+                                </div>
+                                <div className="space-y-1">
+                                  <p className="text-sm font-medium">
+                                    Click to upload or drag and drop
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    PNG, JPG or PDF (max. 5MB)
+                                  </p>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </FormControl>
                       <FormDescription>
                         Upload your business registration certificate or license
@@ -267,10 +332,10 @@ const CreateCompanyForm = () => {
 
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isPending}
                 className="w-full h-11 text-sm font-semibold"
               >
-                {isSubmitting ? (
+                {isPending ? (
                   <>
                     <div className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     Creating Profile...

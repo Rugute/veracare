@@ -19,7 +19,7 @@ export const CorporateProfileSchema = z.object({
     .regex(/^\d+$/, "Phone number must contain only digits")
     .or(z.literal("")),
   location: z.string().min(1, "Location is required"),
-  address: z.string().min(5, "Full address is required"),
+  address: z.string().min(1, "Full address is required"),
   status: z.string().default("pending"),
 
   file: z

@@ -1,10 +1,16 @@
 import CoprateSignUpForm from "@/Modules/Auth/Ui/CoprateForm";
 
-const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+interface Props {
+  searchParams: Promise<{ [key: string]: string | undefined }>;
+  params: Promise<{ id: string }>;
+}
+
+const page = async ({ params, searchParams }: Props) => {
   const { id } = await params;
+  const { name } = await searchParams;
   return (
     <div>
-      <CoprateSignUpForm id={id} />
+      <CoprateSignUpForm id={id} name={name || ""} />
     </div>
   );
 };

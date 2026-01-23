@@ -27,7 +27,7 @@ import { useTransition } from "react";
 import { useAuthSignUp } from "../Api/ApiClient";
 import { useRouter } from "next/navigation";
 
-const CorporateSignUpForm = ({ id }: { id: string }) => {
+const CorporateSignUpForm = ({ id, name }: { id: string; name: string }) => {
   const [isPending, startTransition] = useTransition();
   const { mutate } = useAuthSignUp();
   const router = useRouter();
@@ -71,9 +71,9 @@ const CorporateSignUpForm = ({ id }: { id: string }) => {
 
           <div className="mt-4 p-3 bg-muted/50 rounded-md">
             <p className="text-sm">
-              <span className="font-medium">Organization ID: </span>
+              <span className="font-medium">Organization Name: </span>
               <code className="ml-2 px-2 py-1 bg-background border rounded font-mono">
-                {id}
+                {name}
               </code>
             </p>
           </div>

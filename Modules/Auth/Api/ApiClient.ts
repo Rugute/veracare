@@ -100,7 +100,7 @@ interface coprate {
 export const UseCoprateSignUp = (id: string) => {
   return useQuery<coprate>({
     queryKey: [`GET_COPRATE:${id}`],
-    enabled: !!id,
+    enabled: false,
     staleTime: 0,
     queryFn: async () => {
       const response = await fetch(`/api/company/code/${id}`, {

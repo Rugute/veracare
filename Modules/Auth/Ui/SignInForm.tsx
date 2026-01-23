@@ -52,11 +52,16 @@ const SignInForm = () => {
     });
   };
 
-  const { data } = UseCoprateSignUp(corporateNumber);
+  const { refetch } = UseCoprateSignUp(corporateNumber);
 
-  const handleCorporateSignIn = () => {
-    if (data) {
-      router.push(`/sign-up/${data.id}`);
+  const handleCorporateSignUp = async () => {
+    if (!corporateNumber.trim()) return;
+    const result = await refetch();
+
+    if (result.data) {
+      router.push(
+        `/sign-up/${result.data.id}?name=${encodeURIComponent(result.data.name)}`,
+      );
     }
   };
 
@@ -181,7 +186,7 @@ const SignInForm = () => {
                     <Button
                       size="sm"
                       className="h-8"
-                      onClick={handleCorporateSignIn}
+                      onClick={handleCorporateSignUp}
                       disabled={!corporateNumber.trim()}
                     >
                       Go
