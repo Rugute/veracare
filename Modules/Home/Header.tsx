@@ -1,3 +1,4 @@
+"use client";
 import { Input } from "@/components/ui/input";
 import UserAvatar from "../Utils/UserAvatar";
 import {
@@ -16,9 +17,10 @@ import {
   Settings,
 } from "lucide-react";
 import { ModeToggle } from "../Themes/ModeToggle";
+import { useAuthContext } from "@/context/AuthContext";
 
 const Header = () => {
-  const isAuthenticated = false;
+  const { isAuthenticated, user } = useAuthContext();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -83,10 +85,10 @@ const Header = () => {
               {/* User email - Desktop only */}
               <div className="hidden lg:flex flex-col items-end">
                 <span className="text-sm font-medium text-foreground">
-                  Gideon Lelei
+                  {user.name}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  leleigideon@gmail.com
+                  {user.email}
                 </span>
               </div>
 
@@ -155,15 +157,9 @@ const Header = () => {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="hidden sm:inline-flex text-muted-foreground hover:text-foreground"
-              >
-                Sign Up
-              </Button>
-              <Button className="gap-2">
+              <Button className="gap-2 cursor-pointer">
                 <LogOutIcon className="h-4 w-4" />
-                <span>Login</span>
+                <span>Sign Up</span>
               </Button>
             </div>
           )}

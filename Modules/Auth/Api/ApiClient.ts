@@ -103,7 +103,7 @@ export const UseCoprateSignUp = (id: string) => {
     enabled: false,
     staleTime: 0,
     queryFn: async () => {
-      const response = await fetch(`/api/company/code/${id}`, {
+      const response = await fetch(`/api/company/code/${id.toUpperCase()}`, {
         method: "GET",
         credentials: "include",
         headers: {
