@@ -23,5 +23,15 @@ export const DashBoardItems: LMSNavData = {
         },
       ],
     },
+    {
+      title: "Company",
+      url: "/company",
+      items: [
+        {
+          title: "Create Company",
+          url: "/compnay",
+        },
+      ],
+    },
   ],
 };

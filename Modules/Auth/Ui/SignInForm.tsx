@@ -30,14 +30,15 @@ import {
 import { useState, useTransition } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Building2, Loader2Icon, User } from "lucide-react";
-import { UseAuthSignIn } from "../Api/ApiClient";
+import { UseAuthSignIn, UseCoprateSignUp } from "../Api/ApiClient";
 import { useRouter } from "next/navigation";
 
 const SignInForm = () => {
   const [corporateNumber, setCorporateNumber] = useState("");
   const [isLoading, startTransistion] = useTransition();
-  const router = useRouter();
+
   const { mutate } = UseAuthSignIn();
+  const router = useRouter();
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
     defaultValues: { email: "", password: "" },
@@ -50,7 +51,14 @@ const SignInForm = () => {
       });
     });
   };
-  const handleCorporateSignIn = () => console.log(corporateNumber);
+
+  const { data } = UseCoprateSignUp(corporateNumber);
+
+  const handleCorporateSignIn = () => {
+    if (data) {
+      router.push(`/sign-up/${data.id}`);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">

@@ -17,7 +17,8 @@ const AuthBaseObject = z.object({
     .string()
     .trim()
     .min(10, "Phone number should be at least 10 characters")
-    .regex(/^\d+$/, "Phone number must contain only digits"),
+    .regex(/^\d+$/, "Phone number must contain only digits")
+    .or(z.literal("")),
   dateOfBirth: z.string().refine((val) => {
     const date = new Date(val);
     return !isNaN(date.getTime()) && date < new Date();

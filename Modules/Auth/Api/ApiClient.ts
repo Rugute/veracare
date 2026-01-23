@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   SignInSchema,
   SignInSchemaType,
@@ -35,7 +35,7 @@ export const UseAuthSignIn = () => {
   });
 };
 
-interface signUpProps {
+interface SignUpProps {
   firstName: string;
   lastName: string;
   email: string;
@@ -43,16 +43,24 @@ interface signUpProps {
   confirmPassword: string;
   phoneNumber: string;
   dateOfBirth: Date;
+  corporateId?: string; // Make it optional
+}
+
+interface SignUpVariables {
+  formData: SignUpSchemaType;
+  corporateId?: string;
 }
 
 export const useAuthSignUp = () => {
   return useMutation({
-    mutationFn: async (formData: SignUpSchemaType) => {
+    mutationFn: async (variables: SignUpVariables) => {
+      const { formData, corporateId } = variables;
       const parsedData = SignUpSchema.parse(formData);
 
-      const values: signUpProps = {
+      const values: SignUpProps = {
         ...parsedData,
         dateOfBirth: new Date(parsedData.dateOfBirth),
+        corporateId: corporateId || "",
       };
 
       console.log(values);
@@ -67,7 +75,6 @@ export const useAuthSignUp = () => {
 
       const data = await response.json();
 
-      console.log(data.message);
       if (!response.ok) {
         throw new Error(data.error || "Failed to create account");
       }
@@ -75,9 +82,44 @@ export const useAuthSignUp = () => {
       return data;
     },
     onSuccess: (data) => toast.success(data.message || "Account created!"),
-
     onError: (error: Error) =>
       toast.error(error.message || "Failed to create account"),
+  });
+};
+
+interface coprate {
+  id: string;
+  uuid: string;
+  name: string;
+  status: string;
+  location: string;
+  email: string;
+  phone: string;
+}
+
+export const UseCoprateSignUp = (id: string) => {
+  return useQuery<coprate>({
+    queryKey: [`GET_COPRATE:${id}`],
+    enabled: !!id,
+    staleTime: 0,
+    queryFn: async () => {
+      const response = await fetch(`/api/company/code/${id}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || data.message || "Failed to get coprate details",
+        );
+      }
+      return data;
+    },
   });
 };
 
