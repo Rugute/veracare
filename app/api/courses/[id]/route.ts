@@ -2,6 +2,14 @@ import { NextRequest } from 'next/server';
 import { prisma } from "@/lib/prisma";
 import { writeFile } from "fs/promises";
 import path from "path";
+// Helper to generate slug from title
+function generateSlug(title: string) {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-");
+}
 
 export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: number }> }) {
   const { id } = await ctx.params;
@@ -21,14 +29,15 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
     const { id } = await ctx.params;
     const cid = parseInt(id, 10);
 
-    const formData = await req.formData();
-    const file: File | null = formData.get('logo') as File;
-    const name = formData.get('name') as string;
-    const address = formData.get('address') as string;
-    const location = formData.get('location') as string;
-    const phone = formData.get('phone') as string;
-    let logoPath = null;
+        const formData = await req.formData();
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string | null;
+    const published = formData.get("published") === "1" ? 1 : 0;
+    const category = formData.get("category") ? parseInt(formData.get("category") as string) : null;
+    const file = formData.get("file") as File | null;
 
+  let photoUrl: string | null = null;
+  
     if (file && file.name) {
 
       console.log("File name ndo hii " + file.name);
@@ -39,17 +48,19 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
       const filePath = path.join(uploadDir, fileName);
 
       await writeFile(filePath, buffer);
-      logoPath = `/uploads/${fileName}`;
+      photoUrl = `/uploads/${fileName}`;
     }
 
-    const updated = await prisma.company.update({
+    const updated = await prisma.course.update({
       where: { id: cid },
       data: {
-        name,
-        address,
-        location,
-        phone,
-        ...(logoPath && { logo: logoPath }),
+        title,
+        slug: generateSlug(title),
+        description,
+        published: published === 1,
+        photo: photoUrl,
+        categoryId: category,
+       
       },
     });
 
