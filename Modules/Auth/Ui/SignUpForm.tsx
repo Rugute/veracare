@@ -46,9 +46,12 @@ const SignUpFormCompact = () => {
 
   const handleSubmit = (data: SignUpSchemaType) => {
     startTransistion(() => {
-      mutate(data, {
-        onSuccess: () => router.push("/sign-in"),
-      });
+      mutate(
+        { formData: data },
+        {
+          onSuccess: () => router.push("/sign-in"),
+        },
+      );
     });
   };
 
