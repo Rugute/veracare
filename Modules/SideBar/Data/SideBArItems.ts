@@ -24,12 +24,48 @@ export const DashBoardItems: LMSNavData = {
       ],
     },
     {
-      title: "Company",
-      url: "/company",
+      title: "Settings",
+      url: "/settings",
       items: [
         {
-          title: "Create Company",
-          url: "/compnay",
+          title: "Company",
+          url: "/company",
+        },
+        {
+          title: "Users",
+          url: "/users",
+        },
+      ],
+    },
+     {
+      title: "Academics",
+      url: "/academics",
+      items: [
+        {
+          title: "Course Categories",
+          url: "/course-categories",
+        },
+        {
+          title: "Courses",
+          url: "/courses",
+        },
+         {
+          title: "Lessons",
+          url: "/lessons",
+        },
+      ],
+    },
+    {
+      title: "Enrollments",
+      url: "/enrollments",
+      items: [
+        {
+          title: "Enrolled Students",
+          url: "/enrolled-students",
+        },
+        {
+          title: "Billing Plans",
+          url: "/billing-plans",
         },
       ],
     },
