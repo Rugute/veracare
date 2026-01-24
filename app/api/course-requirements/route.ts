@@ -5,27 +5,33 @@ import { getCurrentUser } from "@/lib/auth";
 export async function POST(req: Request) {
   try {
 
-    //    const user = await getCurrentUser();
+//    const user = await getCurrentUser();
     const body = await req.json();
     const {
-      name,
+      courseId,
+      content,
+      mandatory
     } = body;
 
-    const category = await prisma.category.create({
+
+
+    const requirement = await prisma.requirement.create({
       data: {
-        name: name,
-        createdBy: 1,
+        course: { connect: { id: courseId } },
+        content: content,
+        mandatory: mandatory
       },
     });
 
-   /* await prisma.category.update({
-      where: { id: parseInt(category.id, 10) },
+    await prisma.requirement.update({
+      where: { id: parseInt(courseId, 10) },
       data: {
-        name: name,
+         content: content,
+        mandatory: mandatory
       },
-    });*/
+    });
 
-    return NextResponse.json(category, { status: 201 });
+    return NextResponse.json(requirement, { status: 201 });
 
   } catch {
     // console.error("Error creating product and variants:", error);
@@ -54,21 +60,21 @@ export async function GET(req: Request) {
       voided: 0,
       OR: search
         ? [
-          { name: { contains: search } },
+          { content: { contains: search } },
         ]
         : undefined,
     };
 
     const [items, total] = await Promise.all([
-      prisma.category.findMany({
-        where,
+      prisma.requirement.findMany({
+      where,
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-       // include: { course: true },
+        include: { course: true },
 
       }),
-      prisma.category.count({ where }),
+      prisma.requirement.count({ where }),
     ]);
     if (items.length === 0) {
       return NextResponse.json({ items: [], total: 0 }, { status: 200 });

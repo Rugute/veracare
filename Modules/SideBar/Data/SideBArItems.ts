@@ -53,6 +53,18 @@ export const DashBoardItems: LMSNavData = {
           title: "Lessons",
           url: "/lessons",
         },
+         {
+          title: "Questions Bank",
+          url: "/questions-bank",
+        },
+        {
+          title: "Instructors",
+          url: "/instructors",
+        },
+        { title: "Calendar", 
+          url: "/calendar" 
+        }
+        
       ],
     },
     {
