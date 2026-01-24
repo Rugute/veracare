@@ -115,10 +115,11 @@ const Header = () => {
                       <UserAvatar AvatarUrl="" size={48} />
                       <div className="flex-1 overflow-hidden">
                         <p className="text-sm font-semibold text-foreground truncate">
-                          Gideon Lelei
+                           {user.name}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
-                          leleigideon@gmail.com
+
+                          {user.email}
                         </p>
                         <div className="mt-1 flex items-center gap-2">
                           <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
