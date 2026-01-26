@@ -19,7 +19,7 @@ model User {
   cooprateAccount Int       @default(0)
   companyId       Int?
   company         Company?  @relation(fields: [companyId], references: [id])
-  courses  Course[]
+  courses         Course[]
 }
 
 model Company {
@@ -41,37 +41,39 @@ model Company {
 }
 
 model Category {
-  id      Int      @id @default(autoincrement())
-  name    String   @unique
-  courses Course[] 
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  courses   Course[]
   createdBy Int
+  voided    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Requirement {
   id        Int     @id @default(autoincrement())
-  content   String  // The requirement text
+  content   String // The requirement text
   courseId  Int
+  mandatory Boolean @default(false)
   course    Course  @relation(fields: [courseId], references: [id])
+  voided    Int     @default(0)
 }
 
 model Course {
-  id           Int       @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   title        String
-  slug         String?   @unique
+  slug         String?       @unique
   description  String?
-  published    Boolean   @default(false)
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
+  published    Boolean       @default(false)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime      @updatedAt
   deleted_at   DateTime?
   photo        String?
-  categoryId   Int?      // foreign key to Category
-  category     Category? @relation(fields: [categoryId], references: [id])
-  uuid         String    @default(uuid()) @unique
-  voided       Int       @default(0)
-  createdBy    User      @relation(fields: [createdById], references: [id])
+  categoryId   Int? // foreign key to Category
+  category     Category?     @relation(fields: [categoryId], references: [id])
+  uuid         String        @unique @default(uuid())
+  voided       Int           @default(0)
+  createdBy    User          @relation(fields: [createdById], references: [id])
   createdById  Int
   requirements Requirement[]
 }
-
