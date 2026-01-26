@@ -1,8 +1,7 @@
-import CreateCompanyForm from "@/Modules/Company/CreateCompanyForm";
-import React from "react";
+import CompanyPage from "@/Modules/Company/Ui/CompanyPage";
 
 const page = () => {
-  return <CreateCompanyForm />;
+  return <CompanyPage />;
 };
 
 export default page;

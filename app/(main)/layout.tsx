@@ -7,7 +7,7 @@ const layout = ({ children }: { children: ReactNode }) => {
   const user = getCurrentUser();
   return (
     <AuthContextProvided initialUser={user} initialAuth={!!user}>
-      <Header />
+      <Header showSearch={true} />
       {children}
     </AuthContextProvided>
   );

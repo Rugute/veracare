@@ -19,7 +19,7 @@ export const UseCreateCompany = () => {
       return data;
     },
 
-    onSuccess: (data) => toast.success(data.message || "Company created"),
+    onSuccess: () => toast.success("Company created"),
     onError: (e: Error) => toast.error(e.message || "Failed to create compnay"),
   });
 };

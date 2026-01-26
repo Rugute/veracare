@@ -40,7 +40,6 @@ interface SignUpProps {
   lastName: string;
   email: string;
   password: string;
-  confirmPassword: string;
   phoneNumber: string;
   dateOfBirth: Date;
   corporateId?: string; // Make it optional
@@ -126,7 +125,7 @@ export const UseCoprateSignUp = (id: string) => {
 export const UseAuthLogout = () => {
   return useMutation({
     mutationFn: async () => {
-      const response = await fetch("/auth/logout", {
+      const response = await fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });

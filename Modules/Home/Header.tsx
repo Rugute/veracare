@@ -15,12 +15,23 @@ import {
   SearchIcon,
   Bell,
   Settings,
+  Loader2Icon,
 } from "lucide-react";
 import { ModeToggle } from "../Themes/ModeToggle";
 import { useAuthContext } from "@/context/AuthContext";
+import { UseAuthLogout } from "../Auth/Api/ApiClient";
 
-const Header = () => {
+interface Props {
+  showSearch?: boolean;
+}
+
+const Header = ({ showSearch = true }: Props) => {
   const { isAuthenticated, user } = useAuthContext();
+
+  const { mutate, isPending } = UseAuthLogout();
+  const handleLogout = async () => {
+    mutate();
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -40,13 +51,15 @@ const Header = () => {
           </div>
 
           {/* Desktop Search */}
-          <div className="hidden md:block relative w-72 lg:w-96">
-            <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search for courses, topics, or instructors..."
-              className="pl-10 bg-background border-input focus-visible:ring-1 focus-visible:ring-primary"
-            />
-          </div>
+          {showSearch && (
+            <div className="hidden md:block relative w-72 lg:w-96">
+              <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search for courses, topics, or instructors..."
+                className="pl-10 bg-background border-input focus-visible:ring-1 focus-visible:ring-primary"
+              />
+            </div>
+          )}
         </div>
 
         {/* Right side - Navigation & Auth */}
@@ -85,7 +98,7 @@ const Header = () => {
               {/* User email - Desktop only */}
               <div className="hidden lg:flex flex-col items-end">
                 <span className="text-sm font-medium text-foreground">
-                  {user.name}
+                  {user.username}
                 </span>
                 <span className="text-xs text-muted-foreground">
                   {user.email}
@@ -115,10 +128,9 @@ const Header = () => {
                       <UserAvatar AvatarUrl="" size={48} />
                       <div className="flex-1 overflow-hidden">
                         <p className="text-sm font-semibold text-foreground truncate">
-                           {user.name}
+                          {user.name}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
-
                           {user.email}
                         </p>
                         <div className="mt-1 flex items-center gap-2">
@@ -147,10 +159,20 @@ const Header = () => {
                   <div className="p-2">
                     <Button
                       variant="outline"
-                      className="w-full justify-center gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
+                      className="w-full justify-center gap-2 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950 cursor-pointer"
+                      onClick={() => handleLogout()}
                     >
-                      <LogOutIcon className="h-4 w-4" />
-                      <span>Sign Out</span>
+                      {isPending ? (
+                        <>
+                          <Loader2Icon className="animate-spin h-4 w-5" />
+                          <span>Loading...</span>
+                        </>
+                      ) : (
+                        <>
+                          <LogOutIcon className="h-4 w-4" />
+                          <span>Sign Out</span>
+                        </>
+                      )}
                     </Button>
                   </div>
                 </DropdownMenuContent>

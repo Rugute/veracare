@@ -7,6 +7,8 @@ import { promises as fs } from "fs";
 
 export async function POST(req: Request) {
   const formData = await req.formData();
+
+  console.log(formData);
   const code = formData.get("code") as string;
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
@@ -46,7 +48,7 @@ export async function POST(req: Request) {
       logo: fileUrl,
       createdBy: user.id,
       uuid: uuidv4(),
-      voided:0
+      voided: 0,
     },
   });
 
@@ -60,7 +62,7 @@ export async function GET(req: Request) {
   if (!user) {
     return NextResponse.json(
       { message: "Unauthorized or user not found" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -92,6 +94,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ items, total }, { status: 200 });
   } catch (err) {
     console.error("Error fetching companies:", err);
-    return NextResponse.json({ message: "Failed to load companies" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to load companies" },
+      { status: 500 },
+    );
   }
 }

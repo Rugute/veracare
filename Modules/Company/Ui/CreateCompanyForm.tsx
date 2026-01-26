@@ -1,10 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import {
-  CorporateProfileInputType,
-  CorporateProfileSchema,
-} from "./Validation/Schema";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -34,20 +31,27 @@ import {
   FileText,
   UploadCloud,
   X,
+  ArrowLeftCircle,
 } from "lucide-react";
 import { useTransition } from "react";
-import { UseCreateCompany } from "./Api/ApiClient";
+import { UseCreateCompany } from "../Api/ApiClient";
+import {
+  CorporateProfileInputType,
+  CorporateProfileSchema,
+} from "../Validation/Schema";
+import { useRouter } from "next/navigation";
 
 const CreateCompanyForm = () => {
   const [isPending, startTransistion] = useTransition();
   const { mutate } = UseCreateCompany();
+  const router = useRouter();
 
   const form = useForm<CorporateProfileInputType>({
     resolver: zodResolver(CorporateProfileSchema),
     defaultValues: {
       name: "",
       email: "",
-      license: "",
+      code: "",
       phone: "",
       location: "",
       address: "",
@@ -61,7 +65,7 @@ const CreateCompanyForm = () => {
 
     formData.append("name", data.name);
     formData.append("email", data.email);
-    formData.append("license", data.license);
+    formData.append("code", data.code);
     formData.append("phone", data.phone);
     formData.append("location", data.location);
     formData.append("address", data.address);
@@ -72,7 +76,9 @@ const CreateCompanyForm = () => {
     }
 
     startTransistion(() => {
-      mutate(formData);
+      mutate(formData, {
+        onSuccess: () => router.push("/company"),
+      });
     });
   };
 
@@ -85,6 +91,15 @@ const CreateCompanyForm = () => {
           </div>
           <CardTitle className="text-3xl font-bold tracking-tight">
             Create Company Profile
+            <div>
+              <Button
+                variant={"ghost"}
+                onClick={() => router.back()}
+                className="cursor-pointer"
+              >
+                <ArrowLeftCircle /> Back
+              </Button>
+            </div>
           </CardTitle>
           <CardDescription className="text-base">
             Register your organization to get started
@@ -126,12 +141,12 @@ const CreateCompanyForm = () => {
 
                 <FormField
                   control={form.control}
-                  name="license"
+                  name="code"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">
                         <FileText className="h-4 w-4 text-muted-foreground" />
-                        License Number
+                        Company Code
                       </FormLabel>
                       <FormControl>
                         <Input

@@ -11,7 +11,7 @@ const ACCEPTED_IMAGE_TYPES = [
 export const CorporateProfileSchema = z.object({
   name: z.string().min(2, "Company name is required"),
   email: z.string().email("Invalid email address"),
-  license: z.string().min(1, "License number is required"),
+  code: z.string().min(1, "License number is required"),
   phone: z
     .string()
     .trim()
