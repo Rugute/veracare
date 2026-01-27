@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import bcrypt from "bcryptjs";
+import { ro } from "date-fns/locale";
 
 export async function POST(req: Request) {
   try {
@@ -59,6 +60,7 @@ export async function GET(req: Request) {
 
     const where = {
       voided: 0,
+      role: "instructor",
       OR: search
         ? [
           { firstName: { contains: search } },
@@ -75,7 +77,7 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-        include: { role: true },
+        // include: { course: true },
 
       }),
       prisma.user.count({ where }),
