@@ -76,6 +76,11 @@ export const DashBoardItems: LMSNavData = {
            icon: UserCog,
         },
         {
+          title: "Events",
+          url: "/events",
+          icon: HelpCircle,
+        },
+        {
           title: "Calendar",
           url: "/calendar",
           icon: HelpCircle,
