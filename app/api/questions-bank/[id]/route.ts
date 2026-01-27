@@ -28,7 +28,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
       mandatory
     } = body;
 
-    const updated = await prisma.requirement.update({
+    const updated = await prisma.questions.update({
       where: { id: cid },
       data: {
         course: { connect: { id: courseId } },
@@ -49,7 +49,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   try {
     const cid = parseInt(id, 10);
-    await prisma.requirement.update({
+    await prisma.questions.update({
       where: { id: cid },
       data: { voided: 1 },
     });
@@ -71,15 +71,15 @@ export async function GET(
       return new Response("Invalid requirement id", { status: 400 });
     }
 
-    const requirement = await prisma.requirement.findUnique({
+    const questions = await prisma.questions.findUnique({
       where: { id: cid },
     });
 
-    if (!requirement) {
-      return new Response("Requirement not found", { status: 404 });
+    if (!questions) {
+      return new Response("Questions not found", { status: 404 });
     }
 
-    return Response.json(requirement);
+    return Response.json(questions);
   } catch (err) {
     console.error("GET error:", err);
     return new Response("Internal Server Error", { status: 500 });

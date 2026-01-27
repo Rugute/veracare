@@ -68,15 +68,15 @@ export async function GET(
       return new Response("Invalid requirement id", { status: 400 });
     }
 
-    const requirement = await prisma.requirement.findUnique({
+    const categories = await prisma.category.findUnique({
       where: { id: cid },
     });
 
-    if (!requirement) {
-      return new Response("Requirement not found", { status: 404 });
+    if (!categories) {
+      return new Response("Category not found", { status: 404 });
     }
 
-    return Response.json(requirement);
+    return Response.json(categories);
   } catch (err) {
     console.error("GET error:", err);
     return new Response("Internal Server Error", { status: 500 });
