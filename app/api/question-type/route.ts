@@ -8,30 +8,26 @@ export async function POST(req: Request) {
     //    const user = await getCurrentUser();
     const body = await req.json();
     const {
-      questionTypeId,
-      courseId,
-      question,
-      lessonId
+      name,
+      description,
     } = body;
 
-    const category = await prisma.questions.create({
+    const questionType = await prisma.questionType.create({
       data: {
+        name: name,
+        description: description,
         voided: 0,
-        course: { connect: { id: courseId } },
-        questionType: { connect: { id: questionTypeId } },
-        lesson: { connect: { id: lessonId } },
-        question: question,
       },
     });
 
-    /* await prisma.category.update({
-       where: { id: parseInt(category.id, 10) },
-       data: {
-         name: name,
-       },
-     });*/
+   /* await prisma.category.update({
+      where: { id: parseInt(category.id, 10) },
+      data: {
+        name: name,
+      },
+    });*/
 
-    return NextResponse.json(category, { status: 201 });
+    return NextResponse.json(questionType, { status: 201 });
 
   } catch {
     // console.error("Error creating product and variants:", error);
@@ -45,12 +41,11 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    /*  const user = await getCurrentUser();
-  
-      if (!user) {
-        return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
-      }
-      */
+   // const user = await getCurrentUser();
+
+   /* if (!user) {
+      return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
+    }*/
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
@@ -61,21 +56,21 @@ export async function GET(req: Request) {
       voided: 0,
       OR: search
         ? [
-          { question: { contains: search } },
+          { name: { contains: search } },
+          { description: { contains: search } },
         ]
         : undefined,
     };
 
     const [items, total] = await Promise.all([
-      prisma.questions.findMany({
+      prisma.questionType.findMany({
         where,
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-        // include: { course: true },
-
+       // include: { course: true },
       }),
-      prisma.questions.count({ where }),
+      prisma.questionType.count({ where }),
     ]);
     if (items.length === 0) {
       return NextResponse.json({ items: [], total: 0 }, { status: 200 });
@@ -84,7 +79,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ items, total }, { status: 200 });
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error("Question GET error:", err);
+      console.error("requirements GET error:", err);
       return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     } else {
       return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });

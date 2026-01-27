@@ -27,7 +27,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
       description,
     } = body;
 
-    const updated = await prisma.category.update({
+    const updated = await prisma.questionType.update({
       where: { id: cid },
       data: {
         name: name,
@@ -46,7 +46,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   try {
     const cid = parseInt(id, 10);
-    await prisma.category.update({
+    await prisma.questionType.update({
       where: { id: cid },
       data: { voided: 1 },
     });
@@ -62,18 +62,18 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const cid = Number(params.id); // convert here
+    const cid = Number(params.id); 
 
     if (isNaN(cid)) {
       return new Response("Invalid requirement id", { status: 400 });
     }
 
-    const categories = await prisma.category.findUnique({
+    const categories = await prisma.questionType.findUnique({
       where: { id: cid },
     });
 
     if (!categories) {
-      return new Response("Category not found", { status: 404 });
+      return new Response("QuestionType not found", { status: 404 });
     }
 
     return Response.json(categories);

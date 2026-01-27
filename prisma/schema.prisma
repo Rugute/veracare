@@ -123,8 +123,7 @@ model QuestionType {
 }
 
 model Questions {
-  id Int @id @default(autoincrement())
-
+  id             Int           @id @default(autoincrement())
   questionTypeId Int?
   questionType   QuestionType? @relation(fields: [questionTypeId], references: [id])
   question       String?
