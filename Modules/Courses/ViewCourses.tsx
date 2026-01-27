@@ -38,6 +38,7 @@ const ViewCourses = () => {
   const [entries, setEntries] = useState(10);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
+  const [delId, setDelId] = useState("");
 
   const { data, isLoading } = UseGetCourses({
     page,

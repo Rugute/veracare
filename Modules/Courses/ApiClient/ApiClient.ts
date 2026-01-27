@@ -41,6 +41,40 @@ export const UseCreateCourse = () => {
   });
 };
 
+export const UseDelteCourse = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/courses${id}`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+
+      if (response.status !== 204) {
+        throw new Error("Failed to delete Course");
+      }
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["ALL_COURSES"],
+      });
+      Sweetalert({
+        icon: "success",
+        message: "Course DEleted",
+        title: "Success!",
+      });
+    },
+    onError: (e: Error) => {
+      Sweetalert({
+        icon: "error",
+        message: e.message,
+        title: "An error has occurred",
+      });
+    },
+  });
+};
+
 interface GetCoursesResponse {
   items: {
     id: string;

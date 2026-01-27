@@ -43,6 +43,36 @@ export const UseCreateCourseCategory = () => {
       }),
   });
 };
+export const UseDeleteCourseCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/category/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+      if (response.status !== 204) {
+        throw new Error("Failed to Delete category");
+      }
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["COURSE_CATEGORIES"],
+      });
+      Sweetalert({
+        icon: "success",
+        message: "Course Category Deleted",
+        title: "Success!",
+      });
+    },
+    onError: (e: Error) =>
+      Sweetalert({
+        icon: "error",
+        message: e.message || "Failed to Delete Category",
+        title: "An error has occurred",
+      }),
+  });
+};
 
 interface CourseCategoryResponse {
   items: {

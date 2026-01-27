@@ -25,10 +25,17 @@ import {
 } from "@/components/ui/table";
 import { EntriesPerPage } from "@/Modules/Utils/EntriesPerPage";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { Plus, MoreHorizontal, Pen, Trash, Eye } from "lucide-react";
+import {
+  Plus,
+  MoreHorizontal,
+  Pen,
+  Trash,
+  Eye,
+  Loader2Icon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { UseGetCompnaies } from "../Api/ApiClient";
+import { UseDeleteCompany, UseGetCompnaies } from "../Api/ApiClient";
 import UserAvatar from "@/Modules/Utils/UserAvatar";
 import PagePagination from "@/Modules/Utils/Pagination";
 import PageLoader from "@/Modules/Utils/PageLoader";
@@ -37,6 +44,7 @@ const CompanyPage = () => {
   const [entries, setEntries] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [delId, setDelId] = useState("");
   const router = useRouter();
 
   const { data, isLoading } = UseGetCompnaies({
@@ -44,10 +52,22 @@ const CompanyPage = () => {
     page,
     search,
   });
+  const { mutateAsync } = UseDeleteCompany();
 
   const Companies = data?.items || [];
   const totalItems = data?.total || 0;
   const totalPages = Math.ceil(totalItems / entries);
+
+  const handleDeleteCompany = async (id: string) => {
+    try {
+      setDelId(id);
+      await mutateAsync(id);
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setDelId("");
+    }
+  };
 
   if (isLoading) return <PageLoader />;
 
@@ -130,32 +150,44 @@ const CompanyPage = () => {
                       {company.status ? "Active" : "Inactive"}
                     </TableCell>
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
+                      {delId === company.id ? (
+                        <Loader2Icon className="animate-spin h-4 w-4" />
+                      ) : (
+                        <>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger
+                              asChild
+                              disabled={delId === company.id}
+                            >
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
 
-                        <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem className="flex items-center gap-2">
-                            <Pen className="h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
+                            <DropdownMenuContent align="end" className="w-40">
+                              <DropdownMenuItem className="flex items-center gap-2">
+                                <Pen className="h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
 
-                          <DropdownMenuItem className="flex items-center gap-2">
-                            <Eye className="h-4 w-4" />
-                            View
-                          </DropdownMenuItem>
+                              <DropdownMenuItem className="flex items-center gap-2">
+                                <Eye className="h-4 w-4" />
+                                View
+                              </DropdownMenuItem>
 
-                          <DropdownMenuSeparator />
+                              <DropdownMenuSeparator />
 
-                          <DropdownMenuItem className="flex items-center gap-2">
-                            <Trash className="h-4 w-4 text-red-600" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                              <DropdownMenuItem
+                                className="flex items-center gap-2"
+                                onClick={() => handleDeleteCompany(company.id)}
+                              >
+                                <Trash className="h-4 w-4 text-red-600" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -174,7 +206,6 @@ const CompanyPage = () => {
                 setPage(1);
               }}
             />
-
             <span className="hidden sm:inline-block">
               Showing{" "}
               <span className="font-medium text-foreground">

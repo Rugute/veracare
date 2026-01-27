@@ -26,9 +26,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EntriesPerPage } from "@/Modules/Utils/EntriesPerPage";
-import { Eye, MoreHorizontal, Pen, Trash, Plus } from "lucide-react";
+import {
+  Eye,
+  MoreHorizontal,
+  Pen,
+  Trash,
+  Plus,
+  Loader2Icon,
+} from "lucide-react";
 import { useState } from "react";
-import { UseGetCourseCategory } from "./ApiClient/ApiClient";
+import {
+  UseDeleteCourseCategory,
+  UseGetCourseCategory,
+} from "./ApiClient/ApiClient";
 import PageLoader from "@/Modules/Utils/PageLoader";
 import { useDebounce } from "use-debounce";
 import PagePagination from "@/Modules/Utils/Pagination";
@@ -39,6 +49,7 @@ const ViewCourseCategories = () => {
   const [entries, setEntries] = useState(10);
   const [page, setPage] = useState(1);
   const [debouncedSearch] = useDebounce(searchQuery, 300);
+  const [delId, setDelId] = useState("");
   const router = useRouter();
 
   const { data, isLoading } = UseGetCourseCategory({
@@ -46,11 +57,23 @@ const ViewCourseCategories = () => {
     pageSize: entries,
     search: debouncedSearch,
   });
+  const { mutateAsync } = UseDeleteCourseCategory();
 
   const categories = data?.items || [];
   const totalItems = data?.total || 0;
 
   const totalPages = Math.ceil(totalItems / entries);
+
+  const handleDelete = async (id: string) => {
+    try {
+      setDelId(id);
+      await mutateAsync(id);
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setDelId("");
+    }
+  };
 
   if (isLoading) {
     return <PageLoader />;
@@ -129,39 +152,49 @@ const ViewCourseCategories = () => {
                     </TableCell>
 
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
+                      {delId === category.id ? (
+                        <Loader2Icon className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <>
+                          {" "}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                disabled={delId === category.id}
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
 
-                        <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
+                            <DropdownMenuContent align="end" className="w-40">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
 
-                          <DropdownMenuItem>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View
-                          </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Eye className="mr-2 h-4 w-4" />
+                                View
+                              </DropdownMenuItem>
 
-                          <DropdownMenuItem>
-                            <Pen className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Pen className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
 
-                          <DropdownMenuSeparator />
+                              <DropdownMenuSeparator />
 
-                          <DropdownMenuItem>
-                            <Trash className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(category.id)}
+                              >
+                                <Trash className="mr-2 h-4 w-4 text-red-600" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
