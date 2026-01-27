@@ -43,8 +43,9 @@ import { useRouter } from "next/navigation";
 
 const CreateCompanyForm = () => {
   const [isPending, startTransistion] = useTransition();
-  const { mutate } = UseCreateCompany();
   const router = useRouter();
+
+  const { mutate } = UseCreateCompany();
 
   const form = useForm<CorporateProfileInputType>({
     resolver: zodResolver(CorporateProfileSchema),

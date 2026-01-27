@@ -26,45 +26,40 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EntriesPerPage } from "@/Modules/Utils/EntriesPerPage";
-import { Eye, MoreHorizontal, Pen, Trash } from "lucide-react";
-import { useMemo, useState } from "react";
-
-const Categories = [
-  {
-    name: "Therapy",
-    description:
-      "Courses focused on therapeutic practices, mental health support, and rehabilitation techniques.",
-  },
-  {
-    name: "Software Development",
-    description:
-      "Programming, system design, and modern software engineering practices.",
-  },
-  {
-    name: "Data Science",
-    description:
-      "Data analysis, machine learning, statistics, and data-driven decision making.",
-  },
-  {
-    name: "Business & Management",
-    description:
-      "Leadership, entrepreneurship, operations, and organizational strategy.",
-  },
-  {
-    name: "Creative Arts",
-    description:
-      "Design, visual arts, creative thinking, and digital media production.",
-  },
-];
+import { Eye, MoreHorizontal, Pen, Trash, Plus } from "lucide-react";
+import { useState } from "react";
+import { UseGetCourseCategory } from "./ApiClient/ApiClient";
+import PageLoader from "@/Modules/Utils/PageLoader";
+import { useDebounce } from "use-debounce";
+import PagePagination from "@/Modules/Utils/Pagination";
+import { useRouter } from "next/navigation";
 
 const ViewCourseCategories = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [entries, setEntries] = useState(10);
+  const [page, setPage] = useState(1);
+  const [debouncedSearch] = useDebounce(searchQuery, 300);
+  const router = useRouter();
+
+  const { data, isLoading } = UseGetCourseCategory({
+    page: page, // Using current page
+    pageSize: entries,
+    search: debouncedSearch,
+  });
+
+  const categories = data?.items || [];
+  const totalItems = data?.total || 0;
+
+  const totalPages = Math.ceil(totalItems / entries);
+
+  if (isLoading) {
+    return <PageLoader />;
+  }
 
   return (
     <Card className="border shadow-sm">
       <CardHeader className="space-y-4">
-        <div className="flex flex-row gap-3 sm:flex-col sm:items-start sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0 space-y-1">
             <CardTitle className="text-xl font-semibold tracking-tight">
               Course Categories
@@ -74,13 +69,20 @@ const ViewCourseCategories = () => {
             </p>
           </div>
 
-          <div className="w-full sm:w-[320px] sm:shrink-0">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Input
               placeholder="Search categories..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9"
+              className="h-9 sm:w-64"
             />
+            <Button
+              className="gap-2 h-9 cursor-pointer"
+              onClick={() => router.push("/course-categories/add")}
+            >
+              <Plus className="h-4 w-4" />
+              Create
+            </Button>
           </div>
         </div>
       </CardHeader>
@@ -90,27 +92,32 @@ const ViewCourseCategories = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-15">#</TableHead>
-                <TableHead className="min-w-45">Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead className="w-22.5 text-right">Actions</TableHead>
+                <TableHead className="w-16">#</TableHead>
+                <TableHead className="min-w-48">Name</TableHead>
+                <TableHead className="min-w-64">Description</TableHead>
+                <TableHead className="w-24 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {Categories.length === 0 ? (
+              {categories.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4} className="py-10">
-                    <div className="text-center text-sm text-muted-foreground">
-                      No categories found
+                    <div className="flex flex-col items-center gap-2 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        No categories found
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Try a different search or create a new category
+                      </p>
                     </div>
                   </TableCell>
                 </TableRow>
               ) : (
-                Categories.map((category, index) => (
-                  <TableRow key={index}>
+                categories.map((category, index) => (
+                  <TableRow key={category.id}>
                     <TableCell className="text-muted-foreground">
-                      {index + 1}
+                      {(page - 1) * entries + index + 1}
                     </TableCell>
 
                     <TableCell className="font-medium">
@@ -118,7 +125,7 @@ const ViewCourseCategories = () => {
                     </TableCell>
 
                     <TableCell className="text-muted-foreground leading-relaxed">
-                      {category.description}
+                      {category.description || "-"}
                     </TableCell>
 
                     <TableCell className="text-right">
@@ -164,19 +171,33 @@ const ViewCourseCategories = () => {
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted-foreground">
-          Showing{" "}
-          <span className="font-medium text-foreground">
-            {Categories.length}
-          </span>{" "}
-          of{" "}
-          <span className="font-medium text-foreground">
-            {Categories.length}
-          </span>
-        </p>
+      <CardFooter className="flex flex-col gap-3 border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <EntriesPerPage
+            value={entries}
+            onChange={(newValue) => {
+              setEntries(newValue);
+              setPage(1);
+            }}
+          />
 
-        <EntriesPerPage value={entries} onChange={setEntries} />
+          <span className="hidden sm:inline-block">
+            Showing{" "}
+            <span className="font-medium text-foreground">
+              {Math.min(entries, totalItems)}
+            </span>{" "}
+            of <span className="font-medium text-foreground">{totalItems}</span>
+          </span>
+        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-end">
+            <PagePagination
+              page={page}
+              onPageChange={setPage}
+              pages={totalPages}
+            />
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

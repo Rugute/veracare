@@ -149,7 +149,7 @@ const ViewAllLessons = () => {
 
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <Play className="h-4 w-4 flex-shrink-0" />
+                            <Play className="h-4 w-4 shrink-0" />
                             <span className="truncate text-sm">
                               {lesson.videoUrl}
                             </span>

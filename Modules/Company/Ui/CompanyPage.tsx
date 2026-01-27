@@ -27,66 +27,29 @@ import { EntriesPerPage } from "@/Modules/Utils/EntriesPerPage";
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Plus, MoreHorizontal, Pen, Trash, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
-
-type Company = {
-  id: string;
-  logo: string;
-  accountNumber: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  contactPerson: string;
-  isActive: boolean;
-};
-
-const DUMMY_COMPANIES: Company[] = [
-  {
-    id: "1",
-    logo: "—",
-    accountNumber: "ACC-001",
-    name: "Alpha Logistics Ltd",
-    email: "info@alpha.com",
-    phone: "+254700000001",
-    address: "Nairobi",
-    contactPerson: "John Mwangi",
-    isActive: true,
-  },
-  {
-    id: "2",
-    logo: "—",
-    accountNumber: "ACC-002",
-    name: "Beta Solutions",
-    email: "contact@beta.co.ke",
-    phone: "+254700000002",
-    address: "Mombasa",
-    contactPerson: "Mary Wanjiku",
-    isActive: false,
-  },
-  {
-    id: "3",
-    logo: "—",
-    accountNumber: "ACC-003",
-    name: "Gamma Enterprises",
-    email: "hello@gamma.io",
-    phone: "+254700000003",
-    address: "Kisumu",
-    contactPerson: "Peter Otieno",
-    isActive: true,
-  },
-];
+import { useState } from "react";
+import { UseGetCompnaies } from "../Api/ApiClient";
+import UserAvatar from "@/Modules/Utils/UserAvatar";
+import PagePagination from "@/Modules/Utils/Pagination";
+import PageLoader from "@/Modules/Utils/PageLoader";
 
 const CompanyPage = () => {
   const [entries, setEntries] = useState(10);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const router = useRouter();
 
-  const filteredCompanies = useMemo(() => {
-    return DUMMY_COMPANIES.filter((company) =>
-      company.name.toLowerCase().includes(search.toLowerCase()),
-    );
-  }, [search]);
+  const { data, isLoading } = UseGetCompnaies({
+    pageSize: entries,
+    page,
+    search,
+  });
+
+  const Companies = data?.items || [];
+  const totalItems = data?.total || 0;
+  const totalPages = Math.ceil(totalItems / entries);
+
+  if (isLoading) return <PageLoader />;
 
   return (
     <div className="p-4">
@@ -139,7 +102,7 @@ const CompanyPage = () => {
             </TableHeader>
 
             <TableBody>
-              {filteredCompanies.length === 0 ? (
+              {Companies.length === 0 ? (
                 <TableRow>
                   <TableCell
                     colSpan={10}
@@ -149,20 +112,22 @@ const CompanyPage = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                filteredCompanies.slice(0, entries).map((company, idx) => (
+                Companies.slice(0, entries).map((company, idx) => (
                   <TableRow key={company.id}>
                     <TableCell>{idx + 1}</TableCell>
-                    <TableCell>{company.logo}</TableCell>
-                    <TableCell>{company.accountNumber}</TableCell>
+                    <TableCell>
+                      <UserAvatar AvatarUrl={company.logo} />
+                    </TableCell>
+                    <TableCell>{company.code}</TableCell>
                     <TableCell className="font-medium">
                       {company.name}
                     </TableCell>
                     <TableCell>{company.email}</TableCell>
                     <TableCell>{company.phone}</TableCell>
                     <TableCell>{company.address}</TableCell>
-                    <TableCell>{company.contactPerson}</TableCell>
+                    <TableCell>{company.phone}</TableCell>
                     <TableCell>
-                      {company.isActive ? "Active" : "Inactive"}
+                      {company.status ? "Active" : "Inactive"}
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
@@ -200,13 +165,34 @@ const CompanyPage = () => {
         </CardContent>
 
         {/* Footer */}
-        <CardFooter className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            Showing {Math.min(entries, filteredCompanies.length)} of{" "}
-            {filteredCompanies.length} entries
-          </p>
+        <CardFooter className="flex flex-col gap-3 border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+            <EntriesPerPage
+              value={entries}
+              onChange={(newValue) => {
+                setEntries(newValue);
+                setPage(1);
+              }}
+            />
 
-          <EntriesPerPage value={entries} onChange={setEntries} />
+            <span className="hidden sm:inline-block">
+              Showing{" "}
+              <span className="font-medium text-foreground">
+                {Math.min(entries, totalItems)}
+              </span>{" "}
+              of{" "}
+              <span className="font-medium text-foreground">{totalItems}</span>
+            </span>
+          </div>
+          {totalPages > 1 && (
+            <div className="flex justify-end">
+              <PagePagination
+                page={page}
+                onPageChange={setPage}
+                pages={totalPages}
+              />
+            </div>
+          )}
         </CardFooter>
       </Card>
     </div>

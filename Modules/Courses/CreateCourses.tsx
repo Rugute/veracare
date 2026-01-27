@@ -5,11 +5,12 @@ import { useForm } from "react-hook-form";
 import { CreateCourseSchema, CreateCourseSchemaType } from "./Validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,9 +25,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { UseCreateCourse } from "./ApiClient/ApiClient";
+import { useTransition } from "react";
 
 const CreateCourses = () => {
   const router = useRouter();
+  const { mutateAsync } = UseCreateCourse();
+  const [isPending, startTransistion] = useTransition();
   const form = useForm<CreateCourseSchemaType>({
     resolver: zodResolver(CreateCourseSchema),
     defaultValues: {
@@ -37,12 +42,36 @@ const CreateCourses = () => {
       published: "",
       requirements: "",
       title: "",
+      file: undefined,
     },
   });
 
   const handleSubmit = async (data: CreateCourseSchemaType) => {
-    console.log(data);
-    router.push("/courses");
+    const formData = new FormData();
+
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("published", data.published);
+    formData.append("category", data.category);
+    formData.append("instructor", data.instructor);
+    formData.append("price", String(data.price));
+    formData.append("requirements", data.requirements);
+
+    if (data.file) {
+      formData.append("file", data.file);
+    }
+
+    startTransistion(async () => {
+      try {
+        await mutateAsync(formData, {
+          onSuccess: () => {
+            router.push("/courses");
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    });
   };
 
   return (
@@ -142,9 +171,9 @@ const CreateCourses = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {["yes", "NO"].map((i, idx) => (
+                        {["0", "1"].map((i, idx) => (
                           <SelectItem key={idx} value={i}>
-                            {i.toUpperCase()}
+                            {i === "0" ? "YES" : "NO"}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -214,7 +243,32 @@ const CreateCourses = () => {
                 </FormItem>
               )}
             />
-
+            <FormField
+              name="file"
+              control={form.control}
+              render={({ field: { value, onChange, ...fieldProps } }) => (
+                <FormItem className="md:col-span-2">
+                  <FormLabel className="font-medium">Course Document</FormLabel>
+                  <FormControl>
+                    <div className="space-y-2">
+                      <Input
+                        {...fieldProps}
+                        accept=".pdf,.ppt,.docx"
+                        type="file"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          onChange(file || null);
+                        }}
+                      />
+                      <FormDescription className="text-xs">
+                        Upload Document (PDF, Word, PPT) - Max 10MB
+                      </FormDescription>
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-sm" />
+                </FormItem>
+              )}
+            />
             <div className="flex items-center justify-end gap-3 pt-4">
               <Button
                 type="button"
@@ -224,8 +278,12 @@ const CreateCourses = () => {
               >
                 Cancel
               </Button>
-              <Button type="submit" className="h-10 px-6">
-                Save Course
+              <Button type="submit" className="h-10 px-6" disabled={isPending}>
+                {isPending ? (
+                  <Loader2Icon className="h-4 w-4 animate-spin" />
+                ) : (
+                  " Save Course"
+                )}
               </Button>
             </div>
           </form>

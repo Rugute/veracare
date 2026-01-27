@@ -39,15 +39,64 @@ const Header = ({ showSearch = true }: Props) => {
         {/* Left side - Logo and Search */}
         <div className="flex items-center gap-4 md:gap-8">
           {/* Logo */}
+          {/* Logo */}
           <div className="flex items-center">
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold tracking-tight text-foreground">
-                Vera
-                <span className="bg-blue-500 bg-clip-text text-transparent">
-                  Care
-                </span>
-              </h1>
-            </div>
+            <button
+              type="button"
+              // onClick={() => router.push("/")}
+              className="group flex items-center gap-3 text-left"
+              aria-label="Go to homepage"
+            >
+              {/* Icon (simple medical mark) */}
+              <div className="flex h-9 w-9 items-center justify-center rounded-md border">
+                <svg
+                  viewBox="0 0 48 48"
+                  className="h-6 w-6"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  {/* bag outline */}
+                  <path
+                    d="M14 16.5v-2.2c0-2.6 2.1-4.8 4.8-4.8h10.4c2.6 0 4.8 2.1 4.8 4.8v2.2"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M12 16.5h24c2.2 0 4 1.8 4 4v16c0 2.2-1.8 4-4 4H12c-2.2 0-4-1.8-4-4v-16c0-2.2 1.8-4 4-4Z"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinejoin="round"
+                  />
+
+                  {/* small cross */}
+                  <path
+                    d="M24 22v10M19 27h10"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                  />
+
+                  {/* little “stethoscope-ish” curve */}
+                  <path
+                    d="M33.5 24.5c1.8 0 3 1.4 3 3.1 0 1.9-1.6 3.4-3.6 3.4h-1.4"
+                    stroke="currentColor"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+
+              {/* Text */}
+              <div className="min-w-0 leading-tight">
+                <div className="truncate text-base font-semibold tracking-tight text-foreground sm:text-lg">
+                  Veracare Health Academy LLC e-Learning Platform
+                </div>
+                <div className="hidden truncate text-xs text-muted-foreground sm:block">
+                  Learn with Purpose. Serve with Heart.
+                </div>
+              </div>
+            </button>
           </div>
 
           {/* Desktop Search */}

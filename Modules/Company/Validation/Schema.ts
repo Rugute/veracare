@@ -1,12 +1,7 @@
 import { z } from "zod";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "application/pdf",
-];
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png"];
 
 export const CorporateProfileSchema = z.object({
   name: z.string().min(2, "Company name is required"),

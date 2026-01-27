@@ -29,41 +29,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const Courses = [
-  {
-    title: "Introduction to Therapy Practices",
-    category: "Therapy",
-    description:
-      "Foundational course covering core therapeutic approaches and client interaction techniques.",
-    requirements: "Basic understanding of psychology or healthcare",
-    price: 12000,
-    published: true,
-  },
-  {
-    title: "Full-Stack Web Development",
-    category: "Software Development",
-    description:
-      "Learn modern frontend and backend development using industry-standard tools and frameworks.",
-    requirements: "Basic computer literacy",
-    price: 18000,
-    published: true,
-  },
-  {
-    title: "Applied Data Science",
-    category: "Data Science",
-    description:
-      "Hands-on course focused on data analysis, visualization, and introductory machine learning.",
-    requirements: "Basic statistics and Python knowledge",
-    price: 15000,
-    published: false,
-  },
-];
+import { UseGetCourses } from "./ApiClient/ApiClient";
+import PageLoader from "../Utils/PageLoader";
+import PagePagination from "../Utils/Pagination";
 
 const ViewCourses = () => {
   const router = useRouter();
   const [entries, setEntries] = useState(10);
+  const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
+
+  const { data, isLoading } = UseGetCourses({
+    page,
+    pageSize: entries,
+    search: query,
+  });
+
+  const courses = data?.items || [];
+  const totalItems = data?.total || 0;
+  const totalPages = Math.ceil(totalItems / entries);
+
+  if (isLoading) return <PageLoader />;
 
   return (
     <Card className="border shadow-sm">
@@ -88,6 +74,7 @@ const ViewCourses = () => {
             <Button
               className="gap-2 h-9"
               onClick={() => router.push("/courses/add")}
+              type="button"
             >
               <Plus className="h-4 w-4" />
               Create Course
@@ -97,111 +84,157 @@ const ViewCourses = () => {
       </CardHeader>
 
       <CardContent className="p-0">
-        <div className="w-full overflow-x-auto">
-          <Table>
+        {/* Hard stop: do NOT let the table push the layout */}
+        <div className="w-full max-w-full overflow-x-auto">
+          <Table className="table-fixed">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12">#</TableHead>
-                <TableHead className="min-w-56">Course Title</TableHead>
-                <TableHead className="min-w-32">Category</TableHead>
-                <TableHead className="min-w-72 max-w-96">Description</TableHead>
-                <TableHead className="min-w-56 max-w-80">
-                  Requirements
-                </TableHead>
-                <TableHead className="min-w-28">Price</TableHead>
-                <TableHead className="min-w-32">Published</TableHead>
-                <TableHead className="w-24 text-right">Actions</TableHead>
+
+                <TableHead className="w-60">Course Title</TableHead>
+                <TableHead className="w-35">Category</TableHead>
+
+                {/* fixed widths so text can't expand the layout */}
+                <TableHead className="w-[320px]">Description</TableHead>
+                <TableHead className="w-65">Requirements</TableHead>
+
+                <TableHead className="w-30">Price</TableHead>
+                <TableHead className="w-30">Published</TableHead>
+                <TableHead className="w-22.5 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {Courses.map((course, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="text-muted-foreground">
-                    {idx + 1}
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="font-medium line-clamp-2">
-                      {course.title}
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                      {course.category}
-                    </span>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="text-muted-foreground line-clamp-1 max-w-96">
-                      {course.description}
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="text-muted-foreground line-clamp-2 max-w-80">
-                      {course.requirements}
-                    </div>
-                  </TableCell>
-
-                  <TableCell className="font-medium">
-                    {course.price.toLocaleString()}
-                  </TableCell>
-
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${course.published ? "border" : "border"}`}
-                    >
-                      {course.published ? "Published" : "Draft"}
-                    </span>
-                  </TableCell>
-
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-
-                      <DropdownMenuContent align="end" className="w-40">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View
-                        </DropdownMenuItem>
-
-                        <DropdownMenuItem>
-                          <Pen className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-
-                        <DropdownMenuSeparator />
-
-                        <DropdownMenuItem>
-                          <Trash className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+              {courses.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={8}
+                    className="text-center py-10 text-muted-foreground"
+                  >
+                    No courses found
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                courses.map((course, idx) => (
+                  <TableRow key={`${course.title}-${idx}`}>
+                    <TableCell className="text-muted-foreground">
+                      {idx + 1}
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <div
+                        className="font-medium truncate"
+                        title={course.title}
+                      >
+                        {course.title}
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
+                        {course.categoryId}
+                      </span>
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <div
+                        className="text-muted-foreground truncate"
+                        title={course.description}
+                      >
+                        {course.description}
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <div
+                        className="text-muted-foreground truncate"
+                        title={""}
+                      >
+                        {"-"}
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="align-top font-medium">
+                      {"-"}
+                    </TableCell>
+
+                    <TableCell className="align-top">
+                      <span className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium">
+                        {course.published ? "Published" : "Draft"}
+                      </span>
+                    </TableCell>
+
+                    <TableCell className="text-right align-top">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            type="button"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+
+                          <DropdownMenuItem>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View
+                          </DropdownMenuItem>
+
+                          <DropdownMenuItem>
+                            <Pen className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+
+                          <DropdownMenuSeparator />
+
+                          <DropdownMenuItem>
+                            <Trash className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
       </CardContent>
 
       <CardFooter className="flex flex-col gap-3 border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted-foreground">
-          Showing <span className="font-medium text-foreground">3</span> of{" "}
-          <span className="font-medium text-foreground">3</span> courses
-        </p>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <EntriesPerPage
+            value={entries}
+            onChange={(newValue) => {
+              setEntries(newValue);
+              setPage(1);
+            }}
+          />
 
-        <EntriesPerPage value={entries} onChange={setEntries} />
+          <span className="hidden sm:inline-block">
+            Showing{" "}
+            <span className="font-medium text-foreground">
+              {Math.min(entries, totalItems)}
+            </span>{" "}
+            of <span className="font-medium text-foreground">{totalItems}</span>
+          </span>
+        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-end">
+            <PagePagination
+              page={page}
+              onPageChange={setPage}
+              pages={totalPages}
+            />
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

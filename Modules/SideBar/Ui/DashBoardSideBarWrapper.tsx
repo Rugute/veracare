@@ -7,7 +7,6 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { DashBoardSideBar } from "@/Modules/SideBar/Ui/DashBoardSideBar";
-
 import Header from "@/Modules/Home/Header";
 
 interface Props {
@@ -18,12 +17,17 @@ export default function DashBoardSidebarWrapper({ children }: Props) {
   return (
     <SidebarProvider>
       <DashBoardSideBar />
-      <SidebarInset className="flex flex-col">
+      {/* min-w-0 prevents content from pushing the sidebar */}
+      <SidebarInset className="min-w-0 flex flex-col">
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-3 justify-between">
           <SidebarTrigger />
           <Header showSearch={false} />
         </header>
-        <main className="flex-1 p-4 flex flex-col gap-4">{children}</main>
+
+        {/* overflow-x-hidden prevents tables/long text from breaking layout */}
+        <main className="min-w-0 flex-1 overflow-x-hidden p-4 flex flex-col gap-4">
+          {children}
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
