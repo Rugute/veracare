@@ -115,5 +115,27 @@ export const DashBoardItems: LMSNavData = {
         },
       ],
     },
+    {
+      title: "Examinations",
+      url: "/exam",
+      icon: ClipboardList,
+      items: [
+        {
+          title: "Exams",
+          url: "/enrolled-students",
+          icon: Users,
+        },
+        {
+          title: "Exam Questions",
+          url: "/billing-plans",
+          icon: CreditCard,
+        },
+        {
+          title: "Exam Results",
+          url: "/billing-plans",
+          icon: CreditCard,
+        },
+      ],
+    },
   ],
 };
