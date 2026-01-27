@@ -47,6 +47,9 @@ npx prisma migrate dev --name UserDetails
 npx prisma migrate dev --name AddeCompany 
 npx prisma format
 
+## Pull Seed Data
+npm run seed
+
 ## Drop Database
 npx prisma migrate reset
 npx prisma migrate deploy -- for Production

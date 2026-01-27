@@ -60,7 +60,7 @@ export async function GET(req: Request) {
 
     const where = {
       voided: 0,
-      role: { name: "Instructor" },
+      role: { name: "Student" },
       OR: search
         ? [
           { firstName: { contains: search } },

@@ -128,20 +128,30 @@ model Event {
 
 model QuestionType {
   id          Int         @id @default(autoincrement())
-  name        String?
+  name        String      @unique
   description String?
   voided      Int         @default(0)
   questions   Questions[]
 }
 
 model Questions {
-  id             Int           @id @default(autoincrement())
-  questionTypeId Int?
-  questionType   QuestionType? @relation(fields: [questionTypeId], references: [id])
-  question       String?
-  lessonId       Int?
-  lesson         Lesson?       @relation(fields: [lessonId], references: [id])
-  courseId       Int?
-  course         Course?       @relation(fields: [courseId], references: [id])
-  voided         Int           @default(0)
+  id              Int               @id @default(autoincrement())
+  questionTypeId  Int?
+  questionType    QuestionType?     @relation(fields: [questionTypeId], references: [id])
+  question        String?
+  lessonId        Int?
+  lesson          Lesson?           @relation(fields: [lessonId], references: [id])
+  courseId        Int?
+  course          Course?           @relation(fields: [courseId], references: [id])
+  voided          Int               @default(0)
+  questionChoices QuestionChoices[]
+}
+
+model QuestionChoices {
+  id         Int        @id @default(autoincrement())
+  questionId Int?
+  questions  Questions? @relation(fields: [questionId], references: [id])
+  choice     String?
+  is_correct Int?
+  voided     Int        @default(0)
 }
