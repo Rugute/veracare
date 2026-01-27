@@ -111,3 +111,16 @@ model Event {
   price       Decimal
   voided      Int       @default(0)
 }
+
+model Questions {
+  id          Int       @id @default(autoincrement())
+  title       String?
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+  image       String?
+  courseId    Int?
+  course      Course?   @relation(fields: [courseId], references: [id])
+  price       Decimal
+  voided      Int       @default(0)
+}

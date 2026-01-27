@@ -15,6 +15,11 @@ export interface LMSNavData {
 export const DashBoardItems: LMSNavData = {
   navMain: [
     {
+      title: "Home / Website",
+      url: "/",
+      isActive: true,
+    },
+    {
       title: "DashBoard",
       url: "/dashboard",
       icon: LayoutDashboard,
@@ -73,7 +78,7 @@ export const DashBoardItems: LMSNavData = {
         {
           title: "Instructors",
           url: "/instructors",
-           icon: UserCog,
+          icon: UserCog,
         },
         {
           title: "Events",
@@ -96,12 +101,12 @@ export const DashBoardItems: LMSNavData = {
         {
           title: "Enrolled Students",
           url: "/enrolled-students",
-           icon: Users,
+          icon: Users,
         },
         {
           title: "Billing Plans",
           url: "/billing-plans",
-           icon: CreditCard,
+          icon: CreditCard,
         },
       ],
     },

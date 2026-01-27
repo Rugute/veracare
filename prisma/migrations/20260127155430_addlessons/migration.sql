@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `user` ADD COLUMN `voided` INTEGER NOT NULL DEFAULT 0;

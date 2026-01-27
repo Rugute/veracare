@@ -42,11 +42,11 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-   // const user = await getCurrentUser();
+    const user = await getCurrentUser();
 
-   /* if (!user) {
+    if (!user) {
       return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
-    }*/
+    }
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
