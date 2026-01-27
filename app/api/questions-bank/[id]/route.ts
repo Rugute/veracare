@@ -23,18 +23,20 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
 
     const body = await req.json();
     const {
+
+      questionTypeId,
       courseId,
-      content,
-      mandatory
+      question,
+      lessonId
     } = body;
 
     const updated = await prisma.questions.update({
       where: { id: cid },
       data: {
         course: { connect: { id: courseId } },
-        content: content,
-        mandatory: mandatory
-
+        questionType: { connect: { id: questionTypeId } },
+        lesson: { connect: { id: lessonId } },
+        question: question,
       },
     });
 

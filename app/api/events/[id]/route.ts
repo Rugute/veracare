@@ -54,7 +54,6 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
         startDate,
         endDate,
         price,
-
       },
     });
 

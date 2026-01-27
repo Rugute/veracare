@@ -71,6 +71,11 @@ export const DashBoardItems: LMSNavData = {
           icon: FileText,
         },
         {
+          title: "Questions Type",
+          url: "/questions-bank",
+          icon: HelpCircle,
+        },
+        {
           title: "Questions Bank",
           url: "/questions-bank",
           icon: HelpCircle,
