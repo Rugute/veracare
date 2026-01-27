@@ -46,7 +46,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   try {
     const cid = parseInt(id, 10);
-    await prisma.requirement.update({
+    await prisma.category.update({
       where: { id: cid },
       data: { voided: 1 },
     });
