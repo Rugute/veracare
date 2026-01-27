@@ -80,12 +80,12 @@ export async function GET(
       return new Response("Invalid exam id", { status: 400 });
     }
 
-    const categories = await prisma.category.findUnique({
+    const categories = await prisma.exam.findUnique({
       where: { id: cid },
     });
 
     if (!categories) {
-      return new Response("Category not found", { status: 404 });
+      return new Response("Exam not found", { status: 404 });
     }
 
     return Response.json(categories);
