@@ -20,6 +20,7 @@ model User {
   companyId       Int?
   company         Company?  @relation(fields: [companyId], references: [id])
   courses         Course[]
+  voided          Int       @default(0)
 }
 
 model Company {

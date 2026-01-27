@@ -8,29 +8,29 @@ export async function POST(req: Request) {
 
     //    const user = await getCurrentUser();
     const body = await req.json();
-  
+
     const { firstName, lastName, phone, gender, email, password, companyid, dob } = body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const user = await prisma.user.create({
       data: {
-       firstName,
-          lastName,
-          phone,
-          gender,   
-           email,
-           dob,
-        password: hashedPassword, 
+        firstName,
+        lastName,
+        phone,
+        gender,
+        email,
+        dob,
+        password: hashedPassword,
       },
     });
 
-   /* await prisma.category.update({
-      where: { id: parseInt(category.id, 10) },
-      data: {
-        name: name,
-      },
-    });*/
+    /* await prisma.category.update({
+       where: { id: parseInt(category.id, 10) },
+       data: {
+         name: name,
+       },
+     });*/
 
     return NextResponse.json(user, { status: 201 });
 
@@ -75,7 +75,7 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-       // include: { course: true },
+        // include: { course: true },
 
       }),
       prisma.user.count({ where }),

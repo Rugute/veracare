@@ -22,19 +22,20 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
     const cid = parseInt(id, 10);
 
     const body = await req.json();
-    const {
-      courseId,
-      content,
-      mandatory
-    } = body;
+   
+    const { firstName, lastName, phone, gender, email, password, companyid, dob } = body;
 
-    const updated = await prisma.requirement.update({
+    const updated = await prisma.user.update({
       where: { id: cid },
       data: {
-        course: { connect: { id: courseId } },
-        content: content,
-        mandatory: mandatory
-
+        firstName,
+        lastName,
+        phone,
+        gender,
+        email,
+        password,
+        dob,
+       company: companyid ? { connect: { id: companyid } } : undefined,
       },
     });
 
@@ -49,7 +50,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   try {
     const cid = parseInt(id, 10);
-    await prisma.requirement.update({
+    await prisma.user.update({
       where: { id: cid },
       data: { voided: 1 },
     });
