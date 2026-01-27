@@ -23,22 +23,25 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
 
     const body = await req.json();
     const {
-      name,
-      description,
+      courseId,
+      content,
+      mandatory
     } = body;
 
-    const updated = await prisma.category.update({
+    const updated = await prisma.requirement.update({
       where: { id: cid },
       data: {
-        name: name,
-        description: description,
+        course: { connect: { id: courseId } },
+        content: content,
+        mandatory: mandatory
+
       },
     });
 
     return Response.json(updated);
   } catch (err) {
     console.error("PUT error:", err);
-    return new Response("Failed to update Category", { status: 500 });
+    return new Response("Failed to update company", { status: 500 });
   }
 }
 
