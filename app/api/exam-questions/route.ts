@@ -8,30 +8,17 @@ export async function POST(req: Request) {
     //    const user = await getCurrentUser();
     const body = await req.json();
     const {
-      title,
-      description,
-      courseId,
-      duration,    // in minutes
-      lessonId,
-      examType,       // default value in JS
-      totalMarks,
-      isPublished // default value in JS
+      examId,
+      questionId,
+      marks
     } = body;
 
 
-    const exam = await prisma.exam.create({
+    const examQuestions = await prisma.examQuestions.create({
       data: {
-        title,
-        description,
-        course: { connect: { id: courseId } },
-        duration,    // in minutes
-        lessonId,
-        lesson: { connect: { id: lessonId } },
-        examType,       // default value in JS
-        totalMarks,
-        isPublished,
-        voided: 0,
-        // createdBy: 1,
+        exam: { connect: { id: examId } },
+        question: { connect: { id: questionId } },
+        marks
       },
     });
 
@@ -42,7 +29,7 @@ export async function POST(req: Request) {
        },
      });*/
 
-    return NextResponse.json(exam, { status: 201 });
+    return NextResponse.json(examQuestions, { status: 201 });
 
   } catch {
     // console.error("Error creating product and variants:", error);
@@ -69,16 +56,15 @@ export async function GET(req: Request) {
 
     const where = {
       voided: 0,
-      OR: search
+     /* OR: search
         ? [
-          { name: { contains: search } },
-          { description: { contains: search } },
+          { examId.name: { contains: search } }
         ]
-        : undefined,
+        : undefined,*/
     };
 
     const [items, total] = await Promise.all([
-      prisma.exam.findMany({
+      prisma.examQuestions.findMany({
         where,
         skip: (page - 1) * size,
         take: size,
@@ -86,7 +72,7 @@ export async function GET(req: Request) {
         // include: { course: true },
 
       }),
-      prisma.exam.count({ where }),
+      prisma.examQuestions.count({ where }),
     ]);
     if (items.length === 0) {
       return NextResponse.json({ items: [], total: 0 }, { status: 200 });

@@ -186,6 +186,7 @@ model ExamQuestions {
   questionId Int
   question   Questions @relation(fields: [questionId], references: [id])
   marks      Int?      @default(1)
+  voided     Int?      @default(0)
 }
 
 model ExamAttempt {
@@ -201,6 +202,7 @@ model ExamAttempt {
   percentage  Float?
   status      ExamStatus   @default(IN_PROGRESS)
   examAnswers ExamAnswer[]
+  voided      Int?         @default(0)
 }
 
 model ExamAnswer {
@@ -212,6 +214,7 @@ model ExamAnswer {
   choiceId   Int?
   choice     QuestionChoices? @relation(fields: [choiceId], references: [id])
   isCorrect  Boolean?
+  voided     Int?             @default(0)
 }
 
 enum ExamStatus {
