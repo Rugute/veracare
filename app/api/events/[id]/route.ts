@@ -69,7 +69,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   try {
     const cid = parseInt(id, 10);
-    await prisma.company.update({
+    await prisma.event.update({
       where: { id: cid },
       data: { voided: 1 },
     });
@@ -83,19 +83,19 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { code: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const cid = params.code;
-    const company = await prisma.company.findFirst({
-      where: { code: cid },
+    const cid = params.id;
+    const event = await prisma.event.findUnique({
+      where: { id:  parseInt(cid, 10) },
     });
 
-    if (!company) {
-      return new Response("Company not found", { status: 404 });
+    if (!event) {
+      return new Response("Event not found", { status: 404 });
     }
 
-    return Response.json(company);
+    return Response.json(event);
   } catch (err) {
     console.error("GET error:", err);
     return new Response("Internal Server Error", { status: 500 });

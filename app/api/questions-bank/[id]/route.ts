@@ -28,7 +28,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
       mandatory
     } = body;
 
-    const updated = await prisma.requirement.update({
+    const updated = await prisma.question.update({
       where: { id: cid },
       data: {
         course: { connect: { id: courseId } },
