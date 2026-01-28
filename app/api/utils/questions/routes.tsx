@@ -9,18 +9,18 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const where = {
-      voided: 0, 
+      voided: 0,
     };
+
     const [items] = await Promise.all([
-      prisma.course.findMany({
+      prisma.questions.findMany({
         where,
-        orderBy: { title: "asc" },
-      })
-    ]);
+        orderBy: { question: "asc" },
+      })]);
 
     return NextResponse.json({ items }, { status: 200 });
   } catch (err) {
-    console.error("Error fetching courses:", err);
-    return NextResponse.json({ message: "Failed to load courses" }, { status: 500 });
+    console.error("Error fetching Question:", err);
+    return NextResponse.json({ message: "Failed to load Question" }, { status: 500 });
   }
 }
