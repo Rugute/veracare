@@ -15,6 +15,7 @@ export async function GET(req: Request) {
       prisma.course.findMany({
         where,
         orderBy: { title: "asc" },
+        
       })
     ]);
 

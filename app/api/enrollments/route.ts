@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       userId,
       eventId,
       price,
-      modeofPayment,
+      status,
     } = body;
 
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
         userId,
         eventId,
         price,
-        modeofPayment,
+        status,
         user: { connect: { id: userId } },
         event: {connect:{id:eventId}},
         voided: 0,
@@ -60,12 +60,6 @@ export async function GET(req: Request) {
 
     const where = {
       voided: 0,
-      OR: search
-        ? [
-          { name: { contains: search } },
-          { description: { contains: search } },
-        ]
-        : undefined,
     };
 
     const [items, total] = await Promise.all([
@@ -74,7 +68,8 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-        // include: { course: true },
+        include: { user: true },
+        
 
       }),
       prisma.enrollments.count({ where }),
