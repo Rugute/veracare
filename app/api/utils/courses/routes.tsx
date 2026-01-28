@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const user = await getCurrentUser();
+   /* const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+    }*/
     const where = {
       voided: 0, 
     };
