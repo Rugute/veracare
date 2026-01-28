@@ -21,7 +21,7 @@ export const UseCreateExam = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create exam");
+        throw new Error(data.error || "Failed to create role");
       }
       return data;
     },
@@ -48,24 +48,23 @@ interface ExamResponse {
   items: {
     id: string;
     name: string;
-    createdBy: number;
-    voided: number;
     description: string;
+    voided: number;
   }[];
   total: number;
 }
 
-interface UseGetCourseCategoryParams {
+interface UseGetExam {
   page?: number;
   pageSize?: number;
   search?: string;
 }
 
-export const UseGetCourseCategory = ({
+export const UseGetExam = ({
   page = 1,
   pageSize = 10,
   search = "",
-}: UseGetCourseCategoryParams) => {
+}: UseGetExam) => {
   return useQuery<ExamResponse>({
     queryKey: ["EXAMS", page, pageSize, search],
     queryFn: async ({ signal }) => {
@@ -85,7 +84,7 @@ export const UseGetCourseCategory = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to fetch Exams");
+        throw new Error(data.error || "Failed to fetch Roles");
       }
       return data;
     },

@@ -28,18 +28,18 @@ import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { Plus, MoreHorizontal, Pen, Trash, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { UseGetRoles } from "../Api/ApiClient";
+import { UseGetExam } from "../Api/ApiClient";
 import UserAvatar from "@/Modules/Utils/UserAvatar";
 import PagePagination from "@/Modules/Utils/Pagination";
 import PageLoader from "@/Modules/Utils/PageLoader";
 
-const RolePage = () => {
+const ExamPage = () => {
   const [entries, setEntries] = useState(10);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const router = useRouter();
 
-  const { data, isLoading } = UseGetRoles({
+  const { data, isLoading } = UseGetExam({
     pageSize: entries,
     page,
     search,
@@ -183,4 +183,4 @@ const RolePage = () => {
   );
 };
 
-export default RolePage;
+export default ExamPage;
