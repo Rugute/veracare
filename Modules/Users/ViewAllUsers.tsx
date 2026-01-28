@@ -28,53 +28,54 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, MoreHorizontal, PenIcon, Plus, Trash2Icon } from "lucide-react";
+import {
+  Eye,
+  Loader2Icon,
+  MoreHorizontal,
+  PenIcon,
+  Plus,
+  Trash2Icon,
+} from "lucide-react";
 import { EntriesPerPage } from "../Utils/EntriesPerPage";
-
-type UserRow = {
-  id: string;
-  userName: string;
-  fullName: string;
-  email: string;
-  role: "Administrator" | "Student" | "Instructor";
-  phone: string;
-  isActive: boolean;
-  accountType: "Individual" | "Corporate";
-};
-
-const DUMMY_USERS: UserRow[] = [
-  {
-    id: "u_001",
-    userName: "j.kip",
-    fullName: "John Kiprotich",
-    email: "john.kiprotich@example.com",
-    role: "Administrator",
-    phone: "0712 345 678",
-    isActive: true,
-    accountType: "Corporate",
-  },
-  {
-    id: "u_002",
-    userName: "a.njeri",
-    fullName: "Anne Njeri",
-    email: "anne.njeri@example.com",
-    role: "Instructor",
-    phone: "0701 220 901",
-    isActive: true,
-    accountType: "Individual",
-  },
-];
+import { UseDeleteUser, UseGetUsers } from "./Api/ApiClient";
+import PageLoader from "../Utils/PageLoader";
+import PagePagination from "../Utils/Pagination";
 
 const ViewAllUsers = () => {
   const router = useRouter();
-
   const [entries, setEntries] = useState(10);
+  const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
+  const [delId, setDelId] = useState("");
+
+  const { data, isLoading } = UseGetUsers({
+    page,
+    pageSize: entries,
+    search: query,
+  });
+  const { mutateAsync } = UseDeleteUser();
+
+  const AllUsers = data?.items || [];
+  const totalItems = data?.total || 0;
+  const totalPages = Math.ceil(totalItems / entries);
+
+  const handleDeleteUser = async (id: string) => {
+    try {
+      setDelId(id);
+      await mutateAsync(id);
+    } catch (error) {
+      console.log({ error });
+    }
+    setDelId("");
+  };
+
+  if (isLoading) return <PageLoader />;
 
   return (
     <Card className="border shadow-sm">
-      <CardHeader className="space-y-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      {/* ===== Header ===== */}
+      <CardHeader className="space-y-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">
             <h1 className="text-xl font-semibold tracking-tight">Users</h1>
             <p className="text-sm text-muted-foreground">
@@ -84,7 +85,7 @@ const ViewAllUsers = () => {
 
           <Button
             onClick={() => router.push("/users/add")}
-            className="h-10"
+            className="h-10 px-4"
             type="button"
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -94,7 +95,7 @@ const ViewAllUsers = () => {
 
         <Separator />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="w-full sm:max-w-sm">
             <Input
               placeholder="Search by name, username, email, role..."
@@ -104,42 +105,41 @@ const ViewAllUsers = () => {
             />
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="whitespace-nowrap">
-              Showing{" "}
-              <span className="font-medium text-foreground">
-                {DUMMY_USERS.length}
-              </span>
-              of
-              <span className="font-medium text-foreground">
-                {DUMMY_USERS.length}
-              </span>
+          <div className="text-sm text-muted-foreground whitespace-nowrap">
+            Showing{" "}
+            <span className="font-medium text-foreground">
+              {AllUsers.length}
+            </span>{" "}
+            of{" "}
+            <span className="font-medium text-foreground">
+              {AllUsers.length}
             </span>
           </div>
         </div>
       </CardHeader>
 
+      {/* ===== Table ===== */}
       <CardContent className="p-0">
         <div className="w-full overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-15">#</TableHead>
-                <TableHead>UserName</TableHead>
-                <TableHead>Full names</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Phone number</TableHead>
-                <TableHead className="w-27.5">Status</TableHead>
-                <TableHead className="w-32.5">Account type</TableHead>
+              <TableRow className="whitespace-nowrap">
+                <TableHead className="w-14">#</TableHead>
+                <TableHead className="min-w-45">UserName</TableHead>
+                <TableHead className="min-w-50">Full names</TableHead>
+                <TableHead className="min-w-60">Email</TableHead>
+                <TableHead className="min-w-35">Role</TableHead>
+                <TableHead className="min-w-40">Phone number</TableHead>
+                <TableHead className="min-w-30">Status</TableHead>
+                <TableHead className="min-w-40">Account type</TableHead>
                 <TableHead className="w-22.5 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {DUMMY_USERS.length === 0 ? (
+              {AllUsers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="py-10">
+                  <TableCell colSpan={9} className="py-14">
                     <div className="flex flex-col items-center justify-center gap-2 text-center">
                       <p className="text-sm font-medium">No results</p>
                       <p className="text-xs text-muted-foreground">
@@ -149,86 +149,96 @@ const ViewAllUsers = () => {
                   </TableCell>
                 </TableRow>
               ) : (
-                DUMMY_USERS.map((u, idx) => (
+                AllUsers.map((u, idx) => (
                   <TableRow key={u.id} className="align-middle">
                     <TableCell className="text-muted-foreground">
                       {idx + 1}
                     </TableCell>
 
-                    <TableCell className="font-medium">{u.userName}</TableCell>
+                    <TableCell className="font-medium">
+                      <div className="max-w-50 truncate">{u.email}</div>
+                    </TableCell>
 
-                    <TableCell>{u.fullName}</TableCell>
+                    <TableCell>
+                      <div className="max-w-55 truncate">
+                        {[u.firstName, u.lastName].filter(Boolean).join(" ")}
+                      </div>
+                    </TableCell>
 
                     <TableCell className="text-muted-foreground">
-                      {u.email}
+                      <div className="max-w-65 truncate">{u.email}</div>
                     </TableCell>
 
                     <TableCell>
                       <Badge variant="secondary" className="font-normal">
-                        {u.role}
+                        Role
                       </Badge>
                     </TableCell>
 
                     <TableCell className="text-muted-foreground">
-                      {u.phone}
+                      <div className="max-w-45 truncate">{u.phone}</div>
                     </TableCell>
 
                     <TableCell>
                       <Badge
-                        variant={u.isActive ? "default" : "outline"}
+                        variant={u.voided === 0 ? "default" : "outline"}
                         className="font-normal"
                       >
-                        {u.isActive ? "Active" : "Inactive"}
+                        {u.voided === 0 ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
 
                     <TableCell className="text-muted-foreground">
-                      {u.accountType}
+                      <div className="max-w-40 truncate">{"u.accountType"}</div>
                     </TableCell>
 
                     <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            type="button"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open actions</span>
-                          </Button>
-                        </DropdownMenuTrigger>
+                      {parseInt(delId) === u.id ? (
+                        <Loader2Icon className="mx-auto h-4 w-4 animate-spin" />
+                      ) : (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              type="button"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Open actions</span>
+                            </Button>
+                          </DropdownMenuTrigger>
 
-                        <DropdownMenuContent align="end" className="w-44">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
+                          <DropdownMenuContent align="end" className="w-44">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
 
-                          <DropdownMenuItem
-                            onClick={() => router.push(`/users/${u.id}`)}
-                          >
-                            <Eye className="mr-2 h-4 w-4" />
-                            View
-                          </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => router.push(`/users/${u.id}`)}
+                            >
+                              <Eye className="mr-2 h-4 w-4" />
+                              View
+                            </DropdownMenuItem>
 
-                          <DropdownMenuItem
-                            onClick={() => router.push(`/users/${u.id}/edit`)}
-                          >
-                            <PenIcon className="mr-2 h-4 w-4" />
-                            Edit
-                          </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => router.push(`/users/${u.id}/edit`)}
+                            >
+                              <PenIcon className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
 
-                          <DropdownMenuSeparator />
+                            <DropdownMenuSeparator />
 
-                          <DropdownMenuItem
-                            // Replace with your confirmation modal / server action
-                            onClick={() => console.log("delete", u.id)}
-                          >
-                            <Trash2Icon className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteUser(String(u.id))}
+                              disabled={parseInt(delId) === u.id}
+                            >
+                              <Trash2Icon className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
@@ -238,8 +248,16 @@ const ViewAllUsers = () => {
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      {/* ===== Footer ===== */}
+      <CardFooter className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <EntriesPerPage onChange={setEntries} value={entries} />
+        {totalPages > 1 && (
+          <PagePagination
+            onPageChange={setPage}
+            page={page}
+            pages={totalPages}
+          />
+        )}
       </CardFooter>
     </Card>
   );

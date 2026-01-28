@@ -40,6 +40,7 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { UseCreateUser } from "./Api/ApiClient";
 
 const GENDER_OPTIONS = [
   { value: "MALE", label: "MALE" },
@@ -59,6 +60,7 @@ const ACCOUNT_TYPES = [
 
 const CreateUserForm = () => {
   const router = useRouter();
+  const { mutateAsync } = UseCreateUser();
   const form = useForm<CreateUserSchemaType>({
     resolver: zodResolver(CreateUserSchema),
     defaultValues: {
@@ -72,31 +74,35 @@ const CreateUserForm = () => {
       role: "",
       userName: "",
       accountType: "",
+      dateofBirth: "",
+      password: "",
     },
   });
 
   const handleSubmit = async (data: CreateUserSchemaType) => {
     const formData = new FormData();
-
-    //     firstName,
-    // lastName,
-    // phone,
-    // gender,
-    // email,
-    // password,
-    // companyid,
-    // dob,
-
     formData.append("firstName", data.firstName);
     formData.append("lastName", data.otherNames || "");
     formData.append("phone", data.phone);
     formData.append("gender", data.gender);
     formData.append("email", data.email);
-    formData.append("password", "");
-    formData.append("dob", "");
+    formData.append("password", data.password);
+    formData.append("dob", new Date(data.dateofBirth as string).toISOString());
+    formData.append("compnayId", data.organization);
+    formData.append("accountType", data.accountType);
+    formData.append("userName", data.userName);
+    if (data.file) {
+      formData.append("file", data.file);
+    }
 
-    console.log(data);
-    router.push("/users");
+    try {
+      await mutateAsync(formData, {
+        onSuccess: () => router.push("/users"),
+      });
+      form.reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -193,6 +199,26 @@ const CreateUserForm = () => {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    name="password"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-muted-foreground" />
+                          Password
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Password"
+                            className="h-10"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     name="gender"
@@ -220,6 +246,23 @@ const CreateUserForm = () => {
                             ))}
                           </SelectContent>
                         </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name="dateofBirth"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Date of birth</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="date"
+                            {...field}
+                            value={field.value as string}
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -298,12 +341,12 @@ const CreateUserForm = () => {
                       <FormItem>
                         <FormLabel className="flex items-center gap-2">
                           <Building2 className="h-4 w-4 text-muted-foreground" />
-                          Organization
+                          Organization Id
                         </FormLabel>
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder="Company name"
+                            placeholder="Company id"
                             className="h-10"
                           />
                         </FormControl>

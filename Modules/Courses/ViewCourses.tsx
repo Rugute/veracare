@@ -61,10 +61,13 @@ const ViewCourses = () => {
 
   const handleDelete = async (id: string) => {
     try {
+      setDelId(id);
       await mutateAsync(id);
     } catch (error) {
       console.log({ error });
     }
+
+    setDelId("");
   };
 
   if (isLoading) return <PageLoader />;

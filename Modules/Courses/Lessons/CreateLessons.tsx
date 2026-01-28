@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2Icon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -27,9 +27,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { UseCreateLesson, UseGetAllLessons } from "./Api/ApiClient";
+import { useTransition } from "react";
 
 const CreateLessons = () => {
   const router = useRouter();
+  const [isPending, startTransistion] = useTransition();
+  const { mutateAsync } = UseCreateLesson();
+  const { data: Courses, isLoading } = UseGetAllLessons({
+    page: 1,
+    pageSize: 50,
+    search: "",
+  });
   const form = useForm<CreateLessonSchemaType>({
     resolver: zodResolver(CreateLessonSchema),
     defaultValues: {
@@ -40,27 +49,37 @@ const CreateLessons = () => {
       lesson: "",
       order: "",
       videoUrl: "",
+      file: undefined,
     },
   });
 
   const handleSubmit = async (data: CreateLessonSchemaType) => {
     const formData = new FormData();
 
-    formData.append("course", data.course);
-    formData.append("description", data.description);
-
+    formData.append("courseId", data.course);
+    formData.append("courseDescription", data.description);
     if (data.document) {
-      formData.append("document", data.document);
+      formData.append("lesseonDocument", data.document);
     }
-    formData.append("duration", data.duration as string);
-    formData.append("lesson", data.lesson);
-    formData.append("order", data.order as string);
-    formData.append("video", data.videoUrl);
+    formData.append("courseDuration", data.duration as string);
+    formData.append("lessonName", data.lesson);
+    formData.append("lessonOrder", data.order as string);
+    formData.append("lessonVideo", data.videoUrl);
+    if (data.file) {
+      formData.append("file", data.file);
+    }
 
-    formData.forEach((i) => {
-      console.log(i.valueOf);
+    startTransistion(async () => {
+      try {
+        await mutateAsync(formData, {
+          onSuccess: () => {
+            router.push("/lessons");
+          },
+        });
+      } catch (error) {
+        console.log({ error });
+      }
     });
-    router.push("/lessons");
   };
 
   return (
@@ -89,30 +108,41 @@ const CreateLessons = () => {
             className="space-y-6"
           >
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <FormField
-                name="course"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-medium">Course</FormLabel>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger className="h-10">
-                          <SelectValue placeholder="Select Course" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {["course 1", "course 2", "course 3"].map((i, idx) => (
-                          <SelectItem key={idx} value={i}>
-                            {i}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage className="text-sm" />
-                  </FormItem>
-                )}
-              />
+              {isLoading ? (
+                <Loader2Icon className="animate-spin  h-4 w-4" />
+              ) : (
+                <>
+                  {" "}
+                  <FormField
+                    name="course"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-medium">Course</FormLabel>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="h-10">
+                              <SelectValue placeholder="Select Course" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Courses?.items &&
+                              Courses.items.map((i, idx) => (
+                                <SelectItem key={idx} value={i.id}>
+                                  {i.title}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage className="text-sm" />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
 
               <FormField
                 name="lesson"
@@ -240,6 +270,32 @@ const CreateLessons = () => {
                   </FormItem>
                 )}
               />
+              <FormField
+                name="file"
+                control={form.control}
+                render={({ field: { value, onChange, ...fieldProps } }) => (
+                  <FormItem className="md:col-span-2">
+                    <FormLabel className="font-medium">Lesson File</FormLabel>
+                    <FormControl>
+                      <div className="space-y-2">
+                        <Input
+                          {...fieldProps}
+                          accept="image*"
+                          type="file"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            onChange(file || null);
+                          }}
+                        />
+                        <FormDescription className="text-xs">
+                          Upload Document (.png,.jpg,jpeg) - Max 5MB
+                        </FormDescription>
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-sm" />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="flex items-center justify-end gap-3 border-t pt-6">
@@ -251,8 +307,12 @@ const CreateLessons = () => {
               >
                 Cancel
               </Button>
-              <Button type="submit" className="h-10 px-6">
-                Save Lesson
+              <Button type="submit" className="h-10 px-6" disabled={isPending}>
+                {isPending ? (
+                  <Loader2Icon className="animate-spin h-4 w-4" />
+                ) : (
+                  "Save Lesson"
+                )}
               </Button>
             </div>
           </form>

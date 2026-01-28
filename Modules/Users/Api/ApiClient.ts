@@ -26,7 +26,7 @@ export function UseGetUsers({ page, pageSize, search }: ApiParams) {
         ...(search && { search }),
       });
 
-      const response = await fetch(`/api/users/${params.toString()}`, {
+      const response = await fetch(`/api/users?${params.toString()}`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -50,7 +50,7 @@ export function UseCreateUser() {
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const response = await fetch("/api/users", {
-        method: "GET",
+        method: "POST",
         credentials: "include",
         body: formData,
       });

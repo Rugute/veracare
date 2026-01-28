@@ -8,54 +8,41 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-<<<<<<< HEAD
-    //    const user = await getCurrentUser();
-    const body = await req.json();
-
-    const {
-      firstName,
-      lastName,
-      phone,
-      gender,
-      email,
-      password,
-      companyid,
-      dob,
-    } = body;
-=======
-
     const formData = await req.formData();
-    
-      console.log(formData);
-      const firstName = formData.get("firstName") as string;
-      const lastName = formData.get("lastName") as string;
-      const phone = formData.get("phone") as string;
-      const gender = formData.get("gender") as string;
-      const email = formData.get("email") as string;
-      const password = formData.get("password") as string;
-      const companyid = formData.get("companyid") as string;
-      const dob = formData.get("dob") as string;
-      const file = formData.get("photo") as File;
 
-    
-      let fileUrl = null;
-    
-      if (file) {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-        const filePath = path.join(process.cwd(), "public", "uploads/users", fileName);
-    
-        await fs.mkdir(path.dirname(filePath), { recursive: true });
-        await fs.writeFile(filePath, buffer);
+    console.log(formData);
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const phone = formData.get("phone") as string;
+    const gender = formData.get("gender") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const companyid = formData.get("companyid") as string;
+    const dob = formData.get("dob") as string;
+    const file = formData.get("photo") as File;
 
-        fileUrl = `/uploads/users/${fileName}`;
-      }
+    let fileUrl = null;
+
+    if (file) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+      const filePath = path.join(
+        process.cwd(),
+        "public",
+        "uploads/users",
+        fileName,
+      );
+
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      await fs.writeFile(filePath, buffer);
+
+      fileUrl = `/uploads/users/${fileName}`;
+    }
 
     //    const user = await getCurrentUser();
     //const body = await req.json();
 
     //const { firstName, lastName, phone, gender, email, password, companyid, dob,photo } = body;
->>>>>>> 32146bf926de3da8db6f2bfc58bc933037c05a5a
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -67,7 +54,7 @@ export async function POST(req: Request) {
         gender,
         email,
         dob,
-        photo: fileUrl? fileUrl : null,
+        photo: fileUrl ? fileUrl : null,
         companyId: companyid ? parseInt(companyid, 10) : null,
         password: hashedPassword,
       },
@@ -92,19 +79,11 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-   /* const user = await getCurrentUser();
+    /* const user = await getCurrentUser();
 
     if (!user) {
-<<<<<<< HEAD
-      return NextResponse.json(
-        { message: "Unauthorized or user not found" },
-        { status: 401 },
-      );
-    }
-=======
       return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
     }*/
->>>>>>> 7ba82988cfc1c72df4114d84387406a5bdb30b57
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
@@ -129,12 +108,7 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-<<<<<<< HEAD
-        // include: { course: true },
-=======
         include: { role: true },
-
->>>>>>> 7ba82988cfc1c72df4114d84387406a5bdb30b57
       }),
       prisma.user.count({ where }),
     ]);

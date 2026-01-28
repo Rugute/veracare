@@ -37,45 +37,26 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
-// Sample data
-const Lessons = [
-  {
-    id: 1,
-    title: "Introduction to Therapy Practices",
-    course: "Therapy Fundamentals",
-    videoUrl: "therapy-intro-video.mp4",
-    duration: "45 minutes",
-    order: 1,
-    questions: 5,
-    hasDocument: true,
-  },
-  {
-    id: 2,
-    title: "React Components & State Management",
-    course: "Full-Stack Web Development",
-    videoUrl: "react-state-video.mp4",
-    duration: "60 minutes",
-    order: 3,
-    questions: 8,
-    hasDocument: true,
-  },
-  {
-    id: 3,
-    title: "Data Visualization with Python",
-    course: "Applied Data Science",
-    videoUrl: "python-viz-video.mp4",
-    duration: "55 minutes",
-    order: 2,
-    questions: 6,
-    hasDocument: false,
-  },
-];
+import { UseGetAllLessons } from "./Api/ApiClient";
+import PageLoader from "@/Modules/Utils/PageLoader";
 
 const ViewAllLessons = () => {
   const [query, setQuery] = useState("");
   const [entries, setEntries] = useState(10);
+  const [page, setPage] = useState(1);
   const router = useRouter();
+
+  const { data, isLoading } = UseGetAllLessons({
+    page,
+    pageSize: entries,
+    search: query,
+  });
+
+  const Lessons = data?.items || [];
+  const totalItems = data?.total || 0;
+  const totalPages = Math.ceil(totalItems / entries);
+
+  if (isLoading) return <PageLoader />;
 
   return (
     <div className="h-full flex flex-col">
@@ -117,8 +98,10 @@ const ViewAllLessons = () => {
                   <TableHeader className="overflow-auto">
                     <TableRow>
                       <TableHead className="w-12">#</TableHead>
+                      <TableHead>image</TableHead>
                       <TableHead className="min-w-64">Lesson Title</TableHead>
                       <TableHead className="min-w-48">Course</TableHead>
+                      <TableHead>status</TableHead>
                       <TableHead className="min-w-48">Video</TableHead>
                       <TableHead className="min-w-32">Duration</TableHead>
                       <TableHead className="min-w-32">Order</TableHead>
@@ -143,33 +126,39 @@ const ViewAllLessons = () => {
 
                         <TableCell>
                           <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                            {lesson.course}
+                            {"lesson.course"}
                           </span>
+                        </TableCell>
+
+                        <TableCell>
+                          {lesson.published ? "Published" : "Not published"}
                         </TableCell>
 
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Play className="h-4 w-4 shrink-0" />
                             <span className="truncate text-sm">
-                              {lesson.videoUrl}
+                              {"lesson.videoUrl"}
                             </span>
                           </div>
                         </TableCell>
 
                         <TableCell>
-                          <span className="font-medium">{lesson.duration}</span>
+                          <span className="font-medium">
+                            {"lesson.duration"}
+                          </span>
                         </TableCell>
 
                         <TableCell>
                           <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border text-sm font-medium">
-                            {lesson.order}
+                            {"lesson.order"}
                           </span>
                         </TableCell>
 
                         <TableCell>
                           <div className="flex items-center gap-1">
                             <span className="font-medium">
-                              {lesson.questions}
+                              {"lesson.questions"}
                             </span>
                             <span className="text-sm text-muted-foreground">
                               questions
