@@ -4,19 +4,19 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const user = await getCurrentUser();
+   /* const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+    }*/
     const where = {
-      voided: 0,
+      voided: 0, 
     };
-
     const [items] = await Promise.all([
-      prisma.category.findMany({
+      prisma.course.findMany({
         where,
-        orderBy: { name: "asc" },
-      })]);
+        orderBy: { title: "asc" },
+      })
+    ]);
 
     return NextResponse.json({ items }, { status: 200 });
   } catch (err) {
