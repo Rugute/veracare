@@ -7,20 +7,33 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  voided      Int      @default(0)
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model User {
-  id              Int       @id @default(autoincrement())
-  email           String    @unique
+  id              Int           @id @default(autoincrement())
+  email           String        @unique
   password        String
   firstName       String?
   lastName        String?
   gender          String?
   phone           String?
   dob             DateTime?
-  cooprateAccount Int       @default(0)
+  cooprateAccount Int           @default(0)
   companyId       Int?
-  company         Company?  @relation(fields: [companyId], references: [id])
+  company         Company?      @relation(fields: [companyId], references: [id])
+  roleId          Int?
+  role            Role?         @relation(fields: [roleId], references: [id])
   courses         Course[]
-  voided          Int       @default(0)
+  voided          Int           @default(0)
+  examAttempts    ExamAttempt[]
 }
 
 model Company {
@@ -81,6 +94,7 @@ model Course {
   lessons      Lesson[]
   events       Event[]
   questions    Questions[]
+  exams        Exam[]
 }
 
 model Lesson {
@@ -99,6 +113,7 @@ model Lesson {
   photoPath         String?
   voided            Int         @default(0)
   questions         Questions[]
+  exams             Exam[]
 }
 
 model Event {
@@ -116,20 +131,94 @@ model Event {
 
 model QuestionType {
   id          Int         @id @default(autoincrement())
-  name        String?
+  name        String      @unique
   description String?
   voided      Int         @default(0)
   questions   Questions[]
 }
 
 model Questions {
-  id             Int           @id @default(autoincrement())
-  questionTypeId Int?
-  questionType   QuestionType? @relation(fields: [questionTypeId], references: [id])
-  question       String?
-  lessonId       Int?
-  lesson         Lesson?       @relation(fields: [lessonId], references: [id])
-  courseId       Int?
-  course         Course?       @relation(fields: [courseId], references: [id])
-  voided         Int           @default(0)
+  id              Int               @id @default(autoincrement())
+  questionTypeId  Int?
+  questionType    QuestionType?     @relation(fields: [questionTypeId], references: [id])
+  question        String?
+  lessonId        Int?
+  lesson          Lesson?           @relation(fields: [lessonId], references: [id])
+  courseId        Int?
+  course          Course?           @relation(fields: [courseId], references: [id])
+  voided          Int               @default(0)
+  questionChoices QuestionChoices[]
+  examQuestions   ExamQuestions[]
+  examAnswers     ExamAnswer[]
+}
+
+model QuestionChoices {
+  id            Int          @id @default(autoincrement())
+  questionId    Int?
+  questions     Questions?   @relation(fields: [questionId], references: [id])
+  choice        String?
+  correctAnswer Int?         @default(0)
+  voided        Int          @default(0)
+  examAnswers   ExamAnswer[]
+}
+
+model Exam {
+  id            Int             @id @default(autoincrement())
+  title         String
+  description   String?
+  courseId      Int?
+  course        Course?         @relation(fields: [courseId], references: [id])
+  duration      Int? // in minutes
+  lessonId      Int?
+  lesson        Lesson?         @relation(fields: [lessonId], references: [id])
+  examType      Int?            @default(0) //0 - CAT -- 1- Exams
+  totalMarks    Int?
+  isPublished   Boolean         @default(false)
+  voided        Int             @default(0)
+  examQuestions ExamQuestions[]
+  examAttempts  ExamAttempt[]
+}
+
+model ExamQuestions {
+  id         Int       @id @default(autoincrement())
+  examId     Int
+  exam       Exam      @relation(fields: [examId], references: [id])
+  questionId Int
+  question   Questions @relation(fields: [questionId], references: [id])
+  marks      Int?      @default(1)
+  voided     Int?      @default(0)
+}
+
+model ExamAttempt {
+  id          Int          @id @default(autoincrement())
+  examId      Int
+  exam        Exam         @relation(fields: [examId], references: [id])
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+  score       Int?
+  startedAt   DateTime     @default(now())
+  endedAt     DateTime?
+  totalMarks  Int?
+  percentage  Float?
+  status      ExamStatus   @default(IN_PROGRESS)
+  examAnswers ExamAnswer[]
+  voided      Int?         @default(0)
+}
+
+model ExamAnswer {
+  id         Int              @id @default(autoincrement())
+  attemptId  Int
+  attempt    ExamAttempt      @relation(fields: [attemptId], references: [id])
+  questionId Int
+  question   Questions        @relation(fields: [questionId], references: [id])
+  choiceId   Int?
+  choice     QuestionChoices? @relation(fields: [choiceId], references: [id])
+  isCorrect  Boolean?
+  voided     Int?             @default(0)
+}
+
+enum ExamStatus {
+  IN_PROGRESS
+  SUBMITTED
+  MARKED
 }

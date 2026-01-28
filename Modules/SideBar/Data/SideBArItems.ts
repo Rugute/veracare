@@ -79,6 +79,11 @@ export const DashBoardItems: LMSNavData = {
           icon: FileText,
         },
         {
+          title: "Questions Type",
+          url: "/questions-bank",
+          icon: HelpCircle,
+        },
+        {
           title: "Questions Bank",
           url: "/questions-bank",
           icon: HelpCircle,
@@ -112,6 +117,28 @@ export const DashBoardItems: LMSNavData = {
         },
         {
           title: "Billing Plans",
+          url: "/billing-plans",
+          icon: CreditCard,
+        },
+      ],
+    },
+    {
+      title: "Examinations",
+      url: "/exam",
+      icon: ClipboardList,
+      items: [
+        {
+          title: "Exams",
+          url: "/enrolled-students",
+          icon: Users,
+        },
+        {
+          title: "Exam Questions",
+          url: "/billing-plans",
+          icon: CreditCard,
+        },
+        {
+          title: "Exam Results",
           url: "/billing-plans",
           icon: CreditCard,
         },

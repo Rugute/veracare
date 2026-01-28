@@ -18,49 +18,29 @@ export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: numb
 
 export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }) {
   try {
-
     const { id } = await ctx.params;
     const cid = parseInt(id, 10);
 
-    const formData = await req.formData();
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const startDate = formData.get("startDate") as string;
-    const endDate = formData.get("endDate") as string;
-    const courseId = formData.get("courseId") as string;
-    const price = formData.get("price") as string;
-    const file = formData.get("file") as File | null;
+    const body = await req.json();
+    const {
+      examId,
+      questionId,
+      marks
+    } = body;
 
-    let photoUrl: string | null = null;
-
-    if (file && file.name) {
-
-      console.log("File name ndo hii " + file.name);
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const fileName = `${Date.now()}_${file.name}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      const filePath = path.join(uploadDir, fileName);
-
-      await writeFile(filePath, buffer);
-      photoUrl = `/uploads/${fileName}`;
-    }
-
-    const updated = await prisma.event.update({
+    const updated = await prisma.examQuestions.update({
       where: { id: cid },
       data: {
-        title,
-        description,
-        startDate,
-        endDate,
-        price,
+        exam: { connect: { id: examId } },
+        question: { connect: { id: questionId } },
+        marks
       },
     });
 
     return Response.json(updated);
   } catch (err) {
     console.error("PUT error:", err);
-    return new Response("Failed to update company", { status: 500 });
+    return new Response("Failed to update Exam", { status: 500 });
   }
 }
 
@@ -68,7 +48,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   try {
     const cid = parseInt(id, 10);
-    await prisma.event.update({
+    await prisma.examQuestions.update({
       where: { id: cid },
       data: { voided: 1 },
     });
@@ -79,22 +59,26 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
     return new Response("Internal Server Error", { status: 500 });
   }
 }
-
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const cid = params.id;
-    const event = await prisma.event.findUnique({
-      where: { id:  parseInt(cid, 10) },
-    });
+    const cid = Number(params.id); // convert here
 
-    if (!event) {
-      return new Response("Event not found", { status: 404 });
+    if (isNaN(cid)) {
+      return new Response("Invalid exam id", { status: 400 });
     }
 
-    return Response.json(event);
+    const examQuestions = await prisma.examQuestions.findUnique({
+      where: { id: cid },
+    });
+
+    if (!examQuestions) {
+      return new Response("Exam not found", { status: 404 });
+    }
+
+    return Response.json(examQuestions);
   } catch (err) {
     console.error("GET error:", err);
     return new Response("Internal Server Error", { status: 500 });
