@@ -22,9 +22,8 @@ export async function POST(req: Request) {
         price,
         modeofPayment,
         user: { connect: { id: userId } },
-        event: {connect:{id:eventId}}
+        event: {connect:{id:eventId}},
         voided: 0,
-        // createdBy: 1,
       },
     });
 
