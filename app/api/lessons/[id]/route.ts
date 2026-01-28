@@ -1,7 +1,8 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from "@/lib/prisma";
 import { writeFile } from "fs/promises";
 import path from "path";
+import { promises as fs } from "fs";
 
 
 export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: number }> }) {
@@ -23,35 +24,43 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
     const cid = parseInt(id, 10);
 
     const formData = await req.formData();
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string | null;
-    const published = formData.get("published") === "1" ? 1 : 0;
-    const category = formData.get("category") ? parseInt(formData.get("category") as string) : null;
-    const file = formData.get("file") as File | null;
+        const courseId = formData.get("courseId") as string;
+        const lessonName = formData.get("lessonName") as string;
+        const lessonVideo = formData.get("lessonVideo") as string;
+        const lessonDuration = formData.get("lessonDuration") as string;
+        const lessonOrder = formData.get("lessonOrder") as string;
+        const lessonDescription = formData.get("lessonDescription") as string;
+       // const lessonDocument = formData.get("lessonDocument") as string;
+        const file = formData.get("lessonDocument") as File | null;
+    
+        if (!lessonName) {
+          return NextResponse.json({ message: "lessonName is required" }, { status: 400 });
+        }
+    
+        // Handle file upload for photo
+        let photoUrl: string | null = null;
+        if (file) {
+          const buffer = Buffer.from(await file.arrayBuffer());
+          const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+          const filePath = path.join(process.cwd(), "public", "uploads/lessons", fileName);
+    
+          await fs.mkdir(path.dirname(filePath), { recursive: true });
+          await fs.writeFile(filePath, buffer);
+    
+          photoUrl = `/uploads/lessons/${fileName}`;
+        }
+    
 
-    let photoUrl: string | null = null;
-
-    if (file && file.name) {
-
-      console.log("File name ndo hii " + file.name);
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-      const fileName = `${Date.now()}_${file.name}`;
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      const filePath = path.join(uploadDir, fileName);
-
-      await writeFile(filePath, buffer);
-      photoUrl = `/uploads/${fileName}`;
-    }
-
-    const updated = await prisma.course.update({
+    const updated = await prisma.lesson.update({
       where: { id: cid },
       data: {
-        title,
-        description,
-        published: published === 1,
-        photo: photoUrl,
-        categoryId: category,
+       lessonName,
+        lessonVideo,
+        lessonDuration,
+        lessonOrder,
+        lessonDescription,
+        lessonDocument: photoUrl,
+        course: { connect: { id: parseInt(courseId, 10) } },    
 
       },
     });
@@ -87,6 +96,7 @@ export async function GET(
     const cid = params.id;
     const lesson = await prisma.lesson.findUnique({
       where: { id: parseInt(cid, 10) },
+      include: { course: true },
     });
 
     if (!lesson) {

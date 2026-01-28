@@ -91,6 +91,7 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { createdAt: "desc" },
+        include: { course: true },
       }),
       prisma.lesson.count({ where }),
     ]);

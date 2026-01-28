@@ -35,6 +35,7 @@ model User {
   courses         Course[]
   voided          Int           @default(0)
   examAttempts    ExamAttempt[]
+  enrollments     Enrollments[]
 }
 
 model Company {
@@ -118,16 +119,17 @@ model Lesson {
 }
 
 model Event {
-  id          Int       @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   title       String?
   description String?
   startDate   DateTime?
   endDate     DateTime?
   image       String?
   courseId    Int?
-  course      Course?   @relation(fields: [courseId], references: [id])
+  course      Course?       @relation(fields: [courseId], references: [id])
   price       Decimal
-  voided      Int       @default(0)
+  voided      Int           @default(0)
+  enrollments Enrollments[]
 }
 
 model QuestionType {
@@ -232,4 +234,43 @@ enum ExamStatus {
   IN_PROGRESS
   SUBMITTED
   MARKED
+}
+
+enum EnrollmentStatus {
+  IN_PROGRESS
+  ON_HOLD
+  PAID
+  PENDING_PAYMENTS
+  COMPELETED
+}
+
+model Enrollments {
+  id       Int              @id @default(autoincrement())
+  userId   Int
+  user     User             @relation(fields: [userId], references: [id])
+  eventId  Int
+  event    Event            @relation(fields: [eventId], references: [id])
+  price    Int?             @default(1)
+  status   EnrollmentStatus
+  voided   Int?             @default(0)
+  payments Payments[]
+}
+
+enum PaymentModel {
+  Paypal
+  Visa
+  Mpesa
+}
+
+model Payments {
+  id            Int              @id @default(autoincrement())
+  enrollmentId  Int
+  enrollment    Enrollments      @relation(fields: [enrollmentId], references: [id])
+  orderNumber   String?
+  payerNumber   String?
+  amount        String?
+  currency      String?
+  modeOfPayment PaymentModel
+  status        EnrollmentStatus
+  voided        Int?             @default(0)
 }
