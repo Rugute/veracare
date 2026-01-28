@@ -9,15 +9,14 @@ export async function GET(req: Request) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const where = {
-      voided: 0, // Exclude deleted/voided courses
+      voided: 0,
     };
 
     const [items] = await Promise.all([
-      prisma.course.findMany({
+      prisma.category.findMany({
         where,
-        orderBy: { title: "asc" },
-      })
-    ]);
+        orderBy: { name: "asc" },
+      })]);
 
     return NextResponse.json({ items }, { status: 200 });
   } catch (err) {
