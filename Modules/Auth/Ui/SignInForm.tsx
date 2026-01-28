@@ -47,7 +47,7 @@ const SignInForm = () => {
   const handleSubmit = (data: SignInSchemaType) => {
     startTransistion(() => {
       mutate(data, {
-        onSuccess: () => router.push("/"),
+        onSuccess: () => router.push("/dashboard"),
       });
     });
   };
