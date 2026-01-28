@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 const NotFound = () => {
-  redirect("/");
+  redirect("/dashboard");
 };
 
 export default NotFound;
