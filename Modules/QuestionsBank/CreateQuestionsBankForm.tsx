@@ -24,9 +24,13 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { UseGetCourses } from "../Courses/ApiClient/ApiClient";
+import { UseGetAllLessons } from "../Courses/Lessons/Api/ApiClient";
+import { useState } from "react";
 
 const CreateQuestionsBankForm = () => {
   const router = useRouter();
+  const [courseId, setCourseId] = useState("");
 
   const form = useForm<QuestionsBankSchemaType>({
     resolver: zodResolver(QuestionsBankSchema),
@@ -37,6 +41,20 @@ const CreateQuestionsBankForm = () => {
       questionsType: "",
     },
   });
+
+  const { data: courses, isLoading: coursesLoading } = UseGetCourses({
+    page: 1,
+    pageSize: 50,
+    search: "",
+  });
+
+  const { data: lessons, isLoading: lessonsLoading } = UseGetAllLessons({
+    page: 1,
+    pageSize: 50,
+    search: "",
+  });
+
+  // const filteredLessons = lessons?.items.filter((l) => l. === courseId);
 
   function handleSubmit(data: QuestionsBankSchemaType) {
     console.log(data);
@@ -89,13 +107,16 @@ const CreateQuestionsBankForm = () => {
                           <SelectValue placeholder="Select course" />
                         </SelectTrigger>
                         <SelectContent>
-                          {["course 1", "course 2", "course 3"].map(
-                            (i, idx) => (
-                              <SelectItem key={idx} value={i}>
-                                {i}
+                          {courses?.items &&
+                            courses.items.map((i, idx) => (
+                              <SelectItem
+                                key={i.id}
+                                value={i.id}
+                                onClick={setCourseId(i.id)}
+                              >
+                                {i.title}
                               </SelectItem>
-                            ),
-                          )}
+                            ))}
                         </SelectContent>
                       </Select>
                     </FormControl>
