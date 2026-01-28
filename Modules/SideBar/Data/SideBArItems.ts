@@ -48,6 +48,11 @@ export const DashBoardItems: LMSNavData = {
           url: "/users",
           icon: Users,
         },
+        {
+          title: "Roles",
+          url: "/roles",
+          icon: Users,
+        }
       ],
     },
     {
@@ -122,7 +127,7 @@ export const DashBoardItems: LMSNavData = {
       items: [
         {
           title: "Exams",
-          url: "/enrolled-students",
+          url: "/exam",
           icon: Users,
         },
         {
