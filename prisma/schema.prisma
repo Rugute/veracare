@@ -26,6 +26,7 @@ model User {
   gender          String?
   phone           String?
   dob             DateTime?
+  photo           String?
   cooprateAccount Int           @default(0)
   companyId       Int?
   company         Company?      @relation(fields: [companyId], references: [id])
@@ -205,6 +206,13 @@ model ExamAttempt {
   voided      Int?         @default(0)
 }
 
+enum AnswerMode {
+  CHOICE
+  TEXT
+  JSON
+  NUMERIC
+}
+
 model ExamAnswer {
   id         Int              @id @default(autoincrement())
   attemptId  Int
@@ -214,6 +222,9 @@ model ExamAnswer {
   choiceId   Int?
   choice     QuestionChoices? @relation(fields: [choiceId], references: [id])
   isCorrect  Boolean?
+  textAnswer String?
+  answerMode AnswerMode
+  score      Int?
   voided     Int?             @default(0)
 }
 
