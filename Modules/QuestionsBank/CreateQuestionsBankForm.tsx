@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Select,
@@ -26,11 +26,10 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { UseGetCourses } from "../Courses/ApiClient/ApiClient";
 import { UseGetAllLessons } from "../Courses/Lessons/Api/ApiClient";
-import { useState } from "react";
+
 
 const CreateQuestionsBankForm = () => {
   const router = useRouter();
-  const [courseId, setCourseId] = useState("");
 
   const form = useForm<QuestionsBankSchemaType>({
     resolver: zodResolver(QuestionsBankSchema),
@@ -99,26 +98,33 @@ const CreateQuestionsBankForm = () => {
                   <FormItem>
                     <FormLabel>Course</FormLabel>
                     <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="h-9 w-full">
-                          <SelectValue placeholder="Select course" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {courses?.items &&
-                            courses.items.map((i, idx) => (
-                              <SelectItem
-                                key={i.id}
-                                value={i.id}
-                                onClick={setCourseId(i.id)}
-                              >
-                                {i.title}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
+                      {coursesLoading ? (
+                        <Loader2Icon className="animate-spin h-4 w-4" />
+                      ) : (
+                        <>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="h-9 w-full">
+                              <SelectValue placeholder="Select course" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {courses?.items.length === 0 ? (
+                                <div>
+                                  <p>No course found</p>
+                                </div>
+                              ) : (
+                                courses?.items.map((i) => (
+                                  <SelectItem key={i.id} value={i.id}>
+                                    {i.title}
+                                  </SelectItem>
+                                ))
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </>
+                      )}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -133,23 +139,33 @@ const CreateQuestionsBankForm = () => {
                   <FormItem>
                     <FormLabel>Lesson</FormLabel>
                     <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger className="h-9 w-full">
-                          <SelectValue placeholder="Select lesson" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {["lesson 1", "lesson 2", "lesson 3"].map(
-                            (i, idx) => (
-                              <SelectItem key={idx} value={i}>
-                                {i}
-                              </SelectItem>
-                            ),
-                          )}
-                        </SelectContent>
-                      </Select>
+                      {lessonsLoading ? (
+                        <Loader2Icon className="animate-spin h-4 w-4" />
+                      ) : (
+                        <>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger className="h-9 w-full">
+                              <SelectValue placeholder="Select lesson" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {lessons?.items.length === 0 ? (
+                                <div>
+                                  <p>No lessons found</p>
+                                </div>
+                              ) : (
+                                lessons?.items.map((i, idx) => (
+                                  <SelectItem key={idx} value={i.id}>
+                                    {i.title}
+                                  </SelectItem>
+                                ))
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </>
+                      )}
                     </FormControl>
                     <FormMessage />
                   </FormItem>
