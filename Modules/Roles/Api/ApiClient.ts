@@ -1,74 +1,73 @@
 import { Sweetalert } from "@/Modules/Utils/SweetAlert";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+interface CreateRole {
+  name: string;
+  description?: string;
+}
 export const UseCreateRole = () => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (formData: CreateRole) => {
       const response = await fetch("/api/roles", {
         method: "POST",
         credentials: "include",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
+
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create roles");
+        throw new Error(data.error || "Failed to create role");
       }
-
       return data;
     },
-
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
-        queryKey: ["ALL_ROLES"],
+        queryKey: ["ROLES"],
       });
       Sweetalert({
         icon: "success",
-        message: data.message || "Role created",
+        message: data.message || "Roles Created",
         title: "Success!",
       });
     },
-
-    onError: (e: Error) => {
+    onError: (e: Error) =>
       Sweetalert({
         icon: "error",
-        message: e.message || "Failed to create role",
+        message: e.message || "Failed to create Role",
         title: "An error has occurred",
-      });
-    },
+      }),
   });
 };
 
-interface GetCompanyResponse {
+interface RoleResponse {
   items: {
     id: string;
-    uuid: string;
-    code: string;
     name: string;
-    status: string;
-    logo: string;
-    location: string;
-    address: string;
-    email: string;
-    phone: string;
-    createdBy: string;
-    createdAt: string;
-    updatedAt: string;
+    description: string;
     voided: number;
   }[];
   total: number;
 }
 
-export const UseGetCompnaies = ({
+interface UseGetRoles {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+}
+
+export const UseGetRoles = ({
   page = 1,
   pageSize = 10,
   search = "",
-}: ApiParams) => {
-  return useQuery<GetCompanyResponse>({
-    queryKey: ["ALL_ROLES", page, pageSize, search],
-    queryFn: async () => {
+}: UseGetRoles) => {
+  return useQuery<RoleResponse>({
+    queryKey: ["ROLES", page, pageSize, search],
+    queryFn: async ({ signal }) => {
       const params = new URLSearchParams({
         size: pageSize.toString(),
         page: page.toString(),
@@ -80,14 +79,13 @@ export const UseGetCompnaies = ({
         headers: {
           "Content-Type": "application/json",
         },
+        signal,
       });
-
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Error fetching roles");
+        throw new Error(data.error || "Failed to fetch Roles");
       }
-
       return data;
     },
   });

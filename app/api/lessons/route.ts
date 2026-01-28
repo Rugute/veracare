@@ -18,10 +18,8 @@ export async function POST(req: Request) {
     const lessonDuration = formData.get("lessonDuration") as string;
     const lessonOrder = formData.get("lessonOrder") as string;
     const lessonDescription = formData.get("lessonDescription") as string;
-    const lessonDocument = formData.get("lessonDocument") as string;
-
-
-    const file = formData.get("file") as File | null;
+   // const lessonDocument = formData.get("lessonDocument") as string;
+    const file = formData.get("lessonDocument") as File | null;
 
     if (!lessonName) {
       return NextResponse.json({ message: "lessonName is required" }, { status: 400 });
@@ -32,19 +30,18 @@ export async function POST(req: Request) {
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-      const filePath = path.join(process.cwd(), "public", "uploads", fileName);
+      const filePath = path.join(process.cwd(), "public", "uploads/lessons", fileName);
 
       await fs.mkdir(path.dirname(filePath), { recursive: true });
       await fs.writeFile(filePath, buffer);
 
-      photoUrl = `/uploads/${fileName}`;
+      photoUrl = `/uploads/lessons/${fileName}`;
     }
 
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-
     // Create course
     const lesson = await prisma.lesson.create({
       data: {
@@ -53,7 +50,7 @@ export async function POST(req: Request) {
         lessonDuration,
         lessonOrder,
         lessonDescription,
-        lessonDocument,
+        lessonDocument: photoUrl,
         course: { connect: { id: parseInt(courseId, 10) } },        
       },
     });
@@ -89,13 +86,13 @@ export async function GET(req: Request) {
     };
 
     const [items, total] = await Promise.all([
-      prisma.course.findMany({
+      prisma.lesson.findMany({
         where,
         skip: (page - 1) * size,
         take: size,
-        orderBy: { created_at: "desc" },
+        orderBy: { createdAt: "desc" },
       }),
-      prisma.course.count({ where }),
+      prisma.lesson.count({ where }),
     ]);
 
     return NextResponse.json({ items, total }, { status: 200 });
