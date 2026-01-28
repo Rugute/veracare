@@ -76,6 +76,25 @@ const CreateUserForm = () => {
   });
 
   const handleSubmit = async (data: CreateUserSchemaType) => {
+    const formData = new FormData();
+
+    //     firstName,
+    // lastName,
+    // phone,
+    // gender,
+    // email,
+    // password,
+    // companyid,
+    // dob,
+
+    formData.append("firstName", data.firstName);
+    formData.append("lastName", data.otherNames || "");
+    formData.append("phone", data.phone);
+    formData.append("gender", data.gender);
+    formData.append("email", data.email);
+    formData.append("password", "");
+    formData.append("dob", "");
+
     console.log(data);
     router.push("/users");
   };

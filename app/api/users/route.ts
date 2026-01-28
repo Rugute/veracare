@@ -5,11 +5,19 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-
     //    const user = await getCurrentUser();
     const body = await req.json();
 
-    const { firstName, lastName, phone, gender, email, password, companyid, dob } = body;
+    const {
+      firstName,
+      lastName,
+      phone,
+      gender,
+      email,
+      password,
+      companyid,
+      dob,
+    } = body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -33,23 +41,24 @@ export async function POST(req: Request) {
      });*/
 
     return NextResponse.json(user, { status: 201 });
-
   } catch {
     // console.error("Error creating product and variants:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
 
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser();
 
     if (!user) {
-      return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Unauthorized or user not found" },
+        { status: 401 },
+      );
     }
 
     const { searchParams } = new URL(req.url);
@@ -61,11 +70,11 @@ export async function GET(req: Request) {
       voided: 0,
       OR: search
         ? [
-          { firstName: { contains: search } },
-          { lastName: { contains: search } },
-          { email: { contains: search } },
-          { phone: { contains: search } },
-        ]
+            { firstName: { contains: search } },
+            { lastName: { contains: search } },
+            { email: { contains: search } },
+            { phone: { contains: search } },
+          ]
         : undefined,
     };
 
@@ -76,7 +85,6 @@ export async function GET(req: Request) {
         take: size,
         orderBy: { id: "asc" },
         // include: { course: true },
-
       }),
       prisma.user.count({ where }),
     ]);
@@ -88,10 +96,15 @@ export async function GET(req: Request) {
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error("requirements GET error:", err);
-      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 },
+      );
     } else {
-      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 },
+      );
     }
   }
 }
-

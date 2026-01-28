@@ -17,7 +17,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, MoreHorizontal, Pen, Plus, Trash } from "lucide-react";
+import {
+  Eye,
+  Loader2Icon,
+  MoreHorizontal,
+  Pen,
+  Plus,
+  Trash,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EntriesPerPage } from "../Utils/EntriesPerPage";
@@ -29,7 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { UseGetCourses } from "./ApiClient/ApiClient";
+import { UseDelteCourse, UseGetCourses } from "./ApiClient/ApiClient";
 import PageLoader from "../Utils/PageLoader";
 import PagePagination from "../Utils/Pagination";
 
@@ -46,9 +53,19 @@ const ViewCourses = () => {
     search: query,
   });
 
+  const { mutateAsync } = UseDelteCourse();
+
   const courses = data?.items || [];
   const totalItems = data?.total || 0;
   const totalPages = Math.ceil(totalItems / entries);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await mutateAsync(id);
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   if (isLoading) return <PageLoader />;
 
@@ -171,10 +188,23 @@ const ViewCourses = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-8 w-8 relative"
                             type="button"
+                            disabled={delId === course.id}
                           >
-                            <MoreHorizontal className="h-4 w-4" />
+                            {/* keep icon position stable */}
+                            <MoreHorizontal
+                              className={`h-4 w-4 transition-opacity ${
+                                delId === course.id
+                                  ? "opacity-0"
+                                  : "opacity-100"
+                              }`}
+                            />
+
+                            {/* overlay spinner when deleting */}
+                            {delId === course.id && (
+                              <Loader2Icon className="absolute h-4 w-4 animate-spin" />
+                            )}
                           </Button>
                         </DropdownMenuTrigger>
 
@@ -182,20 +212,23 @@ const ViewCourses = () => {
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
 
-                          <DropdownMenuItem>
+                          <DropdownMenuItem disabled={delId === course.id}>
                             <Eye className="mr-2 h-4 w-4" />
                             View
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem>
+                          <DropdownMenuItem disabled={delId === course.id}>
                             <Pen className="mr-2 h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator />
 
-                          <DropdownMenuItem>
-                            <Trash className="mr-2 h-4 w-4" />
+                          <DropdownMenuItem
+                            disabled={delId === course.id}
+                            onClick={() => handleDelete(course.id)}
+                          >
+                            <Trash className="mr-2 h-4 w-4 text-red-600" />
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

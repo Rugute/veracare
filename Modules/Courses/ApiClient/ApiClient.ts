@@ -45,7 +45,7 @@ export const UseDelteCourse = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/courses${id}`, {
+      const response = await fetch(`/api/courses/${id}`, {
         method: "PATCH",
         credentials: "include",
       });
@@ -61,7 +61,7 @@ export const UseDelteCourse = () => {
       });
       Sweetalert({
         icon: "success",
-        message: "Course DEleted",
+        message: "Course Deleted",
         title: "Success!",
       });
     },

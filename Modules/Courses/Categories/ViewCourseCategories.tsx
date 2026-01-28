@@ -68,10 +68,9 @@ const ViewCourseCategories = () => {
     try {
       setDelId(id);
       await mutateAsync(id);
+      setDelId("");
     } catch (error) {
       console.log({ error });
-    } finally {
-      setDelId("");
     }
   };
 
@@ -151,50 +150,57 @@ const ViewCourseCategories = () => {
                       {category.description || "-"}
                     </TableCell>
 
-                    <TableCell className="text-right">
-                      {delId === category.id ? (
-                        <Loader2Icon className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <>
-                          {" "}
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                                disabled={delId === category.id}
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
+                    <TableCell className="text-right align-top">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 relative"
+                            type="button"
+                            disabled={delId === category.id}
+                          >
+                            {/* keep icon position stable */}
+                            <MoreHorizontal
+                              className={`h-4 w-4 transition-opacity ${
+                                delId === category.id
+                                  ? "opacity-0"
+                                  : "opacity-100"
+                              }`}
+                            />
 
-                            <DropdownMenuContent align="end" className="w-40">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
+                            {/* overlay spinner when deleting */}
+                            {delId === category.id && (
+                              <Loader2Icon className="absolute h-4 w-4 animate-spin" />
+                            )}
+                          </Button>
+                        </DropdownMenuTrigger>
 
-                              <DropdownMenuItem>
-                                <Eye className="mr-2 h-4 w-4" />
-                                View
-                              </DropdownMenuItem>
+                        <DropdownMenuContent align="end" className="w-40">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
 
-                              <DropdownMenuItem>
-                                <Pen className="mr-2 h-4 w-4" />
-                                Edit
-                              </DropdownMenuItem>
+                          <DropdownMenuItem disabled={delId === category.id}>
+                            <Eye className="mr-2 h-4 w-4" />
+                            View
+                          </DropdownMenuItem>
 
-                              <DropdownMenuSeparator />
+                          <DropdownMenuItem disabled={delId === category.id}>
+                            <Pen className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
 
-                              <DropdownMenuItem
-                                onClick={() => handleDelete(category.id)}
-                              >
-                                <Trash className="mr-2 h-4 w-4 text-red-600" />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </>
-                      )}
+                          <DropdownMenuSeparator />
+
+                          <DropdownMenuItem
+                            disabled={delId === category.id}
+                            onClick={() => handleDelete(category.id)}
+                          >
+                            <Trash className="mr-2 h-4 w-4 text-red-600" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))
