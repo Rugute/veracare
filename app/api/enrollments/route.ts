@@ -68,9 +68,7 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-        include: { user: true },
-        
-
+        include: { user: true, event: true},
       }),
       prisma.enrollments.count({ where }),
     ]);
