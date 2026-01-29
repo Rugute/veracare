@@ -8,21 +8,27 @@ export async function POST(req: Request) {
     //    const user = await getCurrentUser();
     const body = await req.json();
     const {
-      userId,
-      eventId,
-      price,
+      enrollmentId,
+      orderNumber,
+      payerNumber,
+      amount,
+      currency,
+      modeOfPayment,
       status,
     } = body;
 
 
-    const enrollments = await prisma.enrollments.create({
+    const payments = await prisma.payments.create({
       data: {
-        userId,
-        eventId,
-        price,
+        enrollmentId,
+        orderNumber,
+        payerNumber,
+        amount,
+        currency,
+        modeOfPayment,
         status,
-        user: { connect: { id: userId } },
-        event: {connect:{id:eventId}},
+        enrollment: { connect: { id: enrollmentId } },
+       // event: { connect: { id: eventId } },
         voided: 0,
       },
     });
@@ -34,7 +40,7 @@ export async function POST(req: Request) {
        },
      });*/
 
-    return NextResponse.json(enrollments, { status: 201 });
+    return NextResponse.json(payments, { status: 201 });
 
   } catch {
     // console.error("Error creating product and variants:", error);
@@ -48,11 +54,11 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-     const user = await getCurrentUser();
+    const user = await getCurrentUser();
 
-     if (!user) {
-       return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
-     }
+    if (!user) {
+      return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
+    }
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const size = parseInt(searchParams.get("size") || "10");
@@ -63,16 +69,17 @@ export async function GET(req: Request) {
     };
 
     const [items, total] = await Promise.all([
-      prisma.enrollments.findMany({
+      prisma.payments.findMany({
         where,
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-        include: { user: true },
-        
+        include: { enrollment: true },
+        //include: { event: true },
+
 
       }),
-      prisma.enrollments.count({ where }),
+      prisma.payments.count({ where }),
     ]);
     if (items.length === 0) {
       return NextResponse.json({ items: [], total: 0 }, { status: 200 });

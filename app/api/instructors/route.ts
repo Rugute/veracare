@@ -1,16 +1,46 @@
-import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { v4 as uuidv4 } from "uuid";
 import { getCurrentUser } from "@/lib/auth";
+import path from "path";
+import { promises as fs } from "fs";
 import bcrypt from "bcryptjs";
 import { ro } from "date-fns/locale";
 
 export async function POST(req: Request) {
   try {
 
-    //    const user = await getCurrentUser();
-    const body = await req.json();
+    const formData = await req.formData();
+    
+      console.log(formData);
+      const firstName = formData.get("firstName") as string;
+      const lastName = formData.get("lastName") as string;
+      const phone = formData.get("phone") as string;
+      const gender = formData.get("gender") as string;
+      const email = formData.get("email") as string;
+      const password = formData.get("password") as string;
+      const companyid = formData.get("companyid") as string;
+      const dob = formData.get("dob") as string;
+      const file = formData.get("photo") as File;
 
-    const { firstName, lastName, phone, gender, email, password, companyid, dob } = body;
+    
+      let fileUrl = null;
+    
+      if (file) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+        const filePath = path.join(process.cwd(), "public", "uploads/users", fileName);
+    
+        await fs.mkdir(path.dirname(filePath), { recursive: true });
+        await fs.writeFile(filePath, buffer);
+
+        fileUrl = `/uploads/users/${fileName}`;
+      }
+
+    //    const user = await getCurrentUser();
+    //const body = await req.json();
+
+    //const { firstName, lastName, phone, gender, email, password, companyid, dob,photo } = body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -21,7 +51,10 @@ export async function POST(req: Request) {
         phone,
         gender,
         email,
+        roleId: 3, // Instructor role
         dob,
+        photo: fileUrl? fileUrl : null,
+        companyId: companyid ? parseInt(companyid, 10) : null,
         password: hashedPassword,
       },
     });
@@ -47,11 +80,11 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const user = await getCurrentUser();
+   /* const user = await getCurrentUser();
 
     if (!user) {
       return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
-    }
+    }*/
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
