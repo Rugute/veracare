@@ -1,0 +1,98 @@
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+import { getCurrentUser } from "@/lib/auth";
+
+export async function POST(req: Request) {
+  try {
+
+    //    const user = await getCurrentUser();
+    const body = await req.json();
+    const {
+      enrollmentId,
+      orderNumber,
+      payerNumber,
+      amount,
+      currency,
+      modeOfPayment,
+      status,
+    } = body;
+
+
+    const payments = await prisma.payments.create({
+      data: {
+        enrollmentId,
+        orderNumber,
+        payerNumber,
+        amount,
+        currency,
+        modeOfPayment,
+        status,
+        enrollment: { connect: { id: enrollmentId } },
+       // event: { connect: { id: eventId } },
+        voided: 0,
+      },
+    });
+
+    /* await prisma.category.update({
+       where: { id: parseInt(category.id, 10) },
+       data: {
+         name: name,
+       },
+     });*/
+
+    return NextResponse.json(payments, { status: 201 });
+
+  } catch {
+    // console.error("Error creating product and variants:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+
+export async function GET(req: Request) {
+  try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
+    }
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get("page") || "1");
+    const size = parseInt(searchParams.get("size") || "10");
+    const search = searchParams.get("search") || "";
+
+    const where = {
+      voided: 0,
+    };
+
+    const [items, total] = await Promise.all([
+      prisma.payments.findMany({
+        where,
+        skip: (page - 1) * size,
+        take: size,
+        orderBy: { id: "asc" },
+        include: { enrollment: true },
+        //include: { event: true },
+
+
+      }),
+      prisma.payments.count({ where }),
+    ]);
+    if (items.length === 0) {
+      return NextResponse.json({ items: [], total: 0 }, { status: 200 });
+    }
+
+    return NextResponse.json({ items, total }, { status: 200 });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error("requirements GET error:", err);
+      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    } else {
+      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    }
+  }
+}
+

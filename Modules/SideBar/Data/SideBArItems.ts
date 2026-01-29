@@ -142,5 +142,27 @@ export const DashBoardItems: LMSNavData = {
         },
       ],
     },
+    {
+      title: "Accounting",
+      url: "/accounting",
+      icon: ClipboardList,
+      items: [
+        {
+          title: "Payments",
+          url: "/payments",
+          icon: Users,
+        },
+        {
+          title: "Bills",
+          url: "/billing-plans",
+          icon: CreditCard,
+        },
+        {
+          title: "Instructor Payments",
+          url: "/instructor-payments",
+          icon: CreditCard,
+        },
+      ],
+    },
   ],
 };
