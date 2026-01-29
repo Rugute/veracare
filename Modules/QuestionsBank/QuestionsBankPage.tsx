@@ -123,7 +123,7 @@ const QuestionsBankPage = () => {
                 <TableHead className="w-55">Lesson</TableHead>
                 <TableHead>Question</TableHead>
                 <TableHead className="w-40">Question Type</TableHead>
-                 <TableHead className="w-40">Answer Available</TableHead>
+                <TableHead className="w-40">Available Answers</TableHead>
                 <TableHead className="w-30 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -152,7 +152,7 @@ const QuestionsBankPage = () => {
                   </TableCell>
                   <TableCell>
                     <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                      {i.questionType.name}
+                      {i._count.questionChoices}
                     </span>
                   </TableCell>
 

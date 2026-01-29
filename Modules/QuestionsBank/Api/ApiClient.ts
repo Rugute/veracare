@@ -30,6 +30,9 @@ interface bankRespone {
       name: string | null,
       description: string | null,
     },
+    _count: {
+      questionChoices: number;
+    };
   }[];
   total: number;
 }
