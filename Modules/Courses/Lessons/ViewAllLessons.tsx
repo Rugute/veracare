@@ -153,13 +153,13 @@ const ViewAllLessons = () => {
 
                       <TableCell>
                         <div className="font-medium leading-snug line-clamp-2 max-w-[320px]">
-                          {lesson.title}
+                          {lesson.lessonName}
                         </div>
                       </TableCell>
 
                       <TableCell>
                         <span className="inline-flex max-w-55 truncate items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                          {"lesson.course"}
+                          {lesson.course?.title}
                         </span>
                       </TableCell>
 

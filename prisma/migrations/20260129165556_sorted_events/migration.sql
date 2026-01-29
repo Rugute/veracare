@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE `event` ADD COLUMN `capacity` INTEGER NULL,
+    ADD COLUMN `userId` INTEGER NULL;
+
+-- AddForeignKey
+ALTER TABLE `Event` ADD CONSTRAINT `Event_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

@@ -116,8 +116,8 @@ export const DashBoardItems: LMSNavData = {
       icon: ClipboardList,
       items: [
         {
-          title: "Enrolled Students",
-          url: "/enrolled-students",
+          title: "Students",
+          url: "/students",
           icon: Users,
         },
         {

@@ -42,6 +42,7 @@ async function main() {
     { name: "Matching", description: "Matching question type" },
     { name: "Numerical", description: "Numerical question type" },
     { name: "Likert Scale", description: "Likert scale question type" },
+    { name: "Date", description: "Date" },
 
   ];
 

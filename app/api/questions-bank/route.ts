@@ -72,11 +72,21 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-        // include: { course: true },
-
+        include: {
+          course: true,
+          questionType: true,
+          lesson: true,
+          _count: {
+            select: {
+              questionChoices: true,
+            },
+          },
+        },
       }),
+
       prisma.questions.count({ where }),
     ]);
+
     if (items.length === 0) {
       return NextResponse.json({ items: [], total: 0 }, { status: 200 });
     }

@@ -123,6 +123,7 @@ const QuestionsBankPage = () => {
                 <TableHead className="w-55">Lesson</TableHead>
                 <TableHead>Question</TableHead>
                 <TableHead className="w-40">Question Type</TableHead>
+                 <TableHead className="w-40">Answer Available</TableHead>
                 <TableHead className="w-30 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -135,10 +136,10 @@ const QuestionsBankPage = () => {
                   </TableCell>
 
                   <TableCell className="truncate font-medium">
-                    {i.courseId}
+                    {i.course.title}
                   </TableCell>
 
-                  <TableCell className="truncate">{i.lessonId}</TableCell>
+                  <TableCell className="truncate">{i.lesson.lessonName}</TableCell>
 
                   <TableCell className="truncate text-muted-foreground">
                     {i.question}
@@ -146,7 +147,12 @@ const QuestionsBankPage = () => {
 
                   <TableCell>
                     <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                      {i.questionTypeId}
+                      {i.questionType.name}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
+                      {i.questionType.name}
                     </span>
                   </TableCell>
 
