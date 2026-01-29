@@ -70,7 +70,7 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { id: "asc" },
-        // include: { course: true },
+        include: { questions: true },
 
       }),
       prisma.questionChoices.count({ where }),

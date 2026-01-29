@@ -3,28 +3,38 @@ import { prisma } from "@/lib/prisma";
 import { writeFile } from "fs/promises";
 import path from "path";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { qid: string } }
-) {
-  try {
-    const cid = Number(params.qid); // convert here
 
+export async function GET(
+ req: NextRequest, ctx: { params: Promise<{ qid: string }> })
+ {
+  try {
+  const { qid } = await ctx.params;
+
+  if (!qid) {
+    return new Response(JSON.stringify({ error: "Question ID is required" }), {
+      status: 400,
+    });
+  }
+
+    const cid = Number(qid);
     if (isNaN(cid)) {
-      return new Response("Invalid requirement id", { status: 400 });
+      return new Response(JSON.stringify({ error: "Invalid Question ID" }), {
+        status: 400,
+      });
     }
 
-    const questions = await prisma.questionChoices.findMany({
-      where: { questionId: cid },
+    const questions = await prisma.questionChoices.findUnique({
+      where: { id: cid },
+      include: { questions: true },
     });
 
-    if (!questions || questions.length === 0) {
-      return new Response("Questions choices not found", { status: 404 });
+    if (!questions) {
+      return new Response(JSON.stringify({ error: "Questions not found" }), { status: 404 });
     }
 
     return Response.json(questions);
   } catch (err) {
     console.error("GET error:", err);
-    return new Response("Internal Server Error", { status: 500 });
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
   }
 }

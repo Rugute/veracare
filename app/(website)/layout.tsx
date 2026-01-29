@@ -1,5 +1,5 @@
 import '../globals.css'
-import Navbar from '@/Website/components/Navbar'
+import About from '@/Website/components/About'
 import Header from "@/Website/components/Header";
 import Hero from "@/Website/components/Hero";
 import Courses from "@/Website/components/Courses";
@@ -17,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <div className="App">
       <Header />
       <Hero />
+      <About />
       <Courses />
       <Testimonials />
       <Contact />

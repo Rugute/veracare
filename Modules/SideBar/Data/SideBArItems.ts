@@ -29,6 +29,12 @@ export interface LMSNavData {
 export const DashBoardItems: LMSNavData = {
   navMain: [
     {
+      title: "Home",
+      url: "/",
+      icon: LayoutDashboard,
+      isActive: true,
+    },
+    {
       title: "DashBoard",
       url: "/dashboard",
       icon: LayoutDashboard,
