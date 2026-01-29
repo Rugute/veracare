@@ -29,7 +29,6 @@ import { Plus, MoreHorizontal, Pen, Trash, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { UseGetRoles } from "../Api/ApiClient";
-import UserAvatar from "@/Modules/Utils/UserAvatar";
 import PagePagination from "@/Modules/Utils/Pagination";
 import PageLoader from "@/Modules/Utils/PageLoader";
 
@@ -60,9 +59,7 @@ const RolePage = () => {
             <CardTitle className="text-lg font-semibold">
               System Roles
             </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Manage all Roles
-            </p>
+            <p className="text-sm text-muted-foreground">Manage all Roles</p>
           </div>
 
           <Button
@@ -109,9 +106,7 @@ const RolePage = () => {
                 Roles.slice(0, entries).map((roles, idx) => (
                   <TableRow key={roles.id}>
                     <TableCell>{idx + 1}</TableCell>
-                    <TableCell className="font-medium">
-                      {roles.name}
-                    </TableCell>
+                    <TableCell className="font-medium">{roles.name}</TableCell>
                     <TableCell>{roles.description}</TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>

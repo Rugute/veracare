@@ -79,7 +79,7 @@ const ViewAllInstructors = () => {
           <div className="space-y-1">
             <h1 className="text-xl font-semibold tracking-tight">Users</h1>
             <p className="text-sm text-muted-foreground">
-              Manage user accounts, roles, and status.
+              Manage Instructor accounts, roles, and status.
             </p>
           </div>
 
@@ -89,7 +89,7 @@ const ViewAllInstructors = () => {
             type="button"
           >
             <Plus className="mr-2 h-4 w-4" />
-            Add User
+            Add Instructor
           </Button>
         </div>
 
@@ -98,7 +98,7 @@ const ViewAllInstructors = () => {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="w-full sm:max-w-sm">
             <Input
-              placeholder="Search by name, username, email, role..."
+              placeholder="Search by name"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="h-10"
@@ -171,7 +171,7 @@ const ViewAllInstructors = () => {
 
                     <TableCell>
                       <Badge variant="secondary" className="font-normal">
-                        Role
+                        {u.role?.name}
                       </Badge>
                     </TableCell>
 

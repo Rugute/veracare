@@ -5,8 +5,6 @@ import { getCurrentUser } from "@/lib/auth";
 import path from "path";
 import { promises as fs } from "fs";
 
-
-
 // POST: Create a new course
 export async function POST(req: Request) {
   try {
@@ -19,7 +17,10 @@ export async function POST(req: Request) {
     const price = formData.get("price") as string;
     const file = formData.get("image") as File | null;
     if (!title) {
-      return NextResponse.json({ message: "Title is required" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Title is required" },
+        { status: 400 },
+      );
     }
 
     // Handle file upload for photo
@@ -49,13 +50,16 @@ export async function POST(req: Request) {
         endDate,
         price,
         course: { connect: { id: parseInt(courseId, 10) } },
-      }, 
+      },
     });
 
     return NextResponse.json(lesson, { status: 201 });
   } catch (err) {
     console.error("Error creating lesson:", err);
-    return NextResponse.json({ message: "Failed to create lesson" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to create lesson" },
+      { status: 500 },
+    );
   }
 }
 
@@ -95,6 +99,9 @@ export async function GET(req: Request) {
     return NextResponse.json({ items, total }, { status: 200 });
   } catch (err) {
     console.error("Error fetching courses:", err);
-    return NextResponse.json({ message: "Failed to load courses" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to load courses" },
+      { status: 500 },
+    );
   }
 }

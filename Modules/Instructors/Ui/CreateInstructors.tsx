@@ -45,6 +45,7 @@ import {
   CreateUserSchemaType,
 } from "@/Modules/Users/Validations/Index";
 import { UseCreateInstructor } from "../Api/Apiclient";
+import { UseGetRoles } from "@/Modules/Roles/Api/ApiClient";
 
 const GENDER_OPTIONS = [
   { value: "MALE", label: "MALE" },
@@ -61,6 +62,7 @@ const ACCOUNT_TYPES = [
 const CreateInstructors = () => {
   const router = useRouter();
   const { mutateAsync } = UseCreateInstructor();
+  const { data: roles, isLoading: rolesLOading } = UseGetRoles({});
   const form = useForm<CreateUserSchemaType>({
     resolver: zodResolver(CreateUserSchema),
     defaultValues: {
@@ -373,14 +375,20 @@ const CreateInstructors = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {ROLE_OPTIONS.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
+                            {roles?.items.length === 0 ? (
+                              <div>
+                                <span>No roles found</span>
+                              </div>
+                            ) : (
+                              roles?.items.map((option) => (
+                                <SelectItem
+                                  key={option.id}
+                                  value={String(option.id)}
+                                >
+                                  {option.name}
+                                </SelectItem>
+                              ))
+                            )}
                           </SelectContent>
                         </Select>
 
