@@ -83,13 +83,13 @@ export async function GET(req: Request) {
     };
 
     const [items, total] = await Promise.all([
-      prisma.course.findMany({
+      prisma.event.findMany({
         where,
         skip: (page - 1) * size,
         take: size,
-        orderBy: { created_at: "desc" },
+       // orderBy: { created_at: "desc" },
       }),
-      prisma.course.count({ where }),
+      prisma.event.count({ where }),
     ]);
 
     return NextResponse.json({ items, total }, { status: 200 });
