@@ -44,8 +44,8 @@ import {
   CreateUserSchema,
   CreateUserSchemaType,
 } from "@/Modules/Users/Validations/Index";
-import { UseCreateInstructor } from "../Api/Apiclient";
 import { UseGetRoles } from "@/Modules/Roles/Api/ApiClient";
+import { UseCreateStudent } from "../Api/Apiclient";
 
 const GENDER_OPTIONS = [
   { value: "MALE", label: "MALE" },
@@ -57,9 +57,9 @@ const ACCOUNT_TYPES = [
   { value: "COPORATE", label: "COPORATE" },
 ];
 
-const CreateInstructors = () => {
+const CreateStudents = () => {
   const router = useRouter();
-  const { mutateAsync } = UseCreateInstructor();
+  const { mutateAsync } = UseCreateStudent();
   const { data: roles, isLoading: rolesLOading } = UseGetRoles({});
   const form = useForm<CreateUserSchemaType>({
     resolver: zodResolver(CreateUserSchema),
@@ -97,7 +97,7 @@ const CreateInstructors = () => {
 
     try {
       await mutateAsync(formData, {
-        onSuccess: () => router.push("/instructors"),
+        onSuccess: () => router.push("/students"),
       });
       form.reset();
     } catch (error) {
@@ -113,13 +113,13 @@ const CreateInstructors = () => {
             <UserPlus className="h-6 w-6" />
           </div>
           <CardTitle className="text-3xl font-bold tracking-tight">
-            Create new Instructor
+            Create new Students
           </CardTitle>
           <Button variant={"ghost"} onClick={() => router.back()}>
             Back
           </Button>
           <CardDescription className="text-base">
-            Add a new instructor to your organization
+            Add a new students to your organization
           </CardDescription>
         </CardHeader>
 
@@ -525,4 +525,4 @@ const CreateInstructors = () => {
   );
 };
 
-export default CreateInstructors;
+export default CreateStudents;

@@ -43,6 +43,40 @@ export const UseCreateRole = () => {
       }),
   });
 };
+export const UseDeleteRole = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/roles/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 204) {
+        throw new Error("Failed to delete role");
+      }
+    },
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["ROLES"],
+      });
+      Sweetalert({
+        icon: "success",
+        message: "Roles Deleted",
+        title: "Success!",
+      });
+    },
+    onError: (e: Error) =>
+      Sweetalert({
+        icon: "error",
+        message: e.message || "Failed to delete role",
+        title: "An error has occurred",
+      }),
+  });
+};
 
 interface RoleResponse {
   items: {

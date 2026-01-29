@@ -32,6 +32,9 @@ import PagePagination from "../Utils/Pagination";
 import { UseGetQuestionsBank } from "./Api/ApiClient";
 import PageLoader from "../Utils/PageLoader";
 import { UseGetCourses } from "../Courses/ApiClient/ApiClient";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
+import { PopoverContent } from "@radix-ui/react-popover";
+import CreateQuestionsAnswers from "./CreateQuestionsAnswers";
 
 const QuestionsBankPage = () => {
   const router = useRouter();
@@ -50,6 +53,7 @@ const QuestionsBankPage = () => {
     pageSize: 50,
     search: "",
   });
+
   const questions = data?.items || [];
   const totalQuestions = data?.total || 0;
   const totalPages = Math.ceil(totalQuestions / entries) || 0;
@@ -139,7 +143,9 @@ const QuestionsBankPage = () => {
                     {i.course.title}
                   </TableCell>
 
-                  <TableCell className="truncate">{i.lesson.lessonName}</TableCell>
+                  <TableCell className="truncate">
+                    {i.lesson.lessonName}
+                  </TableCell>
 
                   <TableCell className="truncate text-muted-foreground">
                     {i.question}
@@ -152,7 +158,13 @@ const QuestionsBankPage = () => {
                   </TableCell>
                   <TableCell>
                     <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                      {i._count.questionChoices}
+                      <CreateQuestionsAnswers
+                        items={i._count.questionChoices}
+                        questionId={String(i.id)}
+                        questionName={i.question || ""}
+                        course={i.course.title || ""}
+                        lesson={i.lesson.lessonName || ""}
+                      />
                     </span>
                   </TableCell>
 

@@ -43,13 +43,7 @@ export const CreateUserSchema = z.object({
     .regex(/^\d+$/, "Phone number must contain only digits")
     .or(z.literal("")),
 
-  role: z
-    .string()
-    .trim()
-    .min(1, "This field is required")
-    .refine((val) => ["ADMIN", "STUDENT", "INSTRUCTOR"].includes(val), {
-      error: "Select a valid gender",
-    }),
+  role: z.string().trim().min(1, "This field is required"),
 
   organization: requiredString,
   accountType: z
