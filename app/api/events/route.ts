@@ -16,6 +16,10 @@ export async function POST(req: Request) {
     const courseId = formData.get("courseId") as string;
     const price = formData.get("price") as string;
     const file = formData.get("image") as File | null;
+    const capacity = formData.get("capacity") as string;
+    const location = formData.get("location") as string;
+    const instructor = formData.get("instructor") as string;
+
     if (!title) {
       return NextResponse.json(
         { message: "Title is required" },
@@ -28,12 +32,12 @@ export async function POST(req: Request) {
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-      const filePath = path.join(process.cwd(), "public", "uploads", fileName);
+      const filePath = path.join(process.cwd(), "public", "uploads/events", fileName);
 
       await fs.mkdir(path.dirname(filePath), { recursive: true });
       await fs.writeFile(filePath, buffer);
 
-      photoUrl = `/uploads/${fileName}`;
+      photoUrl = `/uploads/events/${fileName}`;
     }
 
     const user = await getCurrentUser();
@@ -49,6 +53,10 @@ export async function POST(req: Request) {
         startDate,
         endDate,
         price,
+        location,
+        user: { connect: { id: parseInt(instructor) } },
+        capacity: capacity ? parseInt(capacity, 10) : null,
+        image: photoUrl,
         course: { connect: { id: parseInt(courseId, 10) } },
       },
     });
@@ -91,7 +99,7 @@ export async function GET(req: Request) {
         where,
         skip: (page - 1) * size,
         take: size,
-       // orderBy: { created_at: "desc" },
+        // orderBy: { created_at: "desc" },
       }),
       prisma.event.count({ where }),
     ]);
