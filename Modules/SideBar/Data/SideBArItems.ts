@@ -19,6 +19,7 @@ export interface NavItem {
   icon?: LucideIcon;
   isActive?: boolean;
   items?: NavItem[];
+  roles?: string[];
 }
 
 export interface LMSNavData {
@@ -32,12 +33,14 @@ export const DashBoardItems: LMSNavData = {
       url: "/dashboard",
       icon: LayoutDashboard,
       isActive: true,
+      roles: ["SUPER_ADMIN", "ADMIN", "INSTRUCTOR"],
       items: [
         {
           title: "Statistics",
           url: "/dashboard",
           icon: ClipboardList,
           isActive: true,
+          roles: ["SUPER_ADMIN", "ADMIN"],
         },
       ],
     },

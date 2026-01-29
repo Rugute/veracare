@@ -171,7 +171,7 @@ const ViewAllUsers = () => {
 
                     <TableCell>
                       <Badge variant="secondary" className="font-normal">
-                        Role
+                        {u.role?.name || "N/A"}
                       </Badge>
                     </TableCell>
 
@@ -189,7 +189,7 @@ const ViewAllUsers = () => {
                     </TableCell>
 
                     <TableCell className="text-muted-foreground">
-                      <div className="max-w-40 truncate">{"u.accountType"}</div>
+                      <div className="max-w-40 truncate">{u.cooprateAccount === 1 ? "Cooperate" : "Individual"}</div>
                     </TableCell>
 
                     <TableCell className="text-right">

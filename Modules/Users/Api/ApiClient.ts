@@ -13,6 +13,7 @@ interface UsersReponse {
     cooprateAccount: 0 | 1;
     companyId: number;
     voided: 0 | 1;
+    role: { id: number; name: string }
   }[];
   total: 1;
 }
