@@ -24,40 +24,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Eye, Pen, Plus, Trash } from "lucide-react";
+import { Eye, Loader2Icon, Pen, Plus, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { EntriesPerPage } from "../Utils/EntriesPerPage";
 import PagePagination from "../Utils/Pagination";
-
-const Questions = [
-  {
-    course: "Introduction to Therapy Practices",
-    lesson: "Foundations of Therapeutic Care",
-    question: "What is the primary goal of therapeutic intervention?",
-    questionType: "Multiple Choice",
-  },
-  {
-    course: "Full-Stack Web Development",
-    lesson: "JavaScript Fundamentals",
-    question: "Explain the difference between var, let, and const.",
-    questionType: "Short Answer",
-  },
-  {
-    course: "Applied Data Science",
-    lesson: "Data Analysis Basics",
-    question:
-      "Which metric is most appropriate for evaluating a regression model?",
-    questionType: "Multiple Choice",
-  },
-];
+import { UseGetQuestionsBank } from "./Api/ApiClient";
+import PageLoader from "../Utils/PageLoader";
+import { UseGetCourses } from "../Courses/ApiClient/ApiClient";
 
 const QuestionsBankPage = () => {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [entries, setEntries] = useState(10);
+  const [query, setQuery] = useState("");
 
-  const totalPages = Math.ceil(Questions.length / entries);
+  const { data, isLoading } = UseGetQuestionsBank({
+    page,
+    pageSize: entries,
+    search: query,
+  });
+
+  const { data: courses, isLoading: coursesLoading } = UseGetCourses({
+    page: 1,
+    pageSize: 50,
+    search: "",
+  });
+  const questions = data?.items || [];
+  const totalQuestions = data?.total || 0;
+  const totalPages = Math.ceil(totalQuestions / entries) || 0;
+
+  if (isLoading) return <PageLoader />;
 
   return (
     <Card className="border shadow-sm">
@@ -74,7 +71,12 @@ const QuestionsBankPage = () => {
           </div>
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <Input placeholder="Search questions..." className="h-9 sm:w-64" />
+            <Input
+              placeholder="Search questions..."
+              className="h-9 sm:w-64"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
 
             <Button
               className="h-9 gap-2 cursor-pointer"
@@ -91,8 +93,16 @@ const QuestionsBankPage = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
-                {["cat 1", "cat 2", "cat 3"].map((i, idx) => (
-                  <DropdownMenuItem key={idx}>{i}</DropdownMenuItem>
+                {courses?.items.map((i, idx) => (
+                  <DropdownMenuItem key={idx} onSelect={() => setQuery(i.id)}>
+                    {coursesLoading ? (
+                      <>
+                        <Loader2Icon className="animate-spin h-4 w-4" />
+                      </>
+                    ) : (
+                      <>{i.title}</>
+                    )}
+                  </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -118,17 +128,17 @@ const QuestionsBankPage = () => {
             </TableHeader>
 
             <TableBody>
-              {Questions.map((i, idx) => (
+              {questions.map((i, idx) => (
                 <TableRow key={idx}>
                   <TableCell className="text-muted-foreground">
                     {idx + 1}
                   </TableCell>
 
                   <TableCell className="truncate font-medium">
-                    {i.course}
+                    {i.courseId}
                   </TableCell>
 
-                  <TableCell className="truncate">{i.lesson}</TableCell>
+                  <TableCell className="truncate">{i.lessonId}</TableCell>
 
                   <TableCell className="truncate text-muted-foreground">
                     {i.question}
@@ -136,7 +146,7 @@ const QuestionsBankPage = () => {
 
                   <TableCell>
                     <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                      {i.questionType}
+                      {i.questionTypeId}
                     </span>
                   </TableCell>
 
@@ -174,11 +184,11 @@ const QuestionsBankPage = () => {
           <span className="hidden sm:inline-block">
             Showing{" "}
             <span className="font-medium text-foreground">
-              {Math.min(entries, Questions.length)}
+              {Math.min(entries, totalQuestions)}
             </span>{" "}
             of{" "}
             <span className="font-medium text-foreground">
-              {Questions.length}
+              {totalQuestions}
             </span>
           </span>
         </div>

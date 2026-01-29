@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import DashBoardSidebarWrapper from "@/Modules/SideBar/Ui/DashBoardSideBarWrapper";
 import { AuthContextProvided } from "@/context/AuthContext";
 import { getCurrentUser } from "@/lib/auth";
+import { UtilsContextProvider } from "@/context/UtilsContext";
 
 interface Props {
   children: ReactNode;
@@ -23,7 +24,9 @@ export default async function ProtectedLayout({ children }: Props) {
 
   return (
     <AuthContextProvided initialAuth={!!user} initialUser={user}>
-      <DashBoardSidebarWrapper>{children}</DashBoardSidebarWrapper>
+      <UtilsContextProvider>
+        <DashBoardSidebarWrapper>{children}</DashBoardSidebarWrapper>
+      </UtilsContextProvider>
     </AuthContextProvided>
   );
 }

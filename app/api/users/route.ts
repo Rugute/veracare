@@ -8,33 +8,36 @@ import bcrypt from "bcryptjs";
 
 export async function POST(req: Request) {
   try {
-
     const formData = await req.formData();
-    
-      console.log(formData);
-      const firstName = formData.get("firstName") as string;
-      const lastName = formData.get("lastName") as string;
-      const phone = formData.get("phone") as string;
-      const gender = formData.get("gender") as string;
-      const email = formData.get("email") as string;
-      const password = formData.get("password") as string;
-      const companyid = formData.get("companyid") as string;
-      const dob = formData.get("dob") as string;
-      const file = formData.get("photo") as File;
 
-    
-      let fileUrl = null;
-    
-      if (file) {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-        const filePath = path.join(process.cwd(), "public", "uploads/users", fileName);
-    
-        await fs.mkdir(path.dirname(filePath), { recursive: true });
-        await fs.writeFile(filePath, buffer);
+    console.log(formData);
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const phone = formData.get("phone") as string;
+    const gender = formData.get("gender") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const companyid = formData.get("companyid") as string;
+    const dob = formData.get("dob") as string;
+    const file = formData.get("photo") as File;
 
-        fileUrl = `/uploads/users/${fileName}`;
-      }
+    let fileUrl = null;
+
+    if (file) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
+      const filePath = path.join(
+        process.cwd(),
+        "public",
+        "uploads/users",
+        fileName,
+      );
+
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      await fs.writeFile(filePath, buffer);
+
+      fileUrl = `/uploads/users/${fileName}`;
+    }
 
     //    const user = await getCurrentUser();
     //const body = await req.json();
@@ -51,7 +54,7 @@ export async function POST(req: Request) {
         gender,
         email,
         dob,
-        photo: fileUrl? fileUrl : null,
+        photo: fileUrl ? fileUrl : null,
         companyId: companyid ? parseInt(companyid, 10) : null,
         password: hashedPassword,
       },
@@ -65,20 +68,18 @@ export async function POST(req: Request) {
      });*/
 
     return NextResponse.json(user, { status: 201 });
-
   } catch {
     // console.error("Error creating product and variants:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-
 export async function GET(req: Request) {
   try {
-   /* const user = await getCurrentUser();
+    /* const user = await getCurrentUser();
 
     if (!user) {
       return NextResponse.json({ message: "Unauthorized or user not found" }, { status: 401 });
@@ -93,11 +94,11 @@ export async function GET(req: Request) {
       voided: 0,
       OR: search
         ? [
-          { firstName: { contains: search } },
-          { lastName: { contains: search } },
-          { email: { contains: search } },
-          { phone: { contains: search } },
-        ]
+            { firstName: { contains: search } },
+            { lastName: { contains: search } },
+            { email: { contains: search } },
+            { phone: { contains: search } },
+          ]
         : undefined,
     };
 
@@ -108,7 +109,6 @@ export async function GET(req: Request) {
         take: size,
         orderBy: { id: "asc" },
         include: { role: true },
-
       }),
       prisma.user.count({ where }),
     ]);
@@ -120,10 +120,15 @@ export async function GET(req: Request) {
   } catch (err: unknown) {
     if (err instanceof Error) {
       console.error("requirements GET error:", err);
-      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 },
+      );
     } else {
-      return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+      return NextResponse.json(
+        { message: "Internal Server Error" },
+        { status: 500 },
+      );
     }
   }
 }
-

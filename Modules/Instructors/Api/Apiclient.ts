@@ -1,47 +1,40 @@
 import { Sweetalert } from "@/Modules/Utils/SweetAlert";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export interface LessonsResponse {
-  items: LessonItem[];
+type Role = {
+  voided: number;
+  id: number;
+  name: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type Instructor = {
+  firstName: string | null;
+  lastName: string | null;
+  phone: string | null;
+  gender: string | null;
+  email: string;
+  password: string;
+  dob: string | null;
+  photo: string | null;
+  cooprateAccount: number;
+  voided: number;
+  id: number;
+  companyId: number | null;
+  roleId: number | null;
+  role: Role | null;
+};
+
+export type InstructorResponse = {
+  items: Instructor[];
   total: number;
-}
+};
 
-export interface LessonItem {
-  id: number;
-  courseId: number;
-  lessonName: string;
-  lessonVideo: string;
-  lessonDuration: string | null;
-  lessonOrder: string;
-  lessonDescription: string | null;
-  createdAt: string; // ISO date
-  updatedAt: string; // ISO date
-  lessonDocument: string | null;
-  photo: string | null;
-  photoPath: string | null;
-  voided: number;
-  course: Course;
-}
-
-export interface Course {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  published: boolean;
-  created_at: string; // ISO date
-  updated_at: string; // ISO date
-  deleted_at: string | null;
-  photo: string | null;
-  categoryId: number | null;
-  uuid: string;
-  voided: number;
-  createdById: number;
-}
-
-export const UseGetAllLessons = ({ page, pageSize, search }: ApiParams) => {
-  return useQuery<LessonsResponse>({
-    queryKey: ["ALL_LESSONS", page, pageSize, search],
+export const UseGetInstructors = ({ page, pageSize, search }: ApiParams) => {
+  return useQuery<InstructorResponse>({
+    queryKey: ["GET_ALL_INSTRUCTORS", page, pageSize, search],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -49,7 +42,7 @@ export const UseGetAllLessons = ({ page, pageSize, search }: ApiParams) => {
         ...(search && { search }),
       });
 
-      const response = await fetch(`/api/lessons?${params.toString()}`, {
+      const response = await fetch(`/api/instructors?${params.toString()}`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -59,7 +52,7 @@ export const UseGetAllLessons = ({ page, pageSize, search }: ApiParams) => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Internal server error");
+        throw new Error("Internal server error");
       }
 
       return data;
@@ -67,30 +60,32 @@ export const UseGetAllLessons = ({ page, pageSize, search }: ApiParams) => {
   });
 };
 
-export const UseCreateLesson = () => {
+export const UseCreateInstructor = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await fetch("/api/lessons", {
+      const response = await fetch("/api/instructors", {
         method: "POST",
         credentials: "include",
+
         body: formData,
       });
+
       const data = await response.json();
-      console.log({ data });
+
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create lesson");
+        throw new Error(data.message || "Failed to create Instructor");
       }
       return data;
     },
 
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
-        queryKey: ["ALL_LESSONS"],
+        queryKey: ["GET_ALL_INSTRUCTORS"],
       });
       Sweetalert({
         icon: "success",
-        message: data.message || "Lesson created",
+        message: data.message || "Instructor created",
         title: "Success!",
       });
     },
@@ -103,30 +98,30 @@ export const UseCreateLesson = () => {
       }),
   });
 };
-export const UseDeleteLesson = () => {
+export const UseDeleteInstructor = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      const response = await fetch(`/api/lessons/${id}`, {
-        method: "POST",
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/instructors/${id}`, {
+        method: "PATCH",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (response.status === 204) {
-        throw new Error("Failed to delete lesson");
+      if (response.status !== 204) {
+        throw new Error("Failed to delete Instructor");
       }
     },
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["ALL_LESSONS"],
+        queryKey: ["GET_ALL_INSTRUCTORS"],
       });
       Sweetalert({
         icon: "success",
-        message: "Lesson deleted",
+        message: "Instructor deleted",
         title: "Success!",
       });
     },

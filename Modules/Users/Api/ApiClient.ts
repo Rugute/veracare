@@ -1,47 +1,24 @@
 import { Sweetalert } from "@/Modules/Utils/SweetAlert";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export interface LessonsResponse {
-  items: LessonItem[];
-  total: number;
+interface UsersReponse {
+  items: {
+    id: number;
+    email: string;
+    firstName: string;
+    lastName: string;
+    gender: string;
+    phone: string;
+    dob: string;
+    cooprateAccount: 0 | 1;
+    companyId: number;
+    voided: 0 | 1;
+  }[];
+  total: 1;
 }
-
-export interface LessonItem {
-  id: number;
-  courseId: number;
-  lessonName: string;
-  lessonVideo: string;
-  lessonDuration: string | null;
-  lessonOrder: string;
-  lessonDescription: string | null;
-  createdAt: string; // ISO date
-  updatedAt: string; // ISO date
-  lessonDocument: string | null;
-  photo: string | null;
-  photoPath: string | null;
-  voided: number;
-  course: Course;
-}
-
-export interface Course {
-  id: number;
-  title: string;
-  slug: string;
-  description: string;
-  published: boolean;
-  created_at: string; // ISO date
-  updated_at: string; // ISO date
-  deleted_at: string | null;
-  photo: string | null;
-  categoryId: number | null;
-  uuid: string;
-  voided: number;
-  createdById: number;
-}
-
-export const UseGetAllLessons = ({ page, pageSize, search }: ApiParams) => {
-  return useQuery<LessonsResponse>({
-    queryKey: ["ALL_LESSONS", page, pageSize, search],
+export function UseGetUsers({ page, pageSize, search }: ApiParams) {
+  return useQuery<UsersReponse>({
+    queryKey: ["GET_ALL_USERS", page, pageSize, search],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -49,48 +26,51 @@ export const UseGetAllLessons = ({ page, pageSize, search }: ApiParams) => {
         ...(search && { search }),
       });
 
-      const response = await fetch(`/api/lessons?${params.toString()}`, {
+      const response = await fetch(`/api/users?${params.toString()}`, {
         method: "GET",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       });
+
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Internal server error");
+        throw new Error(data.error || "Error fetching user");
       }
 
       return data;
     },
   });
-};
+}
 
-export const UseCreateLesson = () => {
+export function UseCreateUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await fetch("/api/lessons", {
+      const response = await fetch("/api/users", {
         method: "POST",
         credentials: "include",
         body: formData,
       });
+
       const data = await response.json();
-      console.log({ data });
+
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create lesson");
+        throw new Error(data.error || "Failed to create user");
       }
+
       return data;
     },
 
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
-        queryKey: ["ALL_LESSONS"],
+        queryKey: ["GET_ALL_USERS"],
       });
       Sweetalert({
         icon: "success",
-        message: data.message || "Lesson created",
+        message: data.message || "User Created",
         title: "Success!",
       });
     },
@@ -102,31 +82,31 @@ export const UseCreateLesson = () => {
         title: "An error has occurred",
       }),
   });
-};
-export const UseDeleteLesson = () => {
+}
+export function UseDeleteUser() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      const response = await fetch(`/api/lessons/${id}`, {
-        method: "POST",
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/users/${id}`, {
+        method: "PATCH",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      if (response.status === 204) {
-        throw new Error("Failed to delete lesson");
+      if (response.status === 203) {
+        throw new Error("Failed to delete user");
       }
     },
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["ALL_LESSONS"],
+        queryKey: ["GET_ALL_USERS"],
       });
       Sweetalert({
         icon: "success",
-        message: "Lesson deleted",
+        message: "User Deleted!",
         title: "Success!",
       });
     },
@@ -138,4 +118,4 @@ export const UseDeleteLesson = () => {
         title: "An error has occurred",
       }),
   });
-};
+}

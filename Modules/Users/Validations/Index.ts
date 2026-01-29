@@ -23,6 +23,19 @@ export const CreateUserSchema = z.object({
     .refine((val) => ["MALE", "FEMALE"].includes(val), {
       error: "Select a valid gender",
     }),
+  dateofBirth: z.coerce
+    .date({ message: "Please enter a valid date" })
+    .refine((val) => val <= new Date(), {
+      message: "Date of birth cannot be in the future",
+    }),
+  password: z
+    .string()
+    .trim()
+    .min(8, "Password should be at least 8 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must contain an uppercase letter, a lowercase letter, a number, and a special character",
+    ),
   phone: z
     .string()
     .trim()

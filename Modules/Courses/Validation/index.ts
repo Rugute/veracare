@@ -14,15 +14,15 @@ const ACCEPTED_IMAGE_TYPES = [
 export const CreateCourseSchema = z.object({
   title: requiredString,
   category: requiredString,
-  price: z.coerce
-    .number("Enter a valid price")
-    .min(1, "Price should be at least 1"),
+  // price: z.coerce
+  //   .number("Enter a valid price")
+  //   .min(1, "Price should be at least 1"),
   published: requiredString.refine((val) => ["1", "0"].includes(val), {
     error: "Select a valid option",
   }),
-  instructor: requiredString,
+  // instructor: requiredString,
   description: requiredString,
-  requirements: requiredString,
+  // requirements: requiredString,
   file: z
     .instanceof(File, { message: "file is required" })
     .refine((file) => file.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)

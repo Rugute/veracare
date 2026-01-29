@@ -26,9 +26,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EntriesPerPage } from "@/Modules/Utils/EntriesPerPage";
-import { Eye, MoreHorizontal, Pen, Trash, Plus } from "lucide-react";
+import {
+  Eye,
+  MoreHorizontal,
+  Pen,
+  Trash,
+  Plus,
+  Loader2Icon,
+} from "lucide-react";
 import { useState } from "react";
-import { UseGetCourseCategory } from "./ApiClient/ApiClient";
+import {
+  UseDeleteCourseCategory,
+  UseGetCourseCategory,
+} from "./ApiClient/ApiClient";
 import PageLoader from "@/Modules/Utils/PageLoader";
 import { useDebounce } from "use-debounce";
 import PagePagination from "@/Modules/Utils/Pagination";
@@ -39,6 +49,7 @@ const ViewCourseCategories = () => {
   const [entries, setEntries] = useState(10);
   const [page, setPage] = useState(1);
   const [debouncedSearch] = useDebounce(searchQuery, 300);
+  const [delId, setDelId] = useState("");
   const router = useRouter();
 
   const { data, isLoading } = UseGetCourseCategory({
@@ -46,11 +57,22 @@ const ViewCourseCategories = () => {
     pageSize: entries,
     search: debouncedSearch,
   });
+  const { mutateAsync } = UseDeleteCourseCategory();
 
   const categories = data?.items || [];
   const totalItems = data?.total || 0;
 
   const totalPages = Math.ceil(totalItems / entries);
+
+  const handleDelete = async (id: string) => {
+    try {
+      setDelId(id);
+      await mutateAsync(id);
+      setDelId("");
+    } catch (error) {
+      console.log({ error });
+    }
+  };
 
   if (isLoading) {
     return <PageLoader />;
@@ -128,15 +150,29 @@ const ViewCourseCategories = () => {
                       {category.description || "-"}
                     </TableCell>
 
-                    <TableCell className="text-right">
+                    <TableCell className="text-right align-top">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-8 w-8 relative"
+                            type="button"
+                            disabled={delId === category.id}
                           >
-                            <MoreHorizontal className="h-4 w-4" />
+                            {/* keep icon position stable */}
+                            <MoreHorizontal
+                              className={`h-4 w-4 transition-opacity ${
+                                delId === category.id
+                                  ? "opacity-0"
+                                  : "opacity-100"
+                              }`}
+                            />
+
+                            {/* overlay spinner when deleting */}
+                            {delId === category.id && (
+                              <Loader2Icon className="absolute h-4 w-4 animate-spin" />
+                            )}
                           </Button>
                         </DropdownMenuTrigger>
 
@@ -144,20 +180,23 @@ const ViewCourseCategories = () => {
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
 
-                          <DropdownMenuItem>
+                          <DropdownMenuItem disabled={delId === category.id}>
                             <Eye className="mr-2 h-4 w-4" />
                             View
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem>
+                          <DropdownMenuItem disabled={delId === category.id}>
                             <Pen className="mr-2 h-4 w-4" />
                             Edit
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator />
 
-                          <DropdownMenuItem>
-                            <Trash className="mr-2 h-4 w-4" />
+                          <DropdownMenuItem
+                            disabled={delId === category.id}
+                            onClick={() => handleDelete(category.id)}
+                          >
+                            <Trash className="mr-2 h-4 w-4 text-red-600" />
                             Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>

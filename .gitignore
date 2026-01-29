@@ -42,3 +42,5 @@ next-env.d.ts
 
 /app/generated/prisma
 /seed
+./public/uploads
+/app/(protected)/(dashboard)/test/

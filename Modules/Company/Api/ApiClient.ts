@@ -92,3 +92,37 @@ export const UseGetCompnaies = ({
     },
   });
 };
+
+export const UseDeleteCompany = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/company/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+
+      if (response.status !== 204) {
+        throw new Error("Failed to delete Company");
+      }
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["ALL_COMPANIES"],
+      });
+      Sweetalert({
+        icon: "success",
+        message: "Company deleted",
+        title: "Success!",
+      });
+    },
+    onError: (e: Error) => {
+      Sweetalert({
+        icon: "error",
+        message: e.message,
+        title: "An error has occurred",
+      });
+    },
+  });
+};

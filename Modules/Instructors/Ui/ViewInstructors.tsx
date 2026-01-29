@@ -36,24 +36,24 @@ import {
   Plus,
   Trash2Icon,
 } from "lucide-react";
-import { EntriesPerPage } from "../Utils/EntriesPerPage";
-import { UseDeleteUser, UseGetUsers } from "./Api/ApiClient";
-import PageLoader from "../Utils/PageLoader";
-import PagePagination from "../Utils/Pagination";
+import { UseDeleteInstructor, UseGetInstructors } from "../Api/Apiclient";
+import PageLoader from "@/Modules/Utils/PageLoader";
+import { EntriesPerPage } from "@/Modules/Utils/EntriesPerPage";
+import PagePagination from "@/Modules/Utils/Pagination";
 
-const ViewAllUsers = () => {
+const ViewAllInstructors = () => {
   const router = useRouter();
   const [entries, setEntries] = useState(10);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [delId, setDelId] = useState("");
 
-  const { data, isLoading } = UseGetUsers({
+  const { data, isLoading } = UseGetInstructors({
     page,
     pageSize: entries,
     search: query,
   });
-  const { mutateAsync } = UseDeleteUser();
+  const { mutateAsync } = UseDeleteInstructor();
 
   const AllUsers = data?.items || [];
   const totalItems = data?.total || 0;
@@ -84,7 +84,7 @@ const ViewAllUsers = () => {
           </div>
 
           <Button
-            onClick={() => router.push("/users/add")}
+            onClick={() => router.push("/instructors/add")}
             className="h-10 px-4"
             type="button"
           >
@@ -263,4 +263,4 @@ const ViewAllUsers = () => {
   );
 };
 
-export default ViewAllUsers;
+export default ViewAllInstructors;

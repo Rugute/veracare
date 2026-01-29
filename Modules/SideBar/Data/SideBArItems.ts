@@ -1,4 +1,17 @@
-import { BookOpen, Building2, ClipboardList, CreditCard, FileText, GraduationCap, HelpCircle, Layers, LayoutDashboard, LucideIcon, UserCog, Users } from "lucide-react";
+import {
+  BookOpen,
+  Building2,
+  ClipboardList,
+  CreditCard,
+  FileText,
+  GraduationCap,
+  HelpCircle,
+  Layers,
+  LayoutDashboard,
+  LucideIcon,
+  UserCog,
+  Users,
+} from "lucide-react";
 
 export interface NavItem {
   title: string;
@@ -14,11 +27,6 @@ export interface LMSNavData {
 
 export const DashBoardItems: LMSNavData = {
   navMain: [
-    {
-      title: "Home / Website",
-      url: "/",
-      isActive: true,
-    },
     {
       title: "DashBoard",
       url: "/dashboard",
@@ -52,7 +60,7 @@ export const DashBoardItems: LMSNavData = {
           title: "Roles",
           url: "/roles",
           icon: Users,
-        }
+        },
       ],
     },
     {
@@ -77,7 +85,7 @@ export const DashBoardItems: LMSNavData = {
         },
         {
           title: "Questions Type",
-          url: "/questions-bank",
+          url: "/questions-type",
           icon: HelpCircle,
         },
         {
@@ -99,8 +107,7 @@ export const DashBoardItems: LMSNavData = {
           title: "Calendar",
           url: "/calendar",
           icon: HelpCircle,
-        }
-
+        },
       ],
     },
     {
