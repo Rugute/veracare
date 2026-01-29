@@ -27,14 +27,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { UseCreateLesson, UseGetAllLessons } from "./Api/ApiClient";
+import { UseCreateLesson } from "./Api/ApiClient";
 import { useTransition } from "react";
+import { UseGetCourses } from "../ApiClient/ApiClient";
 
 const CreateLessons = () => {
   const router = useRouter();
   const [isPending, startTransistion] = useTransition();
   const { mutateAsync } = UseCreateLesson();
-  const { data: Courses, isLoading } = UseGetAllLessons({
+  const { data: Courses, isLoading } = UseGetCourses({
     page: 1,
     pageSize: 50,
     search: "",
@@ -108,41 +109,38 @@ const CreateLessons = () => {
             className="space-y-6"
           >
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {isLoading ? (
-                <Loader2Icon className="animate-spin  h-4 w-4" />
-              ) : (
-                <>
-                  {" "}
-                  <FormField
-                    name="course"
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-medium">Course</FormLabel>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        >
-                          <FormControl>
-                            <SelectTrigger className="h-10">
-                              <SelectValue placeholder="Select Course" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {Courses?.items &&
-                              Courses.items.map((i, idx) => (
-                                <SelectItem key={idx} value={i.id}>
-                                  {i.title}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage className="text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                </>
-              )}
+              <FormField
+                name="course"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel className="font-medium">Course</FormLabel>
+                    <Select
+                      value={field.value || undefined}
+                      onValueChange={(values) => field.onChange(values)}
+                    >
+                      <FormControl className="w-full">
+                        <SelectTrigger className="h-10">
+                          <SelectValue placeholder="Select Course" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {Courses?.items &&
+                          Courses.items.map((i, idx) => (
+                            <SelectItem key={idx} value={String(i.id)}>
+                              {isLoading ? (
+                                <Loader2Icon className="animate-spin  h-4 w-4" />
+                              ) : (
+                                <> {i.title}</>
+                              )}
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="text-sm" />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 name="lesson"
@@ -166,7 +164,7 @@ const CreateLessons = () => {
                 name="videoUrl"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-full md:col-span-2">
                     <FormLabel className="font-medium">Video URL</FormLabel>
                     <FormControl>
                       <Input

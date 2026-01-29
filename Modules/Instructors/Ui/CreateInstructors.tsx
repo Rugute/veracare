@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { CreateUserSchema, CreateUserSchemaType } from "./Validations/Index";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -40,27 +40,27 @@ import {
   UploadCloud,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { UseCreateUser } from "./Api/ApiClient";
+import {
+  CreateUserSchema,
+  CreateUserSchemaType,
+} from "@/Modules/Users/Validations/Index";
+import { UseCreateInstructor } from "../Api/Apiclient";
 
 const GENDER_OPTIONS = [
   { value: "MALE", label: "MALE" },
   { value: "FEMALE", label: "FEMALE" },
 ];
 
-const ROLE_OPTIONS = [
-  { value: "ADMIN", label: "ADMINISTRATOR" },
-  { value: "STUDENT", label: "STUDENT" },
-  { value: "INSTRUCTOR", label: "INSTRUCTOR" },
-];
+const ROLE_OPTIONS = [{ value: "INSTRUCTOR", label: "INSTRUCTOR" }];
 
 const ACCOUNT_TYPES = [
   { value: "INDIVIDUAL", label: "INDIVIDUAL" },
   { value: "COPORATE", label: "COPORATE" },
 ];
 
-const CreateUserForm = () => {
+const CreateInstructors = () => {
   const router = useRouter();
-  const { mutateAsync } = UseCreateUser();
+  const { mutateAsync } = UseCreateInstructor();
   const form = useForm<CreateUserSchemaType>({
     resolver: zodResolver(CreateUserSchema),
     defaultValues: {
@@ -97,7 +97,7 @@ const CreateUserForm = () => {
 
     try {
       await mutateAsync(formData, {
-        onSuccess: () => router.push("/users"),
+        onSuccess: () => router.push("/instructors"),
       });
       form.reset();
     } catch (error) {
@@ -113,13 +113,13 @@ const CreateUserForm = () => {
             <UserPlus className="h-6 w-6" />
           </div>
           <CardTitle className="text-3xl font-bold tracking-tight">
-            Create New User
+            Create new Instructor
           </CardTitle>
           <Button variant={"ghost"} onClick={() => router.back()}>
             Back
           </Button>
           <CardDescription className="text-base">
-            Add a new user to your organization
+            Add a new instructor to your organization
           </CardDescription>
         </CardHeader>
 
@@ -509,7 +509,7 @@ const CreateUserForm = () => {
                 className="w-full h-11 text-sm font-semibold"
               >
                 <UserPlus className="h-4 w-4 mr-2" />
-                Create User Account
+                Create Instructor Account
               </Button>
             </form>
           </Form>
@@ -519,4 +519,4 @@ const CreateUserForm = () => {
   );
 };
 
-export default CreateUserForm;
+export default CreateInstructors;

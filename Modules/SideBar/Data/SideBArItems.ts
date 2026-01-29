@@ -60,7 +60,7 @@ export const DashBoardItems: LMSNavData = {
           title: "Roles",
           url: "/roles",
           icon: Users,
-        }
+        },
       ],
     },
     {
@@ -85,7 +85,7 @@ export const DashBoardItems: LMSNavData = {
         },
         {
           title: "Questions Type",
-          url: "/questions-bank",
+          url: "/questions-type",
           icon: HelpCircle,
         },
         {

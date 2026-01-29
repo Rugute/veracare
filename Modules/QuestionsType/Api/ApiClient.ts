@@ -1,22 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { QuestionsBankSchemaType } from "../Validation";
 import { Sweetalert } from "@/Modules/Utils/SweetAlert";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-interface bankRespone {
+type QuestionsTypeResponse = {
   items: {
-    questionTypeId: number | null;
-    courseId: number | null;
-    question: string | null;
-    lessonId: number | null;
     id: number;
-    voided: 0 | 1;
+    name: string;
+    description: string;
+    voided: 1 | 0;
   }[];
   total: number;
-}
+};
 
-export function UseGetQuestionsBank({ page, pageSize, search }: ApiParams) {
-  return useQuery<bankRespone>({
-    queryKey: ["QUESTIONS_BANK", page, pageSize, search],
+export const UseGetAllQuestionType = ({
+  page,
+  pageSize,
+  search,
+}: ApiParams) => {
+  return useQuery<QuestionsTypeResponse>({
+    queryKey: ["ALL_QUESTIONS_TYPE", page, pageSize, search],
     queryFn: async () => {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -24,36 +25,35 @@ export function UseGetQuestionsBank({ page, pageSize, search }: ApiParams) {
         ...(search && { search }),
       });
 
-      const response = await fetch(`/api/questions-bank?${params.toString()}`, {
+      const response = await fetch(`/api/question-type?${params.toString()}`, {
         method: "GET",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       });
+
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error("Failed to fetch questions");
+        throw new Error(data.error || "Failed to fetch question types");
       }
 
       return data;
     },
   });
-}
+};
 
-interface formData {
-  courseId: number;
-  lessonId: number;
-  questionTypeId: number;
-  question: string;
-}
+type QuestionProps = {
+  name: string;
+  description?: string;
+};
 
-export function UseCreateQuestionBank() {
+export const UseCreateQuestionType = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (formData: formData) => {
-      const response = await fetch("/api/questions-bank", {
+    mutationFn: async (formData: QuestionProps) => {
+      const response = await fetch("/api/question-type", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -64,7 +64,7 @@ export function UseCreateQuestionBank() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create Question");
+        throw new Error(data.error || "Failed to create question type");
       }
 
       return data;
@@ -72,30 +72,29 @@ export function UseCreateQuestionBank() {
 
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
-        queryKey: ["QUESTIONS_BANK"],
+        queryKey: ["ALL_QUESTIONS_TYPE"],
       });
+
       Sweetalert({
         icon: "success",
-        message: data.message || "Question Created",
+        message: data.message || "Question type created",
         title: "Success!",
       });
     },
 
-    onError: (e: Error) => {
+    onError: (e: Error) =>
       Sweetalert({
         icon: "error",
         message: e.message,
         title: "An error has occurred",
-      });
-    },
+      }),
   });
-}
-
-export function UseDeleteQuestionBank() {
+};
+export const UseDeleteQuestionType = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id }: { id: string }) => {
-      const response = await fetch(`/api/questions-bank/${id}`, {
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/question-type/${id}`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -104,27 +103,27 @@ export function UseDeleteQuestionBank() {
       });
 
       if (response.status !== 204) {
-        throw new Error("Failed to delete Question");
+        throw new Error("Failed to delete question type");
       }
     },
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["QUESTIONS_BANK"],
+        queryKey: ["ALL_QUESTIONS_TYPE"],
       });
+
       Sweetalert({
         icon: "success",
-        message: "Question Deleted",
+        message: "Question type deleted",
         title: "Success!",
       });
     },
 
-    onError: (e: Error) => {
+    onError: (e: Error) =>
       Sweetalert({
         icon: "error",
         message: e.message,
         title: "An error has occurred",
-      });
-    },
+      }),
   });
-}
+};

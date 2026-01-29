@@ -27,20 +27,27 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { UseCreateCourse } from "./ApiClient/ApiClient";
 import { useTransition } from "react";
+import { UseGetCourseCategory } from "./Categories/ApiClient/ApiClient";
 
 const CreateCourses = () => {
   const router = useRouter();
   const { mutateAsync } = UseCreateCourse();
   const [isPending, startTransistion] = useTransition();
+  const { data: categories, isLoading: categoriesLoading } =
+    UseGetCourseCategory({
+      page: 1,
+      pageSize: 50,
+      search: "",
+    });
   const form = useForm<CreateCourseSchemaType>({
     resolver: zodResolver(CreateCourseSchema),
     defaultValues: {
       category: "",
       description: "",
-      instructor: "",
-      price: "",
+      // instructor: "",
+      // price: "",
       published: "",
-      requirements: "",
+      // requirements: "",
       title: "",
       file: undefined,
     },
@@ -53,9 +60,9 @@ const CreateCourses = () => {
     formData.append("description", data.description);
     formData.append("published", data.published);
     formData.append("category", data.category);
-    formData.append("instructor", data.instructor);
-    formData.append("price", String(data.price));
-    formData.append("requirements", data.requirements);
+    // formData.append("instructor", data.instructor);
+    // formData.append("price", String(data.price));
+    // formData.append("requirements", data.requirements);
 
     if (data.file) {
       formData.append("file", data.file);
@@ -122,23 +129,43 @@ const CreateCourses = () => {
                 name="category"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-full">
                     <FormLabel className="font-medium">
                       Course Category
                     </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Select category"
-                        className="h-10"
-                      />
-                    </FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl className="w-full">
+                        <SelectTrigger>
+                          {categoriesLoading ? (
+                            <div className="flex gap-2">
+                              <Loader2Icon className="h-2 w-2 animate-spin" />{" "}
+                              loading...
+                            </div>
+                          ) : (
+                            <SelectValue placeholder="Select course category" />
+                          )}
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories?.items.length === 0 ? (
+                          <>
+                            <p>No categories found</p>
+                          </>
+                        ) : (
+                          categories?.items.map((i) => (
+                            <SelectItem key={i.id} value={i.id}>
+                              {i.name}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
                     <FormMessage className="text-sm" />
                   </FormItem>
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 name="price"
                 control={form.control}
                 render={({ field }) => (
@@ -156,34 +183,37 @@ const CreateCourses = () => {
                     <FormMessage className="text-sm" />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               <FormField
                 name="published"
                 control={form.control}
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="md:col-span-2 w-full">
                     <FormLabel className="font-medium">Published</FormLabel>
+
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
-                        <SelectTrigger className="h-10">
+                        <SelectTrigger className="h-10 w-full">
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                       </FormControl>
+
                       <SelectContent>
-                        {["0", "1"].map((i, idx) => (
-                          <SelectItem key={idx} value={i}>
+                        {["0", "1"].map((i) => (
+                          <SelectItem key={i} value={i}>
                             {i === "0" ? "YES" : "NO"}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+
                     <FormMessage className="text-sm" />
                   </FormItem>
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 name="instructor"
                 control={form.control}
                 render={({ field }) => (
@@ -201,7 +231,7 @@ const CreateCourses = () => {
                     <FormMessage className="text-sm" />
                   </FormItem>
                 )}
-              />
+              /> */}
             </div>
 
             <FormField
@@ -224,7 +254,7 @@ const CreateCourses = () => {
               )}
             />
 
-            <FormField
+            {/* <FormField
               name="requirements"
               control={form.control}
               render={({ field }) => (
@@ -242,7 +272,7 @@ const CreateCourses = () => {
                   <FormMessage className="text-sm" />
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               name="file"
               control={form.control}
