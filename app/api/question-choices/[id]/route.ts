@@ -71,6 +71,7 @@ export async function GET(
 
     const questions = await prisma.questionChoices.findUnique({
       where: { id: cid },
+      include: { questions: true },
     });
 
     if (!questions) {
