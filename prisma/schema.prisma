@@ -127,7 +127,7 @@ model Event {
   endDate     DateTime?
   image       String?
   capacity    Int?
-  location String?
+  location    String?
   courseId    Int?
   course      Course?       @relation(fields: [courseId], references: [id])
   price       Decimal

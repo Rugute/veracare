@@ -99,6 +99,10 @@ export async function GET(req: Request) {
         where,
         skip: (page - 1) * size,
         take: size,
+        include: {
+          course: true,
+          user: { select: { id: true, firstName: true, lastName: true, email: true } },
+        },
         // orderBy: { created_at: "desc" },
       }),
       prisma.event.count({ where }),
