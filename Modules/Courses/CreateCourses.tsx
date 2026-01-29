@@ -153,7 +153,7 @@ const CreateCourses = () => {
                           </>
                         ) : (
                           categories?.items.map((i) => (
-                            <SelectItem key={i.id} value={i.id}>
+                            <SelectItem key={i.id} value={String(i.id)}>
                               {i.name}
                             </SelectItem>
                           ))
