@@ -32,8 +32,6 @@ import PagePagination from "../Utils/Pagination";
 import { UseGetQuestionsBank } from "./Api/ApiClient";
 import PageLoader from "../Utils/PageLoader";
 import { UseGetCourses } from "../Courses/ApiClient/ApiClient";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { PopoverContent } from "@radix-ui/react-popover";
 import CreateQuestionsAnswers from "./CreateQuestionsAnswers";
 
 const QuestionsBankPage = () => {

@@ -11,25 +11,25 @@ interface bankRespone {
     id: number;
     voided: 0 | 1;
     course: {
-      title: string | null,
-      slug: string | null,
-      description: string | null,
-      published: boolean | null,
-      created_at: string | null,
-      updated_at: string | null
-    },
+      title: string | null;
+      slug: string | null;
+      description: string | null;
+      published: boolean | null;
+      created_at: string | null;
+      updated_at: string | null;
+    };
     lesson: {
-      lessonName: string | null,
-      lessonVideo: string | null,
-      lessonDuration: number | null,
-      lessonOrder: string | null,
-      lessonDescription: string | null,
-    },
+      lessonName: string | null;
+      lessonVideo: string | null;
+      lessonDuration: number | null;
+      lessonOrder: string | null;
+      lessonDescription: string | null;
+    };
     questionType: {
-      id: number,
-      name: string | null,
-      description: string | null,
-    },
+      id: number;
+      name: string | null;
+      description: string | null;
+    };
     _count: {
       questionChoices: number;
     };
@@ -151,3 +151,49 @@ export function UseDeleteQuestionBank() {
     },
   });
 }
+
+type AnswersProps = {
+  choices: string[];
+  questionId: number;
+  correctAnswers: string[];
+};
+
+export const UseAddAnswers = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (formData: AnswersProps) => {
+      const response = await fetch("/api/question-choices", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add answers to questions");
+      }
+
+      return data;
+    },
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
+        queryKey: ["QUESTIONS_BANK"],
+      });
+      Sweetalert({
+        icon: "success",
+        message: data.message || "Answers added to question",
+        title: "Success!",
+      });
+    },
+    onError: (e: Error) =>
+      Sweetalert({
+        icon: "error",
+        message: e.message,
+        title: "An error has occurred",
+      }),
+  });
+};
