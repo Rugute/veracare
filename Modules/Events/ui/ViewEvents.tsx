@@ -113,19 +113,19 @@ const ViewEvents = () => {
                     <TableRow key={event.id}>
                       <TableCell>{(page - 1) * entries + index + 1}</TableCell>
                       <TableCell>
-                        <UserAvatar AvatarUrl={event.photo} size={50} />
+                        <UserAvatar AvatarUrl={event.image} size={50} />
                       </TableCell>
                       <TableCell className="font-medium">
                         {event.title}
                       </TableCell>
-                      <TableCell>{event.categoryId}</TableCell>
+                      <TableCell>{event.course.categoryId}</TableCell>
                       <TableCell>
                         {diffInMonthsCeil({
-                          start: event.created_at,
-                          end: event.updated_at,
+                          start: new Date(event.startDate),
+                          end: new Date(event.endDate),
                         })}
                       </TableCell>
-                      <TableCell>{"event.price"}</TableCell>
+                      <TableCell>${event.price}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Button

@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UseGetInstructors } from "@/Modules/Instructors/Api/Apiclient";
 
 const toDateInputValue = (d?: Date) =>
   d ? new Date(d).toISOString().slice(0, 10) : "";
@@ -38,6 +39,12 @@ const CreateEvents = () => {
     pageSize: 50,
     search: "",
   });
+  const { data: instructors, isLoading: instructorsLoading } =
+    UseGetInstructors({
+      page: 1,
+      pageSize: 50,
+      search: "",
+    });
 
   const courses = data?.items || [];
 
@@ -51,6 +58,8 @@ const CreateEvents = () => {
       price: 0,
       title: "",
       courseId: "",
+      location: "",
+      instructorId: "",
     },
   });
 
@@ -62,6 +71,9 @@ const CreateEvents = () => {
     formData.append("startDate", data.startDate.toISOString());
     formData.append("endDate", data.endDate.toISOString());
     formData.append("price", data.price.toString());
+    formData.append("location", data.location);
+    formData.append("instructor", data.instructorId);
+
     if (data.file) formData.append("file", data.file);
 
     try {
@@ -134,6 +146,23 @@ const CreateEvents = () => {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  name="location"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2">
+                      <FormLabel>Event location</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="event location"
+                          {...field}
+                          type="text"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   name="courseId"
@@ -165,6 +194,48 @@ const CreateEvents = () => {
                             courses.map((c) => (
                               <SelectItem key={c.id} value={String(c.id)}>
                                 {c.title}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="instructorId"
+                  control={form.control}
+                  render={({ field }) => (
+                    <FormItem className="md:col-span-2 w-full">
+                      <FormLabel>Instructor</FormLabel>
+
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <FormControl className="w-full">
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select a course" />
+                          </SelectTrigger>
+                        </FormControl>
+
+                        <SelectContent>
+                          {instructorsLoading ? (
+                            <div className="flex items-center justify-center p-3">
+                              <Loader2Icon className="h-4 w-4 animate-spin" />
+                            </div>
+                          ) : instructors?.items.length === 0 ? (
+                            <div className="p-3 text-sm text-muted-foreground">
+                              No courses found
+                            </div>
+                          ) : (
+                            instructors?.items.map((c) => (
+                              <SelectItem key={c.id} value={String(c.id)}>
+                                {[c.firstName, c.lastName]
+                                  .filter(Boolean)
+                                  .join(" ")}
                               </SelectItem>
                             ))
                           )}

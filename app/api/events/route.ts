@@ -32,15 +32,20 @@ export async function POST(req: Request) {
     if (file) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const fileName = `${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
-      const filePath = path.join(process.cwd(), "public", "uploads/events", fileName);
+      const filePath = path.join(
+        process.cwd(),
+        "public",
+        "uploads/events",
+        fileName,
+      );
 
       await fs.mkdir(path.dirname(filePath), { recursive: true });
       await fs.writeFile(filePath, buffer);
 
       photoUrl = `/uploads/events/${fileName}`;
     }
-
     const user = await getCurrentUser();
+
     if (!user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
@@ -101,7 +106,9 @@ export async function GET(req: Request) {
         take: size,
         include: {
           course: true,
-          user: { select: { id: true, firstName: true, lastName: true, email: true } },
+          user: {
+            select: { id: true, firstName: true, lastName: true, email: true },
+          },
         },
         // orderBy: { created_at: "desc" },
       }),

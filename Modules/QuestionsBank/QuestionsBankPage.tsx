@@ -157,11 +157,8 @@ const QuestionsBankPage = () => {
                   <TableCell>
                     <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
                       <CreateQuestionsAnswers
-                        items={i._count.questionChoices}
+                        question={i}
                         questionId={String(i.id)}
-                        questionName={i.question || ""}
-                        course={i.course.title || ""}
-                        lesson={i.lesson.lessonName || ""}
                       />
                     </span>
                   </TableCell>

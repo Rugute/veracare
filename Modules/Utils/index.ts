@@ -12,5 +12,7 @@ export function diffInMonthsCeil({
   const fullMonths = differenceInMonths(end, start);
   const remainderDate = addMonths(start, fullMonths);
 
-  return isAfter(end, remainderDate) ? fullMonths + 1 : fullMonths;
+  const After = isAfter(end, remainderDate) ? fullMonths + 1 : fullMonths;
+  console.log({ After, start, end });
+  return After;
 }

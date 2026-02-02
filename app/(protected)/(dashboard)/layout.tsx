@@ -20,8 +20,6 @@ export default async function ProtectedLayout({ children }: Props) {
 
   const user = await getCurrentUser();
 
-  console.log(user);
-
   return (
     <AuthContextProvided initialAuth={!!user} initialUser={user}>
       <UtilsContextProvider>

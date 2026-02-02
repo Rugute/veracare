@@ -8,8 +8,10 @@ const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export const EventsSchema = z
   .object({
     title: requiredString,
+    location: requiredString,
     description: z.string().optional(),
     courseId: requiredString,
+    instructorId: requiredString,
     startDate: z.coerce
       .date<Date>({ message: "Please select a valid date" })
       .refine((val) => val >= new Date(), {

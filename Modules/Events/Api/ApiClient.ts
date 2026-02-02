@@ -1,23 +1,48 @@
 import { Sweetalert } from "@/Modules/Utils/SweetAlert";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-interface EventsReponse {
-  items: {
-    title: string;
-    id: number;
-    photo: string | null;
-    voided: number;
-    description: string | null;
-    slug: string | null;
-    uuid: string;
-    published: boolean;
-    created_at: Date;
-    updated_at: Date;
-    deleted_at: Date | null;
-    categoryId: number | null;
-    createdById: number;
-  }[];
+export interface EventsResponse {
+  items: EventItem[];
   total: number;
+}
+
+export interface EventItem {
+  id: number;
+  title: string;
+  description: string | null;
+  startDate: string; // ISO string
+  endDate: string; // ISO string
+  image: string | null;
+  capacity: number | null;
+  location: string;
+  courseId: number;
+  price: string;
+  voided: 0 | 1;
+  userId: number;
+
+  course: Course;
+  user: User;
+}
+export interface Course {
+  id: number;
+  title: string;
+  slug: string;
+  description: string | null;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  photo: string | null;
+  categoryId: number | null;
+  uuid: string;
+  voided: 0 | 1;
+  createdById: number;
+}
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export function UseGetEvents({
@@ -25,7 +50,7 @@ export function UseGetEvents({
   pageSize = 10,
   search = "",
 }: ApiParams) {
-  return useQuery<EventsReponse>({
+  return useQuery<EventsResponse>({
     queryKey: ["ALL_EVENTS", page, pageSize, search],
     queryFn: async () => {
       const params = new URLSearchParams({

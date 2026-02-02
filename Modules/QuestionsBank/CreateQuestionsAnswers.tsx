@@ -21,18 +21,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { Input } from "@/components/ui/input";
-import { Trash } from "lucide-react";
+import { Loader2Icon, Trash } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { UseAddAnswers } from "./Api/ApiClient";
 import { toast } from "sonner";
+import { QuestionBank } from "./Types/Index";
+import { UseGetQuestionChoices } from "./Api/QuestionChoices";
 
 interface Props {
-  items: number;
+  question: QuestionBank;
   questionId: string;
-  questionName: string;
-  course: string;
-  lesson: string;
 }
 
 const schema = z
@@ -88,21 +87,17 @@ const schema = z
 
 type FormValues = z.infer<typeof schema>;
 
-const CreateQuestionsAnswers = ({
-  items,
-  questionId,
-  questionName,
-  course,
-  lesson,
-}: Props) => {
+const CreateQuestionsAnswers = ({ question, questionId }: Props) => {
   const [open, setOpen] = useState(false);
   const { mutateAsync, isPending } = UseAddAnswers();
+  const { data: Choices } = UseGetQuestionChoices(String(question.id));
+  const isEditting = !!question;
+  console.log(Choices);
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      questionId,
+      questionId: String(question.id) || questionId,
       choices: [{ label: "" }, { label: "" }],
-      correctAnswers: [],
     },
     mode: "onSubmit",
   });
@@ -174,7 +169,7 @@ const CreateQuestionsAnswers = ({
             className="size-8 rounded-full"
             type="button"
           >
-            {items}
+            {question._count.questionChoices}
           </Button>
         </DialogTrigger>
 
@@ -184,10 +179,10 @@ const CreateQuestionsAnswers = ({
             <DialogDescription>
               <div className="flex flex-col gap-1 text-sm mt-2">
                 <span className="font-medium text-foreground">
-                  {questionName}
+                  {question.course.title}
                 </span>
                 <span className="text-muted-foreground text-xs">
-                  {course} &bull; {lesson}
+                  {question.course.title} &bull; {question.lesson.lessonName}
                 </span>
               </div>
             </DialogDescription>
@@ -324,7 +319,13 @@ const CreateQuestionsAnswers = ({
               />
 
               <div className="flex justify-end pt-2">
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit">
+                  {isPending ? (
+                    <Loader2Icon className="w-4 animate-spin" />
+                  ) : (
+                    "Save Changes"
+                  )}
+                </Button>
               </div>
             </form>
           </Form>
