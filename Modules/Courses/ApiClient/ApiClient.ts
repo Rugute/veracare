@@ -90,6 +90,17 @@ interface GetCoursesResponse {
     uuid: string;
     voided: number;
     createdById: number;
+    category: {
+      id: number;
+      name: string;
+      description: string;
+      created_at: string;
+      updated_at: string;
+      voided: number; 
+    };
+    _count: {
+      requirements: number;
+    };  
   }[];
   total: number;
 }

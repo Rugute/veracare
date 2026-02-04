@@ -107,19 +107,19 @@ const ViewCourses = () => {
       <CardContent className="p-0">
         {/* Hard stop: do NOT let the table push the layout */}
         <div className="w-full max-w-full overflow-x-auto">
-          <Table className="table-fixed">
+          <Table className="table-auto">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-12">#</TableHead>
 
                 <TableHead className="w-60">Course Title</TableHead>
-                <TableHead className="w-35">Category</TableHead>
+                <TableHead className="w-60">Category</TableHead>
 
-                {/* fixed widths so text can't expand the layout */}
-                <TableHead className="w-[320px]">Description</TableHead>
-                <TableHead className="w-65">Requirements</TableHead>
+                <TableHead className="w-60 whitespace-normal break-words">
+                  Description
+                </TableHead>
 
-                <TableHead className="w-30">Price</TableHead>
+                <TableHead className="w-30">Requirements</TableHead>
                 <TableHead className="w-30">Published</TableHead>
                 <TableHead className="w-22.5 text-right">Actions</TableHead>
               </TableRow>
@@ -137,11 +137,10 @@ const ViewCourses = () => {
                 </TableRow>
               ) : (
                 courses.map((course, idx) => (
-                  <TableRow key={`${course.title}-${idx}`}>
+                  <TableRow key={`${course.title}-${idx}`} className="whitespace-normal">
                     <TableCell className="text-muted-foreground">
                       {idx + 1}
                     </TableCell>
-
                     <TableCell className="align-top">
                       <div
                         className="font-medium truncate"
@@ -150,16 +149,12 @@ const ViewCourses = () => {
                         {course.title}
                       </div>
                     </TableCell>
-
-                    <TableCell className="align-top">
-                      <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                        {course.categoryId}
-                      </span>
+                    <TableCell className="font-medium truncate">
+                      {course.category.name}
                     </TableCell>
-
-                    <TableCell className="align-top">
+                    <TableCell className="align-top whitespace-normal break-words">
                       <div
-                        className="text-muted-foreground truncate"
+                        className="text-muted-foreground"
                         title={course.description}
                       >
                         {course.description}
@@ -169,16 +164,11 @@ const ViewCourses = () => {
                     <TableCell className="align-top">
                       <div
                         className="text-muted-foreground truncate"
-                        title={""}
+                        title={course._count.requirements.toString()}
                       >
-                        {"-"}
+                        {course._count.requirements}
                       </div>
                     </TableCell>
-
-                    <TableCell className="align-top font-medium">
-                      {"-"}
-                    </TableCell>
-
                     <TableCell className="align-top">
                       <span className="inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium">
                         {course.published ? "Published" : "Draft"}
@@ -197,11 +187,10 @@ const ViewCourses = () => {
                           >
                             {/* keep icon position stable */}
                             <MoreHorizontal
-                              className={`h-4 w-4 transition-opacity ${
-                                delId === course.id
-                                  ? "opacity-0"
-                                  : "opacity-100"
-                              }`}
+                              className={`h-4 w-4 transition-opacity ${delId === course.id
+                                ? "opacity-0"
+                                : "opacity-100"
+                                }`}
                             />
 
                             {/* overlay spinner when deleting */}

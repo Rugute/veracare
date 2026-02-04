@@ -111,12 +111,14 @@ const ViewCourseCategories = () => {
 
       <CardContent className="p-0">
         <div className="w-full overflow-x-auto">
-          <Table>
+          <Table className="table-auto">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-16">#</TableHead>
-                <TableHead className="min-w-48">Name</TableHead>
-                <TableHead className="min-w-64">Description</TableHead>
+                <TableHead className="w-60">Name</TableHead>
+                <TableHead className="w-64 whitespace-normal break-words">
+                  Description
+                </TableHead>
                 <TableHead className="w-24 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -145,9 +147,13 @@ const ViewCourseCategories = () => {
                     <TableCell className="font-medium">
                       {category.name}
                     </TableCell>
-
-                    <TableCell className="text-muted-foreground leading-relaxed">
-                      {category.description || "-"}
+                    <TableCell className="align-top whitespace-normal break-words">
+                      <div
+                        className="text-muted-foreground"
+                        title={category.description}
+                      >
+                        {category.description}
+                      </div>
                     </TableCell>
 
                     <TableCell className="text-right align-top">
@@ -162,11 +168,10 @@ const ViewCourseCategories = () => {
                           >
                             {/* keep icon position stable */}
                             <MoreHorizontal
-                              className={`h-4 w-4 transition-opacity ${
-                                delId === category.id
+                              className={`h-4 w-4 transition-opacity ${delId === category.id
                                   ? "opacity-0"
                                   : "opacity-100"
-                              }`}
+                                }`}
                             />
 
                             {/* overlay spinner when deleting */}

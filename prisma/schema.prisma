@@ -60,7 +60,7 @@ model Company {
 model Category {
   id          Int      @id @default(autoincrement())
   name        String   @unique
-  description String?
+  description String   @db.Text
   courses     Course[]
   createdBy   Int
   voided      Int
@@ -81,7 +81,7 @@ model Course {
   id           Int           @id @default(autoincrement())
   title        String
   slug         String?       @unique
-  description  String?
+  description  String        @db.Text
   published    Boolean       @default(false)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
@@ -122,7 +122,7 @@ model Lesson {
 model Event {
   id          Int           @id @default(autoincrement())
   title       String?
-  description String?
+  description String        @db.Text
   startDate   DateTime?
   endDate     DateTime?
   image       String?
@@ -140,7 +140,7 @@ model Event {
 model QuestionType {
   id          Int         @id @default(autoincrement())
   name        String      @unique
-  description String?
+  description String      @db.Text
   voided      Int         @default(0)
   questions   Questions[]
 }
@@ -173,7 +173,7 @@ model QuestionChoices {
 model Exam {
   id            Int             @id @default(autoincrement())
   title         String
-  description   String?
+  description   String          @db.Text
   courseId      Int?
   course        Course?         @relation(fields: [courseId], references: [id])
   duration      Int? // in minutes

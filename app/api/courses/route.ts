@@ -45,7 +45,6 @@ export async function POST(req: Request) {
     if (!user) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
-
     // Create course
     const course = await prisma.course.create({
       data: {
@@ -57,7 +56,7 @@ export async function POST(req: Request) {
         categoryId: category,
         uuid: uuidv4(),
         voided: 0,
-        createdById: user.id, // Ensure your Prisma schema has createdById
+        createdById: user.id,
       },
     });
 
@@ -97,6 +96,14 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { created_at: "desc" },
+        include: {
+          category: true,
+            _count: {
+            select: {
+              requirements: true,
+            },
+          },
+        },
       }),
       prisma.course.count({ where }),
     ]);
