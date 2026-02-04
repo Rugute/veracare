@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover";
 import { useState, useTransition } from "react";
 import { Separator } from "@/components/ui/separator";
-import { Building2, Loader2Icon, User } from "lucide-react";
+import { Building2, Loader2Icon, User, Shield, GraduationCap } from "lucide-react";
 import { UseAuthSignIn, UseCoprateSignUp } from "../Api/ApiClient";
 import { useRouter } from "next/navigation";
 
@@ -66,138 +66,256 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <Card className="w-full max-w-2xl shadow-sm">
-        <CardHeader className="space-y-1 pb-6 text-center">
-          <CardTitle className="text-2xl font-semibold tracking-tight">
-            Sign in
-          </CardTitle>
-          <CardDescription className="text-sm leading-relaxed">
-            Enter your credentials to access your account.
-          </CardDescription>
-        </CardHeader>
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-br from-purple-50 via-white to-violet-50">
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-violet-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
 
-        <CardContent className="space-y-4">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
-            >
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="text-xs">Email Address</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="name@example.com"
-                        className="h-9"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+      {/* Medical Cross Pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="medical-cross" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+              <path d="M35 25h10v10h10v10h-10v10h-10v-10h-10v-10h10z" fill="currentColor" className="text-purple-600"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#medical-cross)"/>
+        </svg>
+      </div>
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <FormLabel className="text-xs">Password</FormLabel>
-                      <Link
-                        href="/forgot-password"
-                        className="text-xs text-primary hover:underline font-medium"
-                      >
-                        Forgot password?
-                      </Link>
-                    </div>
-                    <FormControl>
-                      <PasswordInput
-                        {...field}
-                        placeholder="Enter password"
-                        className="h-9"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button
-                type="submit"
-                className="w-full h-9 text-sm"
-                disabled={isLoading}
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo/Brand Header */}
+        <div className="text-center mb-8 space-y-3">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30 mb-4">
+            <GraduationCap className="w-10 h-10 text-white" strokeWidth={2.5} />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+            VeraCare Health Academy
+          </h1>
+          <p className="text-sm text-gray-600">Excellence in Clinical Education</p>
+        </div>
+
+        <Card className="shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
+          <CardHeader className="space-y-2 pb-6 text-center border-b border-gray-100">
+            <CardTitle className="text-2xl font-bold text-gray-900 tracking-tight">
+              Welcome Back
+            </CardTitle>
+            <CardDescription className="text-sm text-gray-600 leading-relaxed">
+              Sign in to continue your learning journey
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="space-y-6 pt-6">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="space-y-5"
               >
-                {isLoading ? (
-                  <Loader2Icon className="mr-2 h-4 w-5 animate-spin" />
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-            </form>
-          </Form>
-          <div className="relative py-1">
-            <div className="absolute inset-0 flex items-center">
-              <Separator />
-            </div>
-            <div className="relative flex justify-center text-[10px] uppercase">
-              <span className="bg-card px-2 text-muted-foreground">
-                New here?
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Button asChild variant="outline" size="sm" className="w-full h-9">
-              <Link href="/sign-up" className="gap-2">
-                <User className="h-3.5 w-3.5" /> Individual
-              </Link>
-            </Button>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-semibold text-gray-700">
+                        Email Address
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="name@example.com"
+                          className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  )}
+                />
 
-            <Popover>
-              <PopoverTrigger asChild>
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <FormLabel className="text-sm font-semibold text-gray-700">
+                          Password
+                        </FormLabel>
+                        <Link
+                          href="/forgot-password"
+                          className="text-xs text-purple-600 hover:text-purple-700 hover:underline font-medium transition-colors duration-200"
+                        >
+                          Forgot password?
+                        </Link>
+                      </div>
+                      <FormControl>
+                        <PasswordInput
+                          {...field}
+                          placeholder="Enter your password"
+                          className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-xs" />
+                    </FormItem>
+                  )}
+                />
+
                 <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full h-9 gap-2"
+                  type="submit"
+                  className="w-full h-11 text-sm font-semibold bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg shadow-purple-500/30 transition-all duration-200 transform hover:scale-[1.02]"
+                  disabled={isLoading}
                 >
-                  <Building2 className="h-3.5 w-3.5" /> Corporate
+                  {isLoading ? (
+                    <>
+                      <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="mr-2 h-4 w-4" />
+                      Sign In Securely
+                    </>
+                  )}
                 </Button>
-              </PopoverTrigger>
+              </form>
+            </Form>
 
-              <PopoverContent className="w-72 p-3" align="end">
-                <div className="space-y-3">
-                  <div className="space-y-1">
-                    <h4 className="font-semibold text-xs">Corporate Account</h4>
-                    <p className="text-[10px] text-muted-foreground leading-tight">
-                      Enter corporate number to create organization account
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Corp #"
-                      value={corporateNumber}
-                      onChange={(e) => setCorporateNumber(e.target.value)}
-                      className="h-8 text-xs"
-                    />
+            <div className="relative py-3">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="bg-gray-200" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-white px-3 text-gray-500 font-medium">
+                  New to VeraCare?
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-xs text-center text-gray-600 font-medium">
+                Create your account
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="default"
+                  className="h-11 border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-200"
+                >
+                  <Link href="/sign-up" className="gap-2 font-semibold text-purple-700">
+                    <User className="h-4 w-4" />
+                    Individual
+                  </Link>
+                </Button>
+
+                <Popover>
+                  <PopoverTrigger asChild>
                     <Button
-                      size="sm"
-                      className="h-8"
-                      onClick={handleCorporateSignUp}
-                      disabled={!corporateNumber.trim()}
+                      variant="outline"
+                      size="default"
+                      className="h-11 gap-2 border-2 border-violet-200 hover:border-violet-400 hover:bg-violet-50 font-semibold text-violet-700 transition-all duration-200"
                     >
-                      Go
+                      <Building2 className="h-4 w-4" />
+                      Corporate
                     </Button>
-                  </div>
+                  </PopoverTrigger>
+
+                  <PopoverContent className="w-80 p-5 shadow-xl border-2 border-gray-100" align="end">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                            <Building2 className="h-4 w-4 text-white" />
+                          </div>
+                          <h4 className="font-bold text-sm text-gray-900">
+                            Corporate Account
+                          </h4>
+                        </div>
+                        <p className="text-xs text-gray-600 leading-relaxed">
+                          Enter your corporate number to create an organization account with team management features
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-xs font-semibold text-gray-700">
+                          Corporate Number
+                        </label>
+                        <div className="flex gap-2">
+                          <Input
+                            placeholder="Enter corp #"
+                            value={corporateNumber}
+                            onChange={(e) => setCorporateNumber(e.target.value)}
+                            className="h-10 text-sm border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                          />
+                          <Button
+                            size="default"
+                            className="h-10 px-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 font-semibold"
+                            onClick={handleCorporateSignUp}
+                            disabled={!corporateNumber.trim()}
+                          >
+                            Continue
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
+                <div className="flex items-center gap-1.5">
+                  <Shield className="h-3.5 w-3.5 text-purple-600" />
+                  <span>Secure Login</span>
                 </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-        </CardContent>
-      </Card>
+                <div className="w-1 h-1 rounded-full bg-gray-300"></div>
+                <div className="flex items-center gap-1.5">
+                  <GraduationCap className="h-3.5 w-3.5 text-purple-600" />
+                  <span>Accredited Courses</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Footer Link */}
+        <p className="text-center text-xs text-gray-600 mt-6">
+          Need help?{" "}
+          <Link href="/contact" className="text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-colors duration-200">
+            Contact Support
+          </Link>
+        </p>
+      </div>
+
+      <style jsx global>{`
+        @keyframes blob {
+          0%, 100% {
+            transform: translate(0px, 0px) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
+          }
+        }
+        
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+        
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+      `}</style>
     </div>
   );
 };
