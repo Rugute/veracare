@@ -23,13 +23,13 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-20 bg-gradient-to-b from-teal-50 to-white relative overflow-hidden">
+    <section id="contact" className="py-20 bg-gradient-to-b from-sky-50 to-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="contact-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M25 25h10v10h10v10h-10v10h-10v-10h-10v-10h10z" fill="currentColor" className="text-teal-600"/>
+              <path d="M25 25h10v10h10v10h-10v10h-10v-10h-10v-10h10z" fill="currentColor" className="text-sky-600"/>
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#contact-pattern)"/>
@@ -42,12 +42,12 @@ export default function Contact() {
           <div className="space-y-8">
             {/* Header */}
             <div>
-              <div className="inline-flex items-center gap-2 bg-teal-100 px-4 py-2 rounded-full mb-4">
-                <MessageSquare className="w-4 h-4 text-teal-600" />
-                <span className="text-sm font-semibold text-teal-900">We're Here to Help</span>
+              <div className="inline-flex items-center gap-2 bg-sky-100 px-4 py-2 rounded-full mb-4">
+                <MessageSquare className="w-4 h-4 text-sky-600" />
+                <span className="text-sm font-semibold text-sky-900">We're Here to Help</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Get in <span className="bg-gradient-to-r from-teal-600 to-emerald-600 bg-clip-text text-transparent">Touch</span>
+                Get in <span className="bg-gradient-to-r from-sky-600 to-blue-600 bg-clip-text text-transparent">Touch</span>
               </h2>
               <p className="text-lg text-gray-600 leading-relaxed">
                 Have questions about our programs? We're here to help you take the next step in your healthcare career.
@@ -59,7 +59,7 @@ export default function Contact() {
               {/* Address */}
               <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                     <MapPin className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -75,12 +75,12 @@ export default function Contact() {
               {/* Phone */}
               <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-sky-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                     <Phone className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">Call Us</h3>
-                    <a href="tel:+012345678890" className="text-teal-600 hover:text-teal-700 font-semibold">
+                    <a href="tel:+012345678890" className="text-sky-600 hover:text-sky-700 font-semibold">
                       +012 345 67890
                     </a>
                   </div>
@@ -90,12 +90,12 @@ export default function Contact() {
               {/* Email */}
               <div className="group bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-sky-500 to-sky-600 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 mb-1">Email Us</h3>
-                    <a href="mailto:info@veracarehealthacademy.com" className="text-teal-600 hover:text-teal-700 font-semibold">
+                    <a href="mailto:info@veracarehealthacademy.com" className="text-sky-600 hover:text-sky-700 font-semibold">
                       info@veracarehealthacademy.com
                     </a>
                   </div>
@@ -104,12 +104,12 @@ export default function Contact() {
             </div>
 
             {/* Office Hours */}
-            <div className="bg-gradient-to-r from-teal-600 to-emerald-600 rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-r from-sky-600 to-blue-600 rounded-xl p-6 text-white">
               <div className="flex items-start gap-4">
                 <Clock className="w-6 h-6 flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-bold mb-2">Office Hours</h3>
-                  <div className="space-y-1 text-teal-100 text-sm">
+                  <div className="space-y-1 text-sky-100 text-sm">
                     <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
                     <p>Saturday: 10:00 AM - 4:00 PM</p>
                     <p>Sunday: Closed</p>
@@ -135,7 +135,7 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:ring-opacity-20 transition-all duration-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-500 focus:ring-opacity-20 transition-all duration-200 outline-none"
                   required
                 />
               </div>
@@ -152,7 +152,7 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="john@example.com"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:ring-opacity-20 transition-all duration-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-500 focus:ring-opacity-20 transition-all duration-200 outline-none"
                   required
                 />
               </div>
@@ -169,7 +169,7 @@ export default function Contact() {
                   onChange={handleChange}
                   placeholder="Tell us how we can help you..."
                   rows="5"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:ring-opacity-20 transition-all duration-200 outline-none resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-500 focus:ring-opacity-20 transition-all duration-200 outline-none resize-none"
                   required
                 ></textarea>
               </div>
@@ -177,7 +177,7 @@ export default function Contact() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-lg shadow-teal-500/30 flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-lg shadow-sky-500/30 flex items-center justify-center gap-2"
               >
                 <Send className="w-5 h-5" />
                 Send Message
@@ -185,7 +185,7 @@ export default function Contact() {
 
               {/* Trust Badge */}
               <div className="flex items-center justify-center gap-2 text-sm text-gray-500 pt-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-600" />
+                <CheckCircle2 className="w-4 h-4 text-sky-600" />
                 <span>We'll respond within 24 hours</span>
               </div>
             </form>
@@ -193,7 +193,7 @@ export default function Contact() {
         </div>
 
         {/* Bottom Banner */}
-        <div className="mt-16 text-center bg-teal-50 rounded-2xl p-8 border border-teal-100">
+        <div className="mt-16 text-center bg-sky-50 rounded-2xl p-8 border border-sky-100">
           <h3 className="text-2xl font-bold text-gray-900 mb-2">
             Ready to Transform Your Career?
           </h3>
@@ -202,7 +202,7 @@ export default function Contact() {
           </p>
           <a
             href="/sign-up"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-8 py-4 rounded-full font-semibold hover:from-teal-700 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-teal-500/30"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-sky-600 to-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:from-sky-700 hover:to-blue-700 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-sky-500/30"
           >
             Enroll Now
             <CheckCircle2 className="w-5 h-5" />

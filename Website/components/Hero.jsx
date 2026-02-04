@@ -4,8 +4,11 @@ import { ArrowRight, Play, Award, Users, BookOpen } from "lucide-react";
 
 export default function Hero() {
   const images = [
-    "/assets/img2.jpeg",
-    "/assets/vio1.jpeg",
+    "/images/hero0.jpg",
+    "/images/hero1.jpg",
+    "/images/hero2.jpg",
+    "/images/hero3.jpg",
+    "/images/hero4.jpg",
   ];
 
   const [current, setCurrent] = useState(0);
@@ -23,7 +26,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-teal-900 via-emerald-800 to-teal-900 pt-24 pb-20">
+    <section className="relative overflow-hidden bg-gradient-to-br from-sky-900 via-blue-400 to-sky-900 pt-24 pb-20">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +41,7 @@ export default function Hero() {
       </div>
 
       {/* Gradient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-teal-900/50 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-sky-900/50 to-transparent"></div>
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -46,19 +49,19 @@ export default function Hero() {
           <div className="text-white space-y-8">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/20">
-              <Award className="w-4 h-4 text-teal-300" />
-              <span className="text-sm font-semibold text-teal-100">State-Approved Clinical Training</span>
+              <Award className="w-4 h-4 text-sky-300" />
+              <span className="text-sm font-semibold text-sky-100">State-Approved Clinical Training</span>
             </div>
 
             {/* Main Heading */}
             <div className="space-y-4">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
                 Welcome to
-                <span className="block bg-gradient-to-r from-teal-200 via-emerald-200 to-cyan-200 bg-clip-text text-transparent mt-2">
+                <span className="block bg-gradient-to-r from-sky-200 via-blue-200 to-sky-200 bg-clip-text text-transparent mt-2">
                   VeraCare Health Academy
                 </span>
               </h1>
-              <p className="text-xl text-teal-100 leading-relaxed max-w-2xl">
+              <p className="text-xl text-sky-100 leading-relaxed max-w-2xl">
                 Empowering the next generation of healthcare professionals through 
                 high-quality, accessible, and practical clinical education.
               </p>
@@ -68,15 +71,15 @@ export default function Hero() {
             <div className="grid grid-cols-3 gap-6 py-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-white mb-1">500+</div>
-                <div className="text-sm text-teal-200">Students Trained</div>
+                <div className="text-sm text-sky-200">Students Trained</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-white mb-1">15+</div>
-                <div className="text-sm text-teal-200">Expert Instructors</div>
+                <div className="text-sm text-sky-200">Expert Instructors</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-white mb-1">98%</div>
-                <div className="text-sm text-teal-200">Success Rate</div>
+                <div className="text-sm text-sky-200">Success Rate</div>
               </div>
             </div>
 
@@ -84,7 +87,7 @@ export default function Hero() {
             <div className="flex flex-wrap gap-4">
               <a
                 href="#courses"
-                className="group inline-flex items-center gap-2 bg-white text-teal-900 px-8 py-4 rounded-full font-semibold hover:bg-teal-50 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-teal-900/30"
+                className="group inline-flex items-center gap-2 bg-white text-sky-900 px-8 py-4 rounded-full font-semibold hover:bg-sky-50 transition-all duration-200 transform hover:scale-105 shadow-lg shadow-sky-900/30"
               >
                 Explore Courses
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -100,11 +103,11 @@ export default function Hero() {
 
             {/* Trust Indicators */}
             <div className="flex flex-wrap items-center gap-6 pt-4">
-              <div className="flex items-center gap-2 text-teal-200">
+              <div className="flex items-center gap-2 text-sky-200">
                 <Users className="w-5 h-5" />
                 <span className="text-sm">Join our community</span>
               </div>
-              <div className="flex items-center gap-2 text-teal-200">
+              <div className="flex items-center gap-2 text-sky-200">
                 <BookOpen className="w-5 h-5" />
                 <span className="text-sm">Interactive learning</span>
               </div>
@@ -128,7 +131,7 @@ export default function Hero() {
                     className="w-full h-full object-cover"
                   />
                   {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-teal-900/60 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-sky-900/60 to-transparent"></div>
                 </div>
               ))}
 
@@ -149,14 +152,14 @@ export default function Hero() {
               </div>
 
               {/* Decorative Elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-teal-400 rounded-full blur-3xl opacity-30"></div>
-              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-emerald-400 rounded-full blur-3xl opacity-30"></div>
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-sky-400 rounded-full blur-3xl opacity-30"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-blue-400 rounded-full blur-3xl opacity-30"></div>
             </div>
 
             {/* Floating Card */}
             <div className="absolute -bottom-8 -left-8 bg-white rounded-xl shadow-2xl p-6 max-w-xs hidden lg:block">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center flex-shrink-0">
                   <Award className="w-6 h-6 text-white" />
                 </div>
                 <div>
