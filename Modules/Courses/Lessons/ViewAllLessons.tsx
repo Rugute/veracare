@@ -116,9 +116,8 @@ const ViewAllLessons = () => {
                 <TableRow className="whitespace-nowrap">
                   <TableHead className="w-14">#</TableHead>
                   <TableHead className="w-20">Image</TableHead>
-                  <TableHead className="min-w-70">Lesson Title</TableHead>
-                  <TableHead className="min-w-50">Course</TableHead>
-                  <TableHead className="min-w-35">Status</TableHead>
+                  <TableHead className="min-w-70">Course</TableHead>
+                  <TableHead className="min-w-50">Lesson Title</TableHead>
                   <TableHead className="min-w-65">Video</TableHead>
                   <TableHead className="min-w-30">Duration</TableHead>
                   <TableHead className="min-w-25">Order</TableHead>
@@ -150,48 +149,45 @@ const ViewAllLessons = () => {
                       <TableCell>
                         <UserAvatar AvatarUrl={lesson.photo} />
                       </TableCell>
+                      <TableCell>
 
+                        <div className="font-medium leading-snug line-clamp-2 max-w-[320px]">
+                          {lesson.course?.title}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <div className="font-medium leading-snug line-clamp-2 max-w-[320px]">
                           {lesson.lessonName}
                         </div>
                       </TableCell>
-
-                      <TableCell>
-                        <span className="inline-flex max-w-55 truncate items-center rounded-full border px-2.5 py-0.5 text-xs font-medium">
-                          {lesson.course?.title}
-                        </span>
-                      </TableCell>
-
-                      <TableCell className="text-sm">
-                        {lesson.published ? "Published" : "Not published"}
-                      </TableCell>
-
                       <TableCell>
                         <div className="flex items-center gap-2 min-w-0">
                           <Play className="h-4 w-4 shrink-0 opacity-70" />
                           <span className="truncate text-sm text-muted-foreground">
-                            {"lesson.videoUrl"}
+                            {lesson.lessonVideo}
                           </span>
                         </div>
                       </TableCell>
 
                       <TableCell>
                         <span className="text-sm font-medium">
-                          {"lesson.duration"}
+                          {lesson.lessonDuration}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          Minutes
                         </span>
                       </TableCell>
 
                       <TableCell>
                         <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border text-sm font-medium">
-                          {"lesson.order"}
+                          {lesson.lessonOrder}
                         </span>
                       </TableCell>
 
                       <TableCell>
                         <div className="flex items-baseline gap-1">
                           <span className="font-medium">
-                            {"lesson.questions"}
+                            {lesson._count?.questions || 0}
                           </span>
                           <span className="text-sm text-muted-foreground">
                             questions
@@ -215,7 +211,7 @@ const ViewAllLessons = () => {
                       </TableCell>
 
                       <TableCell className="text-right">
-                        {delId === lesson.id ? (
+                        {delId === lesson.id.toString() ? (
                           <div className="inline-flex h-8 w-8 items-center justify-center">
                             <Loader2Icon className="h-4 w-4 animate-spin" />
                           </div>
@@ -223,7 +219,7 @@ const ViewAllLessons = () => {
                           <DropdownMenu>
                             <DropdownMenuTrigger
                               asChild
-                              disabled={delId === lesson.id}
+                              disabled={delId === lesson.id.toString()}
                             >
                               <Button
                                 variant="ghost"
@@ -252,7 +248,7 @@ const ViewAllLessons = () => {
                               <DropdownMenuSeparator />
 
                               <DropdownMenuItem
-                                onClick={() => handleDelete(lesson.id)}
+                                onClick={() => handleDelete(lesson.id.toString())}
                               >
                                 <Trash className="mr-2 h-4 w-4" />
                                 Delete

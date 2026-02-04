@@ -23,8 +23,8 @@ export async function GET(
       });
     }
 
-    const questions = await prisma.questionChoices.findUnique({
-      where: { id: cid },
+    const questions = await prisma.questionChoices.findFirst({
+      where: { questionId: cid },
       include: { questions: true },
     });
 

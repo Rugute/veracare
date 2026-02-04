@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     const lessonDuration = formData.get("lessonDuration") as string;
     const lessonOrder = formData.get("lessonOrder") as string;
     const lessonDescription = formData.get("lessonDescription") as string;
-   // const lessonDocument = formData.get("lessonDocument") as string;
+    // const lessonDocument = formData.get("lessonDocument") as string;
     const file = formData.get("lessonDocument") as File | null;
 
     if (!lessonName) {
@@ -51,7 +51,7 @@ export async function POST(req: Request) {
         lessonOrder,
         lessonDescription,
         lessonDocument: photoUrl,
-        course: { connect: { id: parseInt(courseId, 10) } },        
+        course: { connect: { id: parseInt(courseId, 10) } },
       },
     });
 
@@ -91,7 +91,12 @@ export async function GET(req: Request) {
         skip: (page - 1) * size,
         take: size,
         orderBy: { createdAt: "desc" },
-        include: { course: true },
+        include: {
+          course: true,
+          questions: true,
+          _count: { select: { questions: true } },
+        },
+
       }),
       prisma.lesson.count({ where }),
     ]);

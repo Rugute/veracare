@@ -34,7 +34,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="text-xs font-medium tracking-wide text-muted-foreground">
-        Students portal
+        Students Portal
       </SidebarGroupLabel>
 
       <SidebarMenu>

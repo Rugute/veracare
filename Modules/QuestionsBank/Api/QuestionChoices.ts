@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-export function UseGetQuestionChoices(id: string) {
+export function UseGetQuestionChoices(id: string,) {
   return useQuery({
     queryKey: ["QUESTION_CHOICES", id],
     queryFn: async () => {

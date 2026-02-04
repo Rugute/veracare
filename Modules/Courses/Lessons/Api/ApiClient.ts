@@ -21,6 +21,11 @@ export interface LessonItem {
   photoPath: string | null;
   voided: number;
   course: Course;
+  questions: any[];
+  _count: {
+    questions: number;
+  };
+
 }
 
 export interface Course {
@@ -37,6 +42,7 @@ export interface Course {
   uuid: string;
   voided: number;
   createdById: number;
+
 }
 
 export const UseGetAllLessons = ({ page, pageSize, search }: ApiParams) => {

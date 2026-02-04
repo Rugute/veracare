@@ -106,7 +106,7 @@ model Lesson {
   course            Course?     @relation(fields: [courseId], references: [id])
   lessonName        String?
   lessonVideo       String?
-  lessonDuration    String?
+  lessonDuration    String?  @db.Text
   lessonOrder       Decimal
   lessonDescription String?
   createdAt         DateTime    @default(now())
