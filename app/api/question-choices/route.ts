@@ -4,55 +4,41 @@ import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-
-    //    const user = await getCurrentUser();
     const body = await req.json();
-    const {
+    const { questionId, choices, correctAnswers } = body;
+
+    // Validate input
+    if (!questionId || !Array.isArray(choices) || !Array.isArray(correctAnswers)) {
+      return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+    }
+
+    // Prepare data for insertion
+    const dataToInsert = choices.map((choice) => ({
       questionId,
       choice,
-      correctAnswer
-    } = body;
+      correctAnswer: correctAnswers.includes(choice) ? 1 : 0,
+    }));
 
-// correctAnswer = ["false", "maybe"]
+    console.log("Data to insert:", dataToInsert); // Debug log
+    // Insert all choices at once
+    const createdChoices = await prisma.questionChoices.createMany({
+      data: dataToInsert,
+      skipDuplicates: true, // optional
+    });
 
-const records = choice.map((item: string) => ({
-  voided: 0,
-  questionId,
-  choice: item,
-  isCorrect: correctAnswer.includes(item),
-}));
-
-await prisma.questionChoices.createMany({
-  data: records,
-});
-
-
-   /* const category = await prisma.questionChoices.create({
-      data: {
-        voided: 0,
-        questions: { connect: { id: questionId } },
-        choice: choice,
-        correctAnswer: correctAnswer,
-      },
-    });*/
-
-    /* await prisma.category.update({
-       where: { id: parseInt(category.id, 10) },
-       data: {
-         name: name,
-       },
-     });*/
-
-    return NextResponse.json(records, { status: 201 });
-
-  } catch {
-    // console.error("Error creating product and variants:", error);
+    return NextResponse.json(
+      { message: "Choices saved successfully", count: createdChoices.count },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error saving choices:", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }
     );
   }
 }
+
 
 
 export async function GET(req: Request) {
