@@ -13,14 +13,28 @@ export async function POST(req: Request) {
       correctAnswer
     } = body;
 
-    const category = await prisma.questionChoices.create({
+// correctAnswer = ["false", "maybe"]
+
+const records = choice.map((item: string) => ({
+  voided: 0,
+  questionId,
+  choice: item,
+  isCorrect: correctAnswer.includes(item),
+}));
+
+await prisma.questionChoices.createMany({
+  data: records,
+});
+
+
+   /* const category = await prisma.questionChoices.create({
       data: {
         voided: 0,
         questions: { connect: { id: questionId } },
         choice: choice,
         correctAnswer: correctAnswer,
       },
-    });
+    });*/
 
     /* await prisma.category.update({
        where: { id: parseInt(category.id, 10) },
@@ -29,7 +43,7 @@ export async function POST(req: Request) {
        },
      });*/
 
-    return NextResponse.json(category, { status: 201 });
+    return NextResponse.json(records, { status: 201 });
 
   } catch {
     // console.error("Error creating product and variants:", error);

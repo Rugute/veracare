@@ -81,20 +81,26 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 }
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cid = params.id;
-    const event = await prisma.event.findUnique({
-      where: { id:  parseInt(cid, 10) },
+    const { id } = await params;
+    const cid = Number(id); // convert here
+
+    if (isNaN(cid)) {
+      return new Response("Invalid requirement id", { status: 400 });
+    }
+
+    const categories = await prisma.event.findUnique({
+      where: { id: cid },
     });
 
-    if (!event) {
+    if (!categories) {
       return new Response("Event not found", { status: 404 });
     }
 
-    return Response.json(event);
+    return Response.json(categories);
   } catch (err) {
     console.error("GET error:", err);
     return new Response("Internal Server Error", { status: 500 });
