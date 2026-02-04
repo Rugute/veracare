@@ -66,12 +66,12 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-br from-purple-50 via-white to-violet-50">
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-blue-50">
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-violet-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
 
       {/* Medical Cross Pattern */}
@@ -79,7 +79,7 @@ const SignInForm = () => {
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="medical-cross" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M35 25h10v10h10v10h-10v10h-10v-10h-10v-10h10z" fill="currentColor" className="text-purple-600"/>
+              <path d="M35 25h10v10h10v10h-10v10h-10v-10h-10v-10h10z" fill="currentColor" className="text-sky-600"/>
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#medical-cross)"/>
@@ -89,7 +89,7 @@ const SignInForm = () => {
       <div className="relative z-10 w-full max-w-md">
         {/* Logo/Brand Header */}
         <div className="text-center mb-8 space-y-3">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30 mb-4">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 shadow-lg shadow-sky-500/30 mb-4">
             <GraduationCap className="w-10 h-10 text-white" strokeWidth={2.5} />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
@@ -126,8 +126,7 @@ const SignInForm = () => {
                         <Input
                           {...field}
                           type="email"
-                          placeholder="name@example.com"
-                          className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                          className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -146,7 +145,7 @@ const SignInForm = () => {
                         </FormLabel>
                         <Link
                           href="/forgot-password"
-                          className="text-xs text-purple-600 hover:text-purple-700 hover:underline font-medium transition-colors duration-200"
+                          className="text-xs text-sky-600 hover:text-sky-700 hover:underline font-medium transition-colors duration-200"
                         >
                           Forgot password?
                         </Link>
@@ -155,7 +154,7 @@ const SignInForm = () => {
                         <PasswordInput
                           {...field}
                           placeholder="Enter your password"
-                          className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                          className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200"
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -165,7 +164,7 @@ const SignInForm = () => {
 
                 <Button
                   type="submit"
-                  className="w-full h-11 text-sm font-semibold bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg shadow-purple-500/30 transition-all duration-200 transform hover:scale-[1.02]"
+                  className="w-full h-11 text-sm font-semibold bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white shadow-lg shadow-sky-500/30 transition-all duration-200 transform hover:scale-[1.02]"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -203,9 +202,9 @@ const SignInForm = () => {
                   asChild
                   variant="outline"
                   size="default"
-                  className="h-11 border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all duration-200"
+                  className="h-11 border-2 border-sky-200 hover:border-sky-400 hover:bg-sky-50 transition-all duration-200"
                 >
-                  <Link href="/sign-up" className="gap-2 font-semibold text-purple-700">
+                  <Link href="/sign-up" className="gap-2 font-semibold text-sky-700">
                     <User className="h-4 w-4" />
                     Individual
                   </Link>
@@ -216,7 +215,7 @@ const SignInForm = () => {
                     <Button
                       variant="outline"
                       size="default"
-                      className="h-11 gap-2 border-2 border-violet-200 hover:border-violet-400 hover:bg-violet-50 font-semibold text-violet-700 transition-all duration-200"
+                      className="h-11 gap-2 border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 font-semibold text-blue-700 transition-all duration-200"
                     >
                       <Building2 className="h-4 w-4" />
                       Corporate
@@ -227,7 +226,7 @@ const SignInForm = () => {
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-sky-600 flex items-center justify-center">
                             <Building2 className="h-4 w-4 text-white" />
                           </div>
                           <h4 className="font-bold text-sm text-gray-900">
@@ -247,11 +246,11 @@ const SignInForm = () => {
                             placeholder="Enter corp #"
                             value={corporateNumber}
                             onChange={(e) => setCorporateNumber(e.target.value)}
-                            className="h-10 text-sm border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                            className="h-10 text-sm border-gray-300 focus:border-sky-500 focus:ring-sky-500"
                           />
                           <Button
                             size="default"
-                            className="h-10 px-6 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 font-semibold"
+                            className="h-10 px-6 bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-700 hover:to-sky-700 font-semibold"
                             onClick={handleCorporateSignUp}
                             disabled={!corporateNumber.trim()}
                           >
@@ -269,12 +268,12 @@ const SignInForm = () => {
             <div className="pt-4 border-t border-gray-100">
               <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
                 <div className="flex items-center gap-1.5">
-                  <Shield className="h-3.5 w-3.5 text-purple-600" />
+                  <Shield className="h-3.5 w-3.5 text-sky-600" />
                   <span>Secure Login</span>
                 </div>
                 <div className="w-1 h-1 rounded-full bg-gray-300"></div>
                 <div className="flex items-center gap-1.5">
-                  <GraduationCap className="h-3.5 w-3.5 text-purple-600" />
+                  <GraduationCap className="h-3.5 w-3.5 text-sky-600" />
                   <span>Accredited Courses</span>
                 </div>
               </div>
@@ -285,7 +284,7 @@ const SignInForm = () => {
         {/* Footer Link */}
         <p className="text-center text-xs text-gray-600 mt-6">
           Need help?{" "}
-          <Link href="/contact" className="text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-colors duration-200">
+          <Link href="/contact" className="text-sky-600 hover:text-sky-700 font-semibold hover:underline transition-colors duration-200">
             Contact Support
           </Link>
         </p>

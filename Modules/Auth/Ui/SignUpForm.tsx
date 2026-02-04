@@ -56,17 +56,20 @@ const SignUpFormCompact = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden bg-gradient-to-br from-purple-50 via-white to-violet-50">
+    <div className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-blue-50">
+      {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-violet-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-sky-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
+
+      {/* Medical Cross Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="medical-cross" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-              <path d="M35 25h10v10h10v10h-10v10h-10v-10h-10v-10h10z" fill="currentColor" className="text-purple-600"/>
+              <path d="M35 25h10v10h10v10h-10v10h-10v-10h-10v-10h10z" fill="currentColor" className="text-sky-600"/>
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#medical-cross)"/>
@@ -74,8 +77,9 @@ const SignUpFormCompact = () => {
       </div>
 
       <div className="relative z-10 w-full max-w-2xl">
+        {/* Logo/Brand Header */}
         <div className="text-center mb-8 space-y-3">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 shadow-lg shadow-purple-500/30 mb-4">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 shadow-lg shadow-sky-500/30 mb-4">
             <GraduationCap className="w-10 h-10 text-white" strokeWidth={2.5} />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
@@ -87,7 +91,7 @@ const SignUpFormCompact = () => {
         <Card className="shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="space-y-3 pb-6 text-center border-b border-gray-100">
             <div className="flex items-center justify-center gap-2">
-              <UserPlus className="h-7 w-7 text-purple-600" strokeWidth={2.5} />
+              <UserPlus className="h-7 w-7 text-sky-600" strokeWidth={2.5} />
             </div>
             <CardTitle className="text-2xl font-bold text-gray-900 tracking-tight">
               Create Your Account
@@ -98,17 +102,18 @@ const SignUpFormCompact = () => {
           </CardHeader>
 
           <CardContent className="pt-6 space-y-5">
-            <div className="grid grid-cols-3 gap-3 p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-100">
+            {/* Benefits Bar */}
+            <div className="grid grid-cols-3 gap-3 p-4 bg-gradient-to-r from-sky-50 to-blue-50 rounded-lg border border-sky-100">
               <div className="flex flex-col items-center text-center gap-1">
-                <CheckCircle2 className="h-5 w-5 text-purple-600" />
+                <CheckCircle2 className="h-5 w-5 text-sky-600" />
                 <span className="text-xs font-semibold text-gray-700">Accredited</span>
               </div>
               <div className="flex flex-col items-center text-center gap-1">
-                <CheckCircle2 className="h-5 w-5 text-purple-600" />
+                <CheckCircle2 className="h-5 w-5 text-sky-600" />
                 <span className="text-xs font-semibold text-gray-700">Flexible</span>
               </div>
               <div className="flex flex-col items-center text-center gap-1">
-                <CheckCircle2 className="h-5 w-5 text-purple-600" />
+                <CheckCircle2 className="h-5 w-5 text-sky-600" />
                 <span className="text-xs font-semibold text-gray-700">Expert-Led</span>
               </div>
             </div>
@@ -127,8 +132,8 @@ const SignUpFormCompact = () => {
                         <FormLabel className="text-sm font-semibold text-gray-700">First Name</FormLabel>
                         <FormControl>
                           <Input 
-                            {...field}  
-                            className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200" 
+                            {...field} 
+                            className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200" 
                           />
                         </FormControl>
                         <FormMessage className="text-xs" />
@@ -144,7 +149,7 @@ const SignUpFormCompact = () => {
                         <FormControl>
                           <Input 
                             {...field} 
-                            className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200" 
+                            className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200" 
                           />
                         </FormControl>
                         <FormMessage className="text-xs" />
@@ -164,7 +169,7 @@ const SignUpFormCompact = () => {
                           <Input
                             {...field}
                             type="email"
-                            className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                            className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200"
                           />
                         </FormControl>
                         <FormMessage className="text-xs" />
@@ -180,7 +185,7 @@ const SignUpFormCompact = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                            className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200"
                           />
                         </FormControl>
                         <FormMessage className="text-xs" />
@@ -199,7 +204,7 @@ const SignUpFormCompact = () => {
                         <Input 
                           {...field} 
                           type="date" 
-                          className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200" 
+                          className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200" 
                         />
                       </FormControl>
                       <FormMessage className="text-xs" />
@@ -218,7 +223,7 @@ const SignUpFormCompact = () => {
                           <PasswordInput
                             {...field}
                             placeholder="Create password"
-                            className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                            className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200"
                           />
                         </FormControl>
                         <FormMessage className="text-xs" />
@@ -235,7 +240,7 @@ const SignUpFormCompact = () => {
                           <PasswordInput
                             {...field}
                             placeholder="Confirm password"
-                            className="h-11 border-gray-300 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
+                            className="h-11 border-gray-300 focus:border-sky-500 focus:ring-sky-500 transition-all duration-200"
                           />
                         </FormControl>
                         <FormMessage className="text-xs" />
@@ -247,7 +252,7 @@ const SignUpFormCompact = () => {
                 <div className="pt-2 space-y-4">
                   <Button
                     type="submit"
-                    className="w-full h-12 text-sm font-semibold bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg shadow-purple-500/30 transition-all duration-200 transform hover:scale-[1.02]"
+                    className="w-full h-12 text-sm font-semibold bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white shadow-lg shadow-sky-500/30 transition-all duration-200 transform hover:scale-[1.02]"
                     disabled={isPending}
                   >
                     {isPending ? (
@@ -267,7 +272,7 @@ const SignUpFormCompact = () => {
                     Already have an account?{" "}
                     <Link
                       href="/sign-in"
-                      className="text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-colors duration-200"
+                      className="text-sky-600 hover:text-sky-700 font-semibold hover:underline transition-colors duration-200"
                     >
                       Sign in here
                     </Link>
@@ -279,12 +284,12 @@ const SignUpFormCompact = () => {
             <div className="pt-4 border-t border-gray-100">
               <div className="flex items-center justify-center gap-6 text-xs text-gray-500">
                 <div className="flex items-center gap-1.5">
-                  <Shield className="h-3.5 w-3.5 text-purple-600" />
+                  <Shield className="h-3.5 w-3.5 text-sky-600" />
                   <span>Secure Registration</span>
                 </div>
                 <div className="w-1 h-1 rounded-full bg-gray-300"></div>
                 <div className="flex items-center gap-1.5">
-                  <GraduationCap className="h-3.5 w-3.5 text-purple-600" />
+                  <GraduationCap className="h-3.5 w-3.5 text-sky-600" />
                   <span>State-Approved Training</span>
                 </div>
               </div>
@@ -292,9 +297,10 @@ const SignUpFormCompact = () => {
           </CardContent>
         </Card>
 
+        {/* Footer Link */}
         <p className="text-center text-xs text-gray-600 mt-6">
           Questions about registration?{" "}
-          <Link href="/contact" className="text-purple-600 hover:text-purple-700 font-semibold hover:underline transition-colors duration-200">
+          <Link href="/contact" className="text-sky-600 hover:text-sky-700 font-semibold hover:underline transition-colors duration-200">
             Contact Us
           </Link>
         </p>

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import Avatar from "@/assests/avatar-placeholder.png";
+import Avatar from "@/public/assests/avatar-placeholder.png";
 
 interface Props {
   AvatarUrl: string | null | undefined;
