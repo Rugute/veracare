@@ -4,8 +4,9 @@ import { writeFile } from "fs/promises";
 import path from "path";
 
 
-export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: number }> }) {
-  const { id } = await ctx.params;
+export async function DELETE( request: Request,
+  { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     console.log("Deleting Record ID:", id);
     //await prisma.branch.delete({ where: { id } });

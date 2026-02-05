@@ -4,8 +4,11 @@ import { writeFile } from "fs/promises";
 import path from "path";
 
 
-export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: number }> }) {
-  const { id } = await ctx.params;
+export async function DELETE( request: Request,
+  { params }: { params: Promise<{ id: string }>}) {
+ 
+   const id = Number((await params).id); // convert here
+
   try {
     console.log("Deleting Record ID:", id);
     //await prisma.branch.delete({ where: { id } });
@@ -27,7 +30,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
       description,
     } = body;
 
-    const updated = await prisma.roles.update({
+    const updated = await prisma.role.update({
       where: { id: cid },
       data: {
         name: name,
@@ -46,7 +49,7 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   const { id } = await ctx.params;
   try {
     const cid = parseInt(id, 10);
-    await prisma.roles.update({
+    await prisma.role.update({
       where: { id: cid },
       data: { voided: 1 },
     });
@@ -58,17 +61,17 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
   }
 }
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cid = Number(params.id); // convert here
+    const cid = Number((await params).id); // convert here
 
     if (isNaN(cid)) {
       return new Response("Invalid Roles id", { status: 400 });
     }
 
-    const categories = await prisma.roles.findUnique({
+    const categories = await prisma.role.findUnique({
       where: { id: cid },
     });
 

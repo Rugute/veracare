@@ -11,8 +11,9 @@ function generateSlug(title: string) {
     .replace(/\s+/g, "-");
 }
 
-export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: number }> }) {
-  const { id } = await ctx.params;
+export async function DELETE(request: Request,
+  { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   try {
     console.log("Deleting Record ID:", id);
     //await prisma.branch.delete({ where: { id } });
@@ -56,8 +57,8 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
       data: {
         title,
         slug: generateSlug(title),
-        description,
-        published: published === 1,
+       // description: description || null,
+       // published: published === 1 ? 1 : 0,
         photo: photoUrl,
         categoryId: category,
        
@@ -88,11 +89,11 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 }
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cid = params.id;
+    const cid = (await params).id;
     const course = await prisma.course.findUnique({
       where: { id: parseInt(cid, 10) },
     });

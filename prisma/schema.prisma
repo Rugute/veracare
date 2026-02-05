@@ -81,7 +81,7 @@ model Course {
   id           Int           @id @default(autoincrement())
   title        String
   slug         String?       @unique
-  description  String        @db.Text
+  description  String?       @db.Text
   published    Boolean       @default(false)
   created_at   DateTime      @default(now())
   updated_at   DateTime      @updatedAt
@@ -106,7 +106,7 @@ model Lesson {
   course            Course?     @relation(fields: [courseId], references: [id])
   lessonName        String?
   lessonVideo       String?
-  lessonDuration    String?  @db.Text
+  lessonDuration    String?     @db.Text
   lessonOrder       Decimal
   lessonDescription String?
   createdAt         DateTime    @default(now())

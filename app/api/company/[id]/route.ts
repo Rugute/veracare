@@ -3,8 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { writeFile } from "fs/promises";
 import path from "path";
 
-export async function DELETE(req: NextRequest, ctx: { params: Promise<{ id: number }> }) {
-  const { id } = await ctx.params;
+export async function DELETE( request: Request,
+  { params }: { params: Promise<{ id: string }> }) {
+    
+  const { id } = await params;
   try {
     console.log("Deleting Record ID:", id);
     //await prisma.branch.delete({ where: { id } });
@@ -77,13 +79,17 @@ export async function PATCH(req: Request, ctx: { params: Promise<{ id: string }>
 }
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { code: string } }
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const cid = params.code;
-    const company = await prisma.company.findFirst({
-      where: { code: cid },
+    const cid = Number((await params).id);
+    if (isNaN(cid)) {
+      return new Response("Invalid company id", { status: 400 });
+    }
+
+    const company = await prisma.company.findUnique({
+      where: { id: cid },
     });
 
     if (!company) {

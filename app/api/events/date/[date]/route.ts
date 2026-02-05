@@ -1,39 +1,33 @@
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ date: string }> }
 ) {
   try {
-    const { date } = await params;
-    const cid = new Date(date);
+    const { date } = await params; // 🔴 MUST await
 
-    // Validate the date
+    const cid =  new Date(date);
     if (isNaN(cid.getTime())) {
-      return new Response("Invalid date", { status: 400 });
+      return NextResponse.json({ error: "Invalid date" }, { status: 400 });
     }
 
-    // Normalize to start of day (optional)
     cid.setHours(0, 0, 0, 0);
 
     const events = await prisma.event.findMany({
       where: {
         startDate: { gte: cid },
       },
-      orderBy: {
-        startDate: "asc",
-      },
+      orderBy: { startDate: "asc" },
     });
 
-    if (!events || events.length === 0) {
-      return new Response("Events not found", { status: 404 });
+    if (!events.length) {
+      return NextResponse.json({ message: "No events found" }, { status: 404 });
     }
-
-    return new Response(JSON.stringify(events), {
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(events);
   } catch (err) {
     console.error("GET error:", err);
-    return new Response("Internal Server Error", { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

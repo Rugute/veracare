@@ -6,12 +6,18 @@ import { start } from "repl";
 
 
 export async function GET(
-  req: NextRequest, ctx: { params: Promise<{ date: Date }> }) {
+  req: NextRequest, ctx: { params: Promise<{ date: string }> }) {
   const { date } = await ctx.params;
+   const cid =  new Date(date);
+    if (isNaN(cid.getTime())) {
+      return NextResponse.json({ error: "Invalid date" }, { status: 400 });
+    }
+
+    cid.setHours(0, 0, 0, 0);
   try {
 
     const where = {
-      startDate: { gte: date },
+      startDate: { gte: cid },
       voided: 0,
     };
 
