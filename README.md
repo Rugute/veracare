@@ -60,3 +60,5 @@ npx prisma studio
 ## .env
 DATABASE_URL=""
 JWT_SECRET=""
+##
+ npx shadcn@latest add resizable
